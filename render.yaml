@@ -1,4 +1,5 @@
 ﻿services:
+  # Backend API Service
   - type: web
     name: modern-furniture-api
     runtime: node
@@ -16,3 +17,14 @@
         value: 7d
       - key: CLIENT_URL
         sync: false
+
+  # Frontend Static Site
+  - type: web
+    name: modern-furniture-frontend
+    runtime: static
+    plan: free
+    buildCommand: echo "Static site - no build needed"
+    staticPublishPath: ./frontend
+    envVars:
+      - key: API_URL
+        value: https://modern-furniture-api.onrender.com/api

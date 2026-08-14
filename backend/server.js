@@ -4,13 +4,10 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const path = require('path');
 
+// Load environment variables
 dotenv.config();
 
 // Import routes
-const scannerRoutes = require('./src/routes/scanner');
-const customerCareRoutes = require('./src/routes/customer-care');
-const chatRoutes = require('./src/routes/chat');
-const adminRoutes = require('./src/routes/admin');
 const authRoutes = require('./src/routes/auth');
 const productRoutes = require('./src/routes/products');
 const categoryRoutes = require('./src/routes/categories');
@@ -20,10 +17,13 @@ const reviewRoutes = require('./src/routes/reviews');
 const applicationRoutes = require('./src/routes/applications');
 const supplierRoutes = require('./src/routes/suppliers');
 const repairRoutes = require('./src/routes/repairs');
+const adminRoutes = require('./src/routes/admin');
+const chatRoutes = require('./src/routes/chat');
 
 const app = express();
 
-// ===== CORS CONFIGURATION - FIXED =====
+// ===== CORS CONFIGURATION =====
+// Allow all origins for production (or specify your frontend URL)
 app.use(cors({
   origin: '*',
   credentials: true,
@@ -51,17 +51,16 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api/repairs', repairRoutes);
-app.use("/api/scanner", scannerRoutes);
-app.use("/api/customer-care", customerCareRoutes);
-app.use('/api/admins', adminRoutes);   // ✅ Added for admin management
-app.use('/api/chat', chatRoutes);      // ✅ Added for admin chat
+app.use('/api/admins', adminRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
-    message: 'Modern Furniture Pacific API is running locally',
-    timestamp: new Date().toISOString()
+    message: 'Modern Furniture Pacific API is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
@@ -78,5 +77,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Backend running at http://localhost:${PORT}`);
   console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔓 CORS: All origins allowed (development mode)`);
+  console.log(`🔓 CORS: All origins allowed`);
 });

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping Cart - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1a2a3a;
+            --gold: #c9a94e;
+            --gold-light: #e8d5a3;
+            --white: #ffffff;
+            --gray-100: #f8f7f4;
+            --gray-200: #e9e7e2;
+            --gray-600: #888888;
+            --gray-800: #2d2d2d;
+            --radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+        }
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+        .page-header {
+            margin-bottom: 32px;
+        }
+        .page-header h1 {
+            font-size: 32px;
+            color: var(--primary);
+        }
+        .page-header h1 span {
+            color: var(--gold);
+        }
+        .page-header p {
+            color: var(--gray-600);
+            margin-top: 8px;
+            font-size: 16px;
+        }
+        .cart-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+        }
+        .cart-items {
+            background: white;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+        .cart-items h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        .cart-item {
+            display: flex;
+            gap: 20px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-200);
+            align-items: center;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .cart-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .cart-item-details {
+            flex: 1;
+        }
+        .cart-item-details h4 {
+            font-size: 16px;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .cart-item-details .price {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .cart-item-details .old-price {
+            text-decoration: line-through;
+            color: var(--gray-600);
+            font-size: 14px;
+            margin-left: 8px;
+        }
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .cart-item-actions input {
+            width: 60px;
+            padding: 6px 10px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .cart-item-actions button {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 18px;
+            transition: var(--transition);
+        }
+        .cart-item-actions button:hover {
+            color: #dc2626;
+        }
+        .cart-summary {
+            background: white;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 24px;
+        }
+        .cart-summary h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 14px;
+        }
+        .summary-row.total {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 18px;
+            padding-top: 16px;
+        }
+        .summary-row.total .amount {
+            color: var(--gold);
+            font-size: 24px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            text-decoration: none;
+            width: 100%;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: var(--primary);
+        }
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201,169,78,0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--gray-200);
+        }
+        .btn-outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .empty-cart i {
+            font-size: 64px;
+            color: var(--gray-200);
+            margin-bottom: 16px;
+        }
+        .empty-cart h3 {
+            color: var(--gray-600);
+            margin-bottom: 8px;
+        }
+        .empty-cart p {
+            color: var(--gray-600);
+            margin-bottom: 20px;
+        }
+        .notification-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--primary);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            z-index: 3000;
+            max-width: 400px;
+            animation: slideUp 0.3s ease-out;
+            display: none;
+        }
+        .notification-toast.show { display: block; }
+        .notification-toast .close {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            float: right;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+            .cart-item {
+                flex-wrap: wrap;
+            }
+            .cart-item img {
+                width: 80px;
+                height: 80px;
+            }
+            .cart-item-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="notification-toast">
+        <button class="close" onclick="closeNotification()">&times;</button>
+        <p id="notificationMessage">Notification</p>
+    </div>
+
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Shopping <span>Cart</span></h1>
+            <p>Review your items and proceed to checkout.</p>
+        </div>
+
+        <!-- Cart Container -->
+        <div class="cart-container">
+            <!-- Cart Items -->
+            <div class="cart-items">
+                <h2>Your Items (3)</h2>
+                
+                <div id="cartItems">
+                    <!-- Item 1 -->
+                    <div class="cart-item">
+                        <img src="https://via.placeholder.com/100x100/1a2a3a/c9a94e?text=Sofa" alt="Luxury Velvet Sofa" />
+                        <div class="cart-item-details">
+                            <h4>Luxury Velvet Sofa</h4>
+                            <p class="price">$899.99 <span class="old-price">$1,099.99</span></p>
+                            <p style="color: var(--gray-600); font-size: 13px;">Color: Charcoal · In Stock</p>
+                        </div>
+                        <div class="cart-item-actions">
+                            <input type="number" value="1" min="1" max="10" />
+                            <button onclick="removeItem()"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="cart-item">
+                        <img src="https://via.placeholder.com/100x100/1a2a3a/c9a94e?text=Table" alt="Minimalist Dining Table" />
+                        <div class="cart-item-details">
+                            <h4>Minimalist Dining Table</h4>
+                            <p class="price">$649.99</p>
+                            <p style="color: var(--gray-600); font-size: 13px;">Color: Natural Oak · In Stock</p>
+                        </div>
+                        <div class="cart-item-actions">
+                            <input type="number" value="1" min="1" max="10" />
+                            <button onclick="removeItem()"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="cart-item">
+                        <img src="https://via.placeholder.com/100x100/1a2a3a/c9a94e?text=Chair" alt="Designer Armchair" />
+                        <div class="cart-item-details">
+                            <h4>Designer Armchair</h4>
+                            <p class="price">$299.99 <span class="old-price">$399.99</span></p>
+                            <p style="color: var(--gray-600); font-size: 13px;">Color: Teal · In Stock</p>
+                        </div>
+                        <div class="cart-item-actions">
+                            <input type="number" value="2" min="1" max="10" />
+                            <button onclick="removeItem()"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cart Summary -->
+            <div class="cart-summary">
+                <h2>Order Summary</h2>
+                <div class="summary-row">
+                    <span>Subtotal (3 items)</span>
+                    <span>$1,849.97</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>Free</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax</span>
+                    <span>$184.99</span>
+                </div>
+                <div class="summary-row">
+                    <span>Discount</span>
+                    <span>-$150.00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span class="amount">$1,884.96</span>
+                </div>
+                <button class="btn btn-success" onclick="checkout()">
+                    <i class="fas fa-lock"></i> Proceed to Checkout
+                </button>
+                <button class="btn btn-outline" onclick="window.location.href='products.html'">
+                    <i class="fas fa-arrow-left"></i> Continue Shopping
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showNotification(message) {
+            const toast = document.getElementById('notificationToast');
+            const msg = document.getElementById('notificationMessage');
+            msg.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        function closeNotification() {
+            document.getElementById('notificationToast').classList.remove('show');
+        }
+
+        function removeItem() {
+            showNotification('🗑️ Item removed from cart');
+        }
+
+        function checkout() {
+            const location = prompt('📍 Enter your delivery location:');
+            if (location) {
+                showNotification(`🎉 Order placed! Delivery to: ${location}`);
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeNotification();
+        });
+    </script>
+
+</body>
+</html>

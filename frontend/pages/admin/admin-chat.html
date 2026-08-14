@@ -1,0 +1,579 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Chat - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8f7f4; }
+        
+        .chat-container {
+            display: flex;
+            height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .chat-sidebar {
+            width: 280px;
+            background: #1a2a3a;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 16px 0 0 16px;
+        }
+        .chat-sidebar .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+        .chat-sidebar .logo img { height: 40px; width: auto; }
+        .chat-sidebar .logo span { font-weight: 700; font-size: 18px; }
+        .chat-sidebar .back-link { 
+            color: #c9a94e; 
+            text-decoration: none; 
+            font-size: 13px; 
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chat-sidebar .back-link:hover { text-decoration: underline; }
+        .chat-sidebar .online-users { flex: 1; }
+        .chat-sidebar .online-users h3 { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 4px;
+        }
+        .user-item:hover { background: rgba(255,255,255,0.05); }
+        .user-item .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            color: white;
+        }
+        .user-item .avatar.super { background: #ef4444; }
+        .user-item .avatar.ceo { background: #c9a94e; color: #1a2a3a; }
+        .user-item .avatar.branch { background: #3b82f6; }
+        .user-item .user-info { flex: 1; }
+        .user-item .user-info .name { font-size: 14px; font-weight: 500; }
+        .user-item .user-info .role { font-size: 11px; color: rgba(255,255,255,0.5); }
+        .user-item .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; }
+        
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 0 16px 16px 0;
+        }
+        .chat-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e9e7e2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-header .chat-info h2 { font-size: 18px; color: #1a2a3a; }
+        .chat-header .chat-info p { font-size: 13px; color: #888; }
+        .chat-header .chat-actions { display: flex; gap: 12px; }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f8f7f4;
+        }
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+        .message.received { align-self: flex-start; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .message.sent { align-self: flex-end; background: #c9a94e; color: #1a2a3a; }
+        .message .sender { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+        .message .sender .role-tag { font-size: 10px; opacity: 0.7; font-weight: 400; }
+        .message .mention { color: #3b82f6; font-weight: 600; }
+        .message .time { font-size: 10px; opacity: 0.6; margin-top: 4px; display: block; }
+        .message .attachment { margin-top: 8px; padding: 8px 12px; background: rgba(0,0,0,0.05); border-radius: 8px; }
+        .message .attachment img { max-width: 200px; border-radius: 8px; }
+        
+        .chat-input {
+            padding: 16px 24px;
+            border-top: 1px solid #e9e7e2;
+            display: flex;
+            gap: 12px;
+            background: white;
+            flex-wrap: wrap;
+        }
+        .chat-input .input-wrapper {
+            flex: 1;
+            display: flex;
+            gap: 12px;
+            min-width: 200px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #e9e7e2;
+            border-radius: 50px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        .chat-input input:focus { outline: none; border-color: #c9a94e; }
+        .chat-input .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .chat-input .btn-primary { background: #c9a94e; color: #1a2a3a; }
+        .chat-input .btn-primary:hover { background: #e8d5a3; transform: translateY(-2px); }
+        .chat-input .btn-outline { background: transparent; border: 2px solid #e9e7e2; }
+        .chat-input .btn-outline:hover { border-color: #c9a94e; }
+        
+        .mention-hint {
+            font-size: 12px;
+            color: #888;
+            padding: 4px 12px;
+            background: #f8f7f4;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .empty-state { text-align: center; padding: 60px 20px; color: #888; }
+        .empty-state i { font-size: 48px; color: #ddd; margin-bottom: 16px; }
+        
+        .badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 10px;
+            margin-left: 4px;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1a2a3a;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            z-index: 2000;
+            max-width: 400px;
+            animation: slideUp 0.3s ease-out;
+            display: none;
+        }
+        .toast.show { display: block; }
+        .toast .close-toast {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            float: right;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .chat-sidebar { display: none; }
+            .chat-main { border-radius: 16px; }
+            .chat-input .input-wrapper { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-sidebar">
+            <div class="logo">
+                <img src="../../assets/images/logo.png" alt="Logo" />
+                <span>Admin Chat</span>
+            </div>
+            <a href="#" class="back-link" id="backLink"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <div class="online-users" style="margin-top:20px;">
+                <h3><i class="fas fa-circle" style="color:#10b981; font-size:10px;"></i> Online</h3>
+                <div id="userList"></div>
+            </div>
+        </div>
+        
+        <div class="chat-main">
+            <div class="chat-header">
+                <div class="chat-info">
+                    <h2>💬 Admin Chat</h2>
+                    <p id="onlineCount">0 users online</p>
+                </div>
+                <div class="chat-actions">
+                    <button class="btn btn-outline btn-sm" onclick="refreshMessages()"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="empty-state">
+                    <i class="fas fa-comments"></i>
+                    <h3>No messages yet</h3>
+                    <p>Start the conversation with your team</p>
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <div class="input-wrapper">
+                    <input type="text" id="messageInput" placeholder="Type your message... (use @ruiru, @nyeri, @nakuru to mention)" onkeypress="if(event.key==='Enter') sendMessage()" />
+                    <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()"><i class="fas fa-paperclip"></i></button>
+                    <input type="file" id="fileInput" style="display:none" accept="image/*,.pdf,.doc,.docx" onchange="uploadFile(this)" />
+                    <button class="btn btn-primary" onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+                <span class="mention-hint">💡 @ruiru @nyeri @nakuru to mention branches</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <button class="close-toast" onclick="closeToast()">&times;</button>
+        <p id="toastMessage">Notification</p>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        let currentUser = null;
+        let allUsers = [];
+        let messageInterval = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('user');
+            if (!user) { 
+                window.location.href = 'admin-login.html'; 
+                return; 
+            }
+            
+            try {
+                currentUser = JSON.parse(user);
+                console.log('✅ Current user loaded:', currentUser);
+            } catch (e) {
+                console.error('❌ Error parsing user:', e);
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            
+            const adminRoles = ['super_admin', 'ceo_admin', 'branch_admin'];
+            if (!adminRoles.includes(currentUser.role)) {
+                alert('Access denied. Admin privileges required.');
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            
+            // Set correct back link based on role
+            const backLink = document.getElementById('backLink');
+            const roleMap = {
+                'super_admin': 'super-admin.html',
+                'ceo_admin': 'ceo-admin.html',
+                'branch_admin': 'branch-admin.html'
+            };
+            const dashboardPage = roleMap[currentUser.role] || 'super-admin.html';
+            backLink.href = dashboardPage;
+            
+            const roleNames = {
+                'super_admin': 'Super Admin',
+                'ceo_admin': 'CEO',
+                'branch_admin': 'Branch'
+            };
+            backLink.innerHTML = `<i class="fas fa-arrow-left"></i> Back to ${roleNames[currentUser.role] || 'Admin'} Dashboard`;
+            
+            // Load users and messages
+            loadUsers();
+            loadMessages();
+            
+            // Auto-refresh every 3 seconds
+            messageInterval = setInterval(loadMessages, 3000);
+        });
+
+        async function loadUsers() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.error('❌ No token found');
+                    return;
+                }
+                
+                const response = await fetch(`${API_URL}/admins`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                console.log('📥 Users loaded:', data);
+                
+                if (data.success) {
+                    allUsers = data.admins || [];
+                    renderUsers();
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        function renderUsers() {
+            const container = document.getElementById('userList');
+            const onlineCount = document.getElementById('onlineCount');
+            
+            if (!allUsers || allUsers.length === 0) {
+                container.innerHTML = '<p style="color:rgba(255,255,255,0.4);font-size:13px;">No admins online</p>';
+                onlineCount.textContent = '0 users online';
+                return;
+            }
+            
+            const roleMap = { 'super_admin': 'Super Admin', 'ceo_admin': 'CEO Admin', 'branch_admin': 'Branch Admin' };
+            const roleColors = { 'super_admin': 'super', 'ceo_admin': 'ceo', 'branch_admin': 'branch' };
+            
+            container.innerHTML = allUsers.map(user => `
+                <div class="user-item active">
+                    <div class="avatar ${roleColors[user.role] || 'branch'}">${user.name ? user.name.charAt(0).toUpperCase() : '?'}</div>
+                    <div class="user-info">
+                        <div class="name">${user.name || 'Unknown'}</div>
+                        <div class="role">${roleMap[user.role] || user.role}</div>
+                    </div>
+                    <div class="online-dot"></div>
+                </div>
+            `).join('');
+            
+            onlineCount.textContent = `${allUsers.length} users online`;
+        }
+
+        async function loadMessages() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.error('❌ No token found');
+                    return;
+                }
+                
+                const response = await fetch(`${API_URL}/chat`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                console.log('📥 Messages loaded:', data);
+                
+                if (data.success && data.messages) {
+                    renderMessages(data.messages);
+                    updateBadgeCount(data.messages);
+                }
+            } catch (error) {
+                console.error('❌ Error loading messages:', error);
+            }
+        }
+
+        function renderMessages(messages) {
+            const container = document.getElementById('chatMessages');
+            
+            if (!messages || messages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-comments"></i>
+                        <h3>No messages yet</h3>
+                        <p>Start the conversation with your team</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            messages.forEach(msg => {
+                const isOwn = msg.senderId === currentUser.id;
+                const roleMap = { 
+                    'super_admin': '👑 Super Admin', 
+                    'ceo_admin': '👔 CEO Admin', 
+                    'branch_admin': '🏪 Branch Admin' 
+                };
+                const time = new Date(msg.timestamp).toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                // Highlight @mentions
+                let messageText = msg.message || '';
+                if (msg.mentions && msg.mentions.length > 0) {
+                    msg.mentions.forEach(mention => {
+                        const regex = new RegExp('@' + mention, 'g');
+                        messageText = messageText.replace(regex, `<span class="mention">@${mention}</span>`);
+                    });
+                }
+                
+                let attachmentHtml = '';
+                if (msg.attachment) {
+                    if (msg.attachmentType === 'image') {
+                        attachmentHtml = `<div class="attachment"><img src="${msg.attachment}" alt="Attachment" /></div>`;
+                    } else {
+                        attachmentHtml = `<div class="attachment">📎 ${msg.attachment}</div>`;
+                    }
+                }
+                
+                const senderDisplay = roleMap[msg.senderRole] || msg.senderName || 'Unknown Admin';
+                
+                html += `
+                    <div class="message ${isOwn ? 'sent' : 'received'}">
+                        ${!isOwn ? `<div class="sender">${senderDisplay}</div>` : ''}
+                        <div>${messageText}</div>
+                        ${attachmentHtml}
+                        <span class="time">${time}</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function updateBadgeCount(messages) {
+            const badges = document.querySelectorAll('.badge');
+            badges.forEach(badge => {
+                badge.textContent = messages ? messages.length : 0;
+            });
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    showToast('❌ Not logged in');
+                    return;
+                }
+                
+                const mentionRegex = /@(\w+)/g;
+                const mentions = [];
+                let match;
+                while ((match = mentionRegex.exec(message)) !== null) {
+                    mentions.push(match[1]);
+                }
+                
+                console.log('📤 Sending message:', message);
+                console.log('📤 Mentions:', mentions);
+                
+                const response = await fetch(`${API_URL}/chat`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify({ 
+                        message: message,
+                        mentions: mentions
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('📤 Send response:', data);
+                
+                if (data.success) {
+                    input.value = '';
+                    loadMessages();
+                    showToast('✅ Message sent!');
+                } else {
+                    showToast('❌ Failed to send: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('❌ Error sending message:', error);
+                showToast('❌ Failed to send message. Please try again.');
+            }
+        }
+
+        function uploadFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const type = file.type.startsWith('image/') ? 'image' : 'file';
+                sendMessageWithAttachment(e.target.result, file.name, type);
+            };
+            reader.readAsDataURL(file);
+            input.value = '';
+        }
+
+        async function sendMessageWithAttachment(attachment, name, type) {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    showToast('❌ Not logged in');
+                    return;
+                }
+                
+                const response = await fetch(`${API_URL}/chat`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify({
+                        message: `📎 ${name}`,
+                        attachment: attachment,
+                        attachmentType: type || 'file'
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadMessages();
+                    showToast('✅ Attachment sent!');
+                } else {
+                    showToast('❌ Failed to send attachment');
+                }
+            } catch (error) {
+                console.error('❌ Error sending attachment:', error);
+                showToast('❌ Failed to send attachment. Please try again.');
+            }
+        }
+
+        function refreshMessages() {
+            loadMessages();
+            loadUsers();
+            showToast('🔄 Messages refreshed!');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            msg.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function closeToast() {
+            document.getElementById('toast').classList.remove('show');
+        }
+    </script>
+</body>
+</html>

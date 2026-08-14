@@ -1,0 +1,70 @@
+[
+  {
+    "id": "743ce668-3f13-4c72-892b-b85cfe79a4dd",
+    "name": "Super Admin",
+    "email": "superadmin@modernfurniturepacific.com",
+    "role": "super_admin",
+    "branch": "all",
+    "phone": "+254 700 123 456",
+    "isActive": true,
+    "createdAt": "2026-08-10T20:34:38.679Z",
+    "lastLogin": "2026-08-13T14:01:34.745Z",
+    "password": "$2a$10$7AWgWWHtEFbPCYtR/X9M3O0xFSrudtq/obUS2b6S0X6I1ABHxXFz6"
+  },
+  {
+    "id": "ae37d55b-a4a5-40f6-8c89-e3c5ec050f28",
+    "name": "CEO Admin",
+    "email": "ceoadmin@modernfurniturepacific.com",
+    "password": "$2a$10$1SyMvc35bO0pBnRvX66X.ugQparDMQbcc9S6g4b0z4R0xDrGGiVvW",
+    "role": "ceo_admin",
+    "profileImage": "avatar-default.png",
+    "phone": "",
+    "address": {},
+    "isActive": true,
+    "createdAt": "2026-08-11T09:11:37.354Z",
+    "lastLogin": "2026-08-13T15:22:47.534Z",
+    "branch": "all"
+  },
+  {
+    "id": "382b47cd-8aa7-4f10-ab2d-8c8a09e9569c",
+    "name": "Nyeri Manager",
+    "email": "nyeri@modernfurniturepacific.com",
+    "password": "$2a$10$D8S58N0bWG2ch191tH/Z2.YaDOmliC052SpR6ue5HzqrQcLiYZGmu",
+    "role": "branch_admin",
+    "profileImage": "avatar-default.png",
+    "phone": "",
+    "address": {},
+    "isActive": true,
+    "createdAt": "2026-08-11T09:23:45.354Z",
+    "lastLogin": null,
+    "branch": "nyeri"
+  },
+  {
+    "id": "47ee7936-9343-40a3-8c69-91f279038391",
+    "name": "Nakuru Manager",
+    "email": "nakuru@modernfurniturepacific.com",
+    "password": "$2a$10$ve6ZqkdEHdznqWHm4eJyZO2Sqiqp1A.fBsRev82ugYicrTPYpu69u",
+    "role": "branch_admin",
+    "profileImage": "avatar-default.png",
+    "phone": "",
+    "address": {},
+    "isActive": true,
+    "createdAt": "2026-08-11T09:24:53.434Z",
+    "lastLogin": null,
+    "branch": "nakuru"
+  },
+  {
+    "id": "afaaa686-7150-456b-9919-0d6997a68f1d",
+    "name": "Ruiru Manager",
+    "email": "ruiru@modernfurniturepacific.com",
+    "password": "$2a$10$3fbP8EltVUu1UD9aJCBLJ.z3hN4YIzfOtja7F4MTfaE7wum2ZzOFu",
+    "role": "branch_admin",
+    "profileImage": "avatar-default.png",
+    "phone": "",
+    "address": {},
+    "isActive": true,
+    "createdAt": "2026-08-11T09:28:09.229Z",
+    "lastLogin": "2026-08-13T15:11:13.750Z",
+    "branch": "ruiru"
+  }
+]

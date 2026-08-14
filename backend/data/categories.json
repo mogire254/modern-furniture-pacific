@@ -1,0 +1,47 @@
+﻿[
+  {
+    "id": "cat1",
+    "name": "Beds",
+    "description": "Luxurious beds and bed frames for your comfort",
+    "icon": "fa-bed",
+    "productCount": 0,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "cat2",
+    "name": "Sofas",
+    "description": "Elegant sofas and seating for your living room",
+    "icon": "fa-couch",
+    "productCount": 0,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "cat3",
+    "name": "Tables",
+    "description": "Dining and coffee tables for your home",
+    "icon": "fa-table",
+    "productCount": 0,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "cat4",
+    "name": "Chairs",
+    "description": "Comfortable chairs for every room",
+    "icon": "fa-chair",
+    "productCount": 0,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "cat5",
+    "name": "Cabinets",
+    "description": "Storage cabinets and wardrobes",
+    "icon": "fa-cabinet",
+    "productCount": 0,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-01-01T00:00:00.000Z"
+  }
+]

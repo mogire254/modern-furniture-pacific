@@ -1,0 +1,35 @@
+﻿# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Data (database files)
+backend/data/*.json
+!backend/data/users.json
+!backend/data/admins.json
+!backend/data/products.json
+!backend/data/categories.json
+
+# Logs
+logs/
+*.log
+
+# Uploads
+uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

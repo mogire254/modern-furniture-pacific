@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #1a2a3a; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-container { background: white; padding: 48px; border-radius: 16px; max-width: 440px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        .logo { text-align: center; margin-bottom: 32px; }
+        .logo img { height: 60px; width: auto; margin-bottom: 8px; }
+        .logo h1 { font-size: 24px; color: #1a2a3a; }
+        .logo .badge { display: inline-block; background: #c9a94e; color: #1a2a3a; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-top: 4px; }
+        .logo p { color: #888; font-size: 14px; margin-top: 4px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; color: #1a2a3a; margin-bottom: 6px; }
+        .form-group label i { color: #c9a94e; margin-right: 8px; }
+        .form-group input { width: 100%; padding: 14px 18px; border: 2px solid #e9e7e2; border-radius: 12px; font-size: 15px; transition: all 0.4s ease; font-family: inherit; background: #f8f7f4; }
+        .form-group input:focus { outline: none; border-color: #c9a94e; box-shadow: 0 0 0 4px rgba(201,169,78,0.15); }
+        .form-options { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; font-size: 14px; }
+        .form-options a { color: #c9a94e; text-decoration: none; font-weight: 500; }
+        .form-options a:hover { text-decoration: underline; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border: none; border-radius: 50px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.4s ease; font-family: inherit; width: 100%; justify-content: center; }
+        .btn-primary { background: #c9a94e; color: #1a2a3a; }
+        .btn-primary:hover { background: #e8d5a3; transform: translateY(-2px); box-shadow: 0 12px 30px rgba(201,169,78,0.3); }
+        .form-footer { text-align: center; margin-top: 20px; font-size: 14px; color: #888; }
+        .form-footer a { color: #c9a94e; font-weight: 600; text-decoration: none; }
+        .form-footer a:hover { text-decoration: underline; }
+        .message { margin-top: 15px; padding: 10px; border-radius: 8px; font-size: 14px; display: none; }
+        .message.success { display: block; background: #d1fae5; color: #065f46; }
+        .message.error { display: block; background: #fee2e2; color: #991b1b; }
+        .back-home { display: inline-flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 14px; margin-bottom: 20px; transition: all 0.4s ease; }
+        .back-home:hover { color: #c9a94e; }
+        .admin-banner { background: linear-gradient(135deg, #c9a94e, #e8d5a3); padding: 12px 20px; border-radius: 8px; text-align: center; margin-bottom: 24px; color: #1a2a3a; font-weight: 600; font-size: 14px; }
+        .admin-banner i { margin-right: 8px; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <a href="../../index.html" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        <div class="logo">
+            <img src="../../assets/images/logo.png" alt="Logo" />
+            <h1>Admin Portal</h1>
+            <span class="badge">🔒 Secure Access</span>
+            <p>Sign in to manage your branch or system</p>
+        </div>
+        <div class="admin-banner"><i class="fas fa-shield-alt"></i> Admin access is restricted to authorized personnel only</div>
+        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="adminEmail" placeholder="superadmin@modernfurniturepacific.com" required />
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="adminPassword" placeholder="••••••••" required />
+            </div>
+            <div class="form-options">
+                <label><input type="checkbox" /> Remember Me</label>
+                <a href="#">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Admin Login</button>
+            <div id="adminLoginMessage" class="message"></div>
+        </form>
+        <p class="form-footer"><a href="../../pages/login.html">Regular User Login</a> • <a href="#">Contact Support</a></p>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        async function handleAdminLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const msg = document.getElementById('adminLoginMessage');
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    const user = data.user;
+                    const adminRoles = ['super_admin', 'ceo_admin', 'branch_admin'];
+                    
+                    if (!adminRoles.includes(user.role)) {
+                        msg.textContent = '❌ Access denied. Admin privileges required.';
+                        msg.className = 'message error';
+                        msg.style.display = 'block';
+                        return;
+                    }
+                    
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(user));
+                    
+                    msg.textContent = '✅ Admin login successful!';
+                    msg.className = 'message success';
+                    msg.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        if (user.role === 'super_admin') {
+                            window.location.href = 'super-admin.html';
+                        } else if (user.role === 'ceo_admin') {
+                            window.location.href = 'ceo-admin.html';
+                        } else if (user.role === 'branch_admin') {
+                            window.location.href = 'branch-admin.html';
+                        }
+                    }, 1000);
+                } else {
+                    msg.textContent = data.message || 'Login failed';
+                    msg.className = 'message error';
+                    msg.style.display = 'block';
+                }
+            } catch (error) {
+                msg.textContent = 'Network error. Is the backend running?';
+                msg.className = 'message error';
+                msg.style.display = 'block';
+                console.error('Admin login error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suppliers - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1a2a3a;
+            --gold: #c9a94e;
+            --gold-light: #e8d5a3;
+            --white: #ffffff;
+            --gray-100: #f8f7f4;
+            --gray-200: #e9e7e2;
+            --gray-600: #888888;
+            --gray-800: #2d2d2d;
+            --radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+        }
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+        .page-header {
+            margin-bottom: 32px;
+        }
+        .page-header h1 {
+            font-size: 32px;
+            color: var(--primary);
+        }
+        .page-header h1 span {
+            color: var(--gold);
+        }
+        .page-header p {
+            color: var(--gray-600);
+            margin-top: 8px;
+            font-size: 16px;
+        }
+        .supplier-form {
+            background: white;
+            padding: 32px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .supplier-form h2 {
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .form-group label i {
+            color: var(--gold);
+            margin-right: 8px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+            font-family: inherit;
+            background: var(--gray-100);
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(201,169,78,0.15);
+        }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: var(--primary);
+        }
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201,169,78,0.3);
+        }
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .info-box {
+            background: var(--gray-100);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--gold);
+        }
+        .info-box p {
+            color: var(--gray-600);
+            font-size: 14px;
+        }
+        .info-box i {
+            color: var(--gold);
+            margin-right: 8px;
+        }
+        .notification-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--primary);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            z-index: 3000;
+            max-width: 400px;
+            animation: slideUp 0.3s ease-out;
+            display: none;
+        }
+        .notification-toast.show { display: block; }
+        .notification-toast .close {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            float: right;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .materials-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .materials-tags .tag {
+            background: var(--gray-100);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--gray-600);
+            border: 1px solid var(--gray-200);
+        }
+        .materials-tags .tag i {
+            color: var(--gold);
+            margin-right: 4px;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .supplier-form {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="notification-toast">
+        <button class="close" onclick="closeNotification()">&times;</button>
+        <p id="notificationMessage">Notification</p>
+    </div>
+
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Material <span>Suppliers</span></h1>
+            <p>Register as a supplier and provide materials for our furniture production.</p>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <p><i class="fas fa-info-circle"></i> We're always looking for quality material suppliers. Whether you supply timber, fabrics, or any other material needed for furniture production, we'd love to hear from you.</p>
+        </div>
+
+        <!-- Supplier Form -->
+        <div class="supplier-form">
+            <h2><i class="fas fa-truck" style="color:var(--gold);"></i> Supplier Registration</h2>
+            <form id="supplierForm" onsubmit="submitSupplier(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Company/Name</label>
+                        <input type="text" placeholder="Your company or full name" required />
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone</label>
+                        <input type="tel" placeholder="+254 700 123 456" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" placeholder="supplier@example.com" required />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-cube"></i> Material Type</label>
+                    <select required>
+                        <option value="">Select material type</option>
+                        <option value="mahogany">Mahogany Timber</option>
+                        <option value="oak">Oak Wood</option>
+                        <option value="walnut">Walnut Wood</option>
+                        <option value="cotton">Cotton Fabric</option>
+                        <option value="leather">Leather</option>
+                        <option value="velvet">Velvet</option>
+                        <option value="metal">Metal</option>
+                        <option value="glass">Glass</option>
+                        <option value="foam">High-density Foam</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-weight-hanging"></i> Quantity Available</label>
+                    <input type="text" placeholder="e.g., 100 units, 50kg, 200m" required />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-file-alt"></i> Description</label>
+                    <textarea placeholder="Describe the material quality, specifications, and any other details..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-image"></i> Sample Image</label>
+                    <input type="file" accept="image/*" />
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-paper-plane"></i> Submit Supplier Request
+                </button>
+            </form>
+
+            <!-- Materials Needed -->
+            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--gray-200);">
+                <h3 style="color: var(--primary); font-size: 16px; margin-bottom: 8px;">
+                    <i class="fas fa-list" style="color:var(--gold);"></i> Materials We're Currently Sourcing
+                </h3>
+                <div class="materials-tags">
+                    <span class="tag"><i class="fas fa-tree"></i> Mahogany Timber</span>
+                    <span class="tag"><i class="fas fa-tree"></i> Oak Wood</span>
+                    <span class="tag"><i class="fas fa-tree"></i> Walnut Wood</span>
+                    <span class="tag"><i class="fas fa-leaf"></i> Cotton Fabric</span>
+                    <span class="tag"><i class="fas fa-cow"></i> Leather</span>
+                    <span class="tag"><i class="fas fa-velvet"></i> Velvet</span>
+                    <span class="tag"><i class="fas fa-cog"></i> Metal</span>
+                    <span class="tag"><i class="fas fa-cube"></i> Glass</span>
+                    <span class="tag"><i class="fas fa-bed"></i> High-density Foam</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showNotification(message) {
+            const toast = document.getElementById('notificationToast');
+            const msg = document.getElementById('notificationMessage');
+            msg.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+
+        function closeNotification() {
+            document.getElementById('notificationToast').classList.remove('show');
+        }
+
+        function submitSupplier(event) {
+            event.preventDefault();
+            showNotification('✅ Supplier request submitted! We will review your application.');
+            event.target.reset();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeNotification();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,2440 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CEO Admin - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8f7f4; }
+        
+        .admin-wrapper { display: flex; min-height: 100vh; }
+        
+        .admin-sidebar {
+            width: 280px;
+            background: #1a2a3a;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        .admin-sidebar::-webkit-scrollbar { width: 4px; }
+        .admin-sidebar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .admin-sidebar::-webkit-scrollbar-thumb { background: #c9a94e; border-radius: 4px; }
+        
+        .admin-sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .admin-sidebar-header .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .admin-sidebar-header .logo img { height: 40px; width: auto; }
+        .admin-sidebar-header .logo span { color: white; font-weight: 700; font-size: 16px; }
+        .admin-sidebar-header .role-badge { background: #c9a94e; color: #1a2a3a; padding: 2px 12px; border-radius: 20px; font-size: 10px; font-weight: 700; }
+        .close-sidebar { display: none; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        
+        .admin-nav { padding: 16px 0; }
+        .admin-nav a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 24px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            position: relative;
+        }
+        .admin-nav a:hover { background: rgba(255,255,255,0.05); color: white; }
+        .admin-nav a.active { background: rgba(255,255,255,0.08); color: #c9a94e; border-left-color: #c9a94e; }
+        .admin-nav a i { width: 20px; text-align: center; font-size: 16px; }
+        .admin-nav a .badge {
+            position: absolute;
+            right: 24px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .admin-nav .logout {
+            margin-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            color: #ef4444;
+        }
+        .admin-nav .logout:hover { color: #ef4444; }
+        
+        .admin-main { flex: 1; margin-left: 280px; }
+        
+        .admin-topbar {
+            background: white;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid #e9e7e2;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+        .hamburger-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #1a2a3a;
+            padding: 8px;
+            transition: all 0.3s ease;
+        }
+        .hamburger-btn:hover { color: #c9a94e; }
+        
+        .admin-topbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+        .admin-topbar .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #c9a94e;
+            object-fit: cover;
+        }
+        .admin-topbar .user-info span { font-weight: 500; color: #1a2a3a; }
+        
+        .admin-content { padding: 32px; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: #c9a94e;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        .stat-info h3 { font-size: 24px; font-weight: 700; color: #1a2a3a; }
+        .stat-info p { color: #888; font-size: 14px; }
+        
+        .section {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+        .section h2 { margin-bottom: 16px; color: #1a2a3a; }
+        .section h2 i { color: #c9a94e; margin-right: 8px; }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: inherit;
+        }
+        .btn-primary { background: #c9a94e; color: #1a2a3a; }
+        .btn-primary:hover { background: #e8d5a3; transform: translateY(-2px); }
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-warning { background: #f59e0b; color: #1a2a3a; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-sm { padding: 4px 12px; font-size: 12px; border-radius: 20px; }
+        .btn-outline { background: transparent; border: 2px solid #c9a94e; color: #c9a94e; }
+        .btn-outline:hover { background: #c9a94e; color: #1a2a3a; }
+        .btn-lg { padding: 14px 32px; font-size: 16px; }
+        
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a2a3a;
+            margin-bottom: 6px;
+        }
+        .form-group label i { color: #c9a94e; margin-right: 8px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9e7e2;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #f8f7f4;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #c9a94e;
+            box-shadow: 0 0 0 4px rgba(201,169,78,0.15);
+        }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        .form-group .helper { font-size: 12px; color: #888; margin-top: 4px; }
+        .form-group .checkbox-group { display: flex; gap: 12px; flex-wrap: wrap; }
+        .form-group .checkbox-group label { font-weight: 400; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+        
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1a2a3a;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            z-index: 2000;
+            max-width: 400px;
+            animation: slideUp 0.3s ease-out;
+            display: none;
+        }
+        .toast.show { display: block; }
+        .toast .close-toast {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            float: right;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        
+        .branch-card {
+            background: #f8f7f4;
+            padding: 16px;
+            border-radius: 12px;
+        }
+        .branch-card h3 { color: #c9a94e; }
+        .branch-card p { color: #666; font-size: 14px; }
+        
+        .announcement {
+            background: #f8f7f4;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+        .announcement h4 { color: #1a2a3a; }
+        .announcement p { color: #666; font-size: 14px; margin: 4px 0; }
+        .announcement .date { font-size: 12px; color: #888; }
+        
+        .application-card {
+            background: #f8f7f4;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #c9a94e;
+        }
+        .application-card .status-open { color: #10b981; font-weight: 600; }
+        .application-card .status-closed { color: #ef4444; font-weight: 600; }
+        .application-card .app-count { color: #888; font-size: 13px; }
+        .application-card .field-tag {
+            display: inline-block;
+            background: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            color: #666;
+            margin: 2px 4px 2px 0;
+            border: 1px solid #e9e7e2;
+        }
+        .application-card .field-tag.required { border-color: #ef4444; color: #ef4444; }
+        .application-card .field-tag.optional { border-color: #3b82f6; color: #3b82f6; }
+        
+        .status-badge {
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-badge.pending { background: #fef3c7; color: #92400e; }
+        .status-badge.approved { background: #d1fae5; color: #065f46; }
+        .status-badge.rejected { background: #fee2e2; color: #991b1b; }
+        .status-badge.available { background: #d1fae5; color: #065f46; }
+        .status-badge.sold { background: #fee2e2; color: #991b1b; }
+        .status-badge.pre-order { background: #fef3c7; color: #92400e; }
+        .status-badge.open { background: #fef3c7; color: #92400e; }
+        .status-badge.in-progress { background: #dbeafe; color: #1e40af; }
+        .status-badge.closed { background: #e5e7eb; color: #4b5563; }
+        .status-badge.matched { background: #d1fae5; color: #065f46; }
+        .status-badge.contacted { background: #dbeafe; color: #1e40af; }
+        .status-badge.sent { background: #d1fae5; color: #065f46; }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            max-width: 750px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+        }
+        .modal-content .close-modal {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+            background: none;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .modal-content .close-modal:hover { color: #ef4444; transform: rotate(90deg); }
+        
+        .product-card {
+            background: #f8f7f4;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e9e7e2;
+            transition: all 0.3s ease;
+        }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+        .product-card .product-image {
+            background: #1a2a3a;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .product-card .product-body { padding: 16px; }
+        
+        .review-item {
+            background: #f8f7f4;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #c9a94e;
+        }
+        .review-item .review-status { font-size: 11px; }
+        
+        .upload-area {
+            border: 2px dashed #e9e7e2;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover { border-color: #c9a94e; }
+        .upload-area .upload-icon { font-size: 36px; color: #c9a94e; }
+        
+        .file-tag {
+            display: inline-block;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid #e9e7e2;
+            margin: 2px 4px 2px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-tag:hover { border-color: #c9a94e; background: #fef9f0; }
+        .file-tag i { margin-right: 4px; }
+        .file-tag .doc-icon { color: #3b82f6; }
+        .file-tag .id-icon { color: #10b981; }
+        .file-tag .cert-icon { color: #8b5cf6; }
+        
+        .chat-message {
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            max-width: 80%;
+        }
+        .chat-message.admin { background: #dbeafe; margin-left: auto; }
+        .chat-message.user { background: white; margin-right: auto; }
+        .chat-message .msg-sender { font-size: 11px; font-weight: 600; margin-bottom: 2px; }
+        .chat-message .msg-time { font-size: 10px; color: #888; margin-top: 2px; display: block; }
+        
+        .contact-info-card {
+            background: #f8f7f4;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #c9a94e;
+        }
+        .contact-info-card .label {
+            font-weight: 600;
+            color: #1a2a3a;
+            min-width: 120px;
+            display: inline-block;
+        }
+        
+        /* Video Cards */
+        .video-card {
+            background: #f8f7f4;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e9e7e2;
+            transition: all 0.3s ease;
+        }
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        .video-card .video-preview {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a2a3a;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .video-card .video-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-card .video-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-card .video-preview .play-icon {
+            position: absolute;
+            font-size: 60px;
+            color: rgba(255,255,255,0.8);
+            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+            z-index: 2;
+        }
+        .video-card .video-body { padding: 16px; }
+        .video-card .video-body h4 { margin-bottom: 4px; color: #1a2a3a; }
+        .video-card .video-body p { color: #666; font-size: 13px; }
+        .video-card .video-body .video-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: #888;
+            flex-wrap: wrap;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+                max-width: 80%;
+                box-shadow: 2px 0 20px rgba(0,0,0,0.2);
+            }
+            .admin-sidebar.active { transform: translateX(0); }
+            .close-sidebar { display: block; }
+            .admin-main { margin-left: 0; }
+            .hamburger-btn { display: block; }
+            .admin-topbar { padding: 12px 16px; }
+            .admin-content { padding: 16px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .grid-3 { grid-template-columns: 1fr; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .modal-content { max-width: 95%; padding: 20px; }
+            .video-card .video-preview { height: 150px; }
+        }
+        
+        @media (min-width: 769px) {
+            .admin-sidebar { transform: translateX(0) !important; }
+            .close-sidebar { display: none !important; }
+            .hamburger-btn { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toast" id="toast">
+        <button class="close-toast" onclick="closeToast()">&times;</button>
+        <p id="toastMessage">Notification</p>
+    </div>
+
+    <div class="admin-wrapper">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-header">
+                <div class="logo">
+                    <img src="../../assets/images/logo.png" alt="Logo" />
+                    <span>CEO Panel</span>
+                </div>
+                <span class="role-badge">CEO</span>
+                <button class="close-sidebar" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+            </div>
+            <nav class="admin-nav">
+                <a class="active" onclick="showSection('dashboard')"><i class="fas fa-home"></i> Dashboard</a>
+                <a onclick="showSection('announcements')"><i class="fas fa-bullhorn"></i> Announcements</a>
+                <a onclick="showSection('applications')"><i class="fas fa-briefcase"></i> Applications <span class="badge" id="appBadge">0</span></a>
+                <a onclick="showSection('branches')"><i class="fas fa-store"></i> Branches</a>
+                <a onclick="showSection('products')"><i class="fas fa-couch"></i> Products</a>
+                <a onclick="showSection('suppliers')"><i class="fas fa-truck"></i> Suppliers</a>
+                <a onclick="showSection('scanner')"><i class="fas fa-camera"></i> Room Scanner</a>
+                <a onclick="showSection('reviews')"><i class="fas fa-star"></i> Reviews</a>
+                <a onclick="showSection('videos')"><i class="fas fa-video"></i> Videos</a>
+                <a onclick="showSection('customerCare')"><i class="fas fa-headset"></i> Customer Care <span class="badge" id="careBadge">0</span></a>
+                <a href="admin-chat.html"><i class="fas fa-comments"></i> Admin Chat <span class="badge">0</span></a>
+                <a onclick="showSection('reports')"><i class="fas fa-chart-bar"></i> Reports</a>
+                <a onclick="showSection('profile')"><i class="fas fa-user"></i> Profile</a>
+                <a class="logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="admin-main">
+
+            <!-- ===== TOP BAR ===== -->
+            <header class="admin-topbar">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <div class="user-info">
+                    <img src="../../assets/images/avatar-default.png" alt="CEO" />
+                    <span id="adminName">CEO Admin</span>
+                </div>
+            </header>
+
+            <!-- ===== CONTENT ===== -->
+            <div class="admin-content">
+
+                <!-- ===== DASHBOARD ===== -->
+                <section id="dashboardSection">
+                    <h1 style="font-size:28px; color:#1a2a3a; margin-bottom:8px;">CEO Dashboard</h1>
+                    <p style="color:#888; margin-bottom:24px;">Company overview and strategic insights</p>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-users"></i></div>
+                            <div class="stat-info"><h3 id="totalCustomers">500+</h3><p>Customers</p></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-couch"></i></div>
+                            <div class="stat-info"><h3 id="productCount">0</h3><p>Products</p></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
+                            <div class="stat-info"><h3 id="openJobs">2</h3><p>Open Jobs</p></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-headset"></i></div>
+                            <div class="stat-info"><h3 id="careCount">0</h3><p>Open Tickets</p></div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2><i class="fas fa-bullhorn"></i> Quick Actions</h2>
+                        <button class="btn btn-primary" onclick="showSection('announcements')"><i class="fas fa-bullhorn"></i> Post Announcement</button>
+                        <button class="btn btn-success" style="margin-left:12px;" onclick="showSection('applications')"><i class="fas fa-briefcase"></i> Manage Applications</button>
+                    </div>
+
+                    <div class="section">
+                        <h2><i class="fas fa-bell"></i> Recent Activity</h2>
+                        <p style="padding:4px 0;"><i class="fas fa-shopping-bag" style="color:#c9a94e; width:20px;"></i> New orders today: 3</p>
+                        <p style="padding:4px 0;"><i class="fas fa-user-plus" style="color:#c9a94e; width:20px;"></i> New applicants: 5</p>
+                        <p style="padding:4px 0;"><i class="fas fa-boxes" style="color:#c9a94e; width:20px;"></i> Products in stock: 45</p>
+                    </div>
+
+                    <a href="../../index.html" class="back-link" style="color:#c9a94e; text-decoration:none;">
+                        <i class="fas fa-arrow-left"></i> Back to Home
+                    </a>
+                </section>
+
+                <!-- ===== ANNOUNCEMENTS ===== -->
+                <section id="announcementsSection" style="display:none;">
+                    <h1 style="font-size:28px; color:#1a2a3a; margin-bottom:8px;">CEO Announcements</h1>
+                    <p style="color:#888; margin-bottom:24px;">Post and manage company announcements</p>
+                    
+                    <div class="section">
+                        <form onsubmit="postAnnouncement(event)">
+                            <div class="form-group">
+                                <label><i class="fas fa-tag"></i> Title</label>
+                                <input type="text" id="announcementTitle" placeholder="e.g., New Positions Available" required />
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-align-left"></i> Message</label>
+                                <textarea id="announcementMessage" placeholder="Write your announcement message..." rows="4" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-tag"></i> Category</label>
+                                <select id="announcementCategory">
+                                    <option value="general">General</option>
+                                    <option value="jobs">Job Openings</option>
+                                    <option value="promo">Promotions</option>
+                                    <option value="update">Company Update</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Post Announcement</button>
+                            <div id="announcementMessageBox" style="margin-top:12px;"></div>
+                        </form>
+                    </div>
+
+                    <div class="section">
+                        <h2><i class="fas fa-list"></i> Recent Announcements</h2>
+                        <div id="announcementsList">
+                            <div class="announcement">
+                                <h4>New Positions Open!</h4>
+                                <p>We are hiring Senior Furniture Designer and Renovation Specialist. Apply now!</p>
+                                <span class="date">Posted: August 10, 2026</span>
+                            </div>
+                            <div class="announcement">
+                                <h4>Easter Promotion</h4>
+                                <p>Upgrade this Easter with our special discounts on beds and dressing tables.</p>
+                                <span class="date">Posted: August 1, 2026</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ===== APPLICATIONS ===== -->
+                <section id="applicationsSection" style="display:none;">
+                    <h1 style="font-size:28px; color:#1a2a3a; margin-bottom:8px;">Job Applications</h1>
+                    <p style="color:#888; margin-bottom:24px;">Create job announcements and manage applications</p>
+
+                    <div class="section">
+                        <h2><i class="fas fa-plus-circle"></i> Create New Job Posting</h2>
+                        <form onsubmit="createJobPosting(event)">
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label><i class="fas fa-tag"></i> Job Title</label>
+                                    <input type="text" id="jobTitle" placeholder="e.g., Senior Furniture Designer" required />
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-map-marker-alt"></i> Location</label>
+                                    <input type="text" id="jobLocation" placeholder="e.g., Nairobi, Kenya" required />
+                                </div>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label><i class="fas fa-clock"></i> Employment Type</label>
+                                    <select id="jobType" required>
+                                        <option value="full-time">Full-time</option>
+                                        <option value="part-time">Part-time</option>
+                                        <option value="contract">Contract</option>
+                                        <option value="internship">Internship</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-alt"></i> Application Deadline</label>
+                                    <input type="date" id="jobDeadline" required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-align-left"></i> Job Description</label>
+                                <textarea id="jobDescription" placeholder="Describe the role..." rows="3" required></textarea>
+                            </div>
+                            
+                            <h4 style="margin:16px 0 12px;"><i class="fas fa-list"></i> Application Fields</h4>
+                            <p style="color:#888; font-size:13px; margin-bottom:12px;">Define what information applicants should provide.</p>
+                            
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Full Name</label>
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox" checked disabled /> Required</label>
+                                        <label><input type="checkbox" checked /> Show</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-envelope"></i> Email</label>
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox" checked disabled /> Required</label>
+                                        <label><input type="checkbox" checked /> Show</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Phone</label>
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox" id="fieldPhoneRequired" /> Required</label>
+                                        <label><input type="checkbox" id="fieldPhoneShow" checked /> Show</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-map-marker-alt"></i> Location</label>
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox" id="fieldLocationRequired" /> Required</label>
+                                        <label><input type="checkbox" id="fieldLocationShow" checked /> Show</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label><i class="fas fa-graduation-cap"></i> Experience</label>
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox" id="fieldExperienceRequired" /> Required</label>
+                                        <label><input type="checkbox" id="fieldExperienceShow" checked /> Show</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-file-alt"></i> Cover Letter</label>
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox" id="fieldCoverRequired" /> Required</label>
+                                        <label><input type="checkbox" id="fieldCoverShow" checked /> Show</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Documents Upload Section -->
+                            <h4 style="margin:16px 0 12px;"><i class="fas fa-file-upload"></i> Document Uploads</h4>
+                            <p style="color:#888; font-size:13px; margin-bottom:12px;">Allow applicants to upload their documents</p>
+                            
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label><i class="fas fa-file-pdf"></i> Resume/CV</label>
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox" id="fieldResumeRequired" checked /> Required</label>
+                                        <label><input type="checkbox" id="fieldResumeShow" checked /> Show</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-graduation-cap"></i> Academic Certificates</label>
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox" id="fieldCertRequired" /> Required</label>
+                                        <label><input type="checkbox" id="fieldCertShow" checked /> Show</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label><i class="fas fa-id-card"></i> ID/Passport/Driving License</label>
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox" id="fieldIdRequired" /> Required</label>
+                                        <label><input type="checkbox" id="fieldIdShow" checked /> Show</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-link"></i> Portfolio/Website</label>
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox" id="fieldPortfolioRequired" /> Required</label>
+                                        <label><input type="checkbox" id="fieldPortfolioShow" checked /> Show</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Quiz Section -->
+                            <h4 style="margin:16px 0 12px;"><i class="fas fa-question-circle"></i> Quiz Questions (Optional)</h4>
+                            <p style="color:#888; font-size:13px; margin-bottom:12px;">Optional questions for applicants to answer</p>
+                            
+                            <div class="form-group">
+                                <label><i class="fas fa-question"></i> Question 1</label>
+                                <input type="text" id="quizQ1" placeholder="e.g., Why do you want to work with us?" />
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-question"></i> Question 2</label>
+                                <input type="text" id="quizQ2" placeholder="e.g., What experience do you have in this field?" />
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-question"></i> Question 3</label>
+                                <input type="text" id="quizQ3" placeholder="e.g., Where do you see yourself in 5 years?" />
+                            </div>
+
+                            <button type="submit" class="btn btn-success btn-lg" style="width:100%; justify-content:center; margin-top:8px;">
+                                <i class="fas fa-briefcase"></i> Create Job Posting
+                            </button>
+                            <div id="jobPostingMessage" style="margin-top:12px;"></div>
+                        </form>
+                    </div>
+
+                    <div class="section">
+                        <h2><i class="fas fa-briefcase"></i> Active Job Postings</h2>
+                        <div id="activeJobs">
+                            <div class="application-card">
+                                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                                    <h3>Senior Furniture Designer</h3>
+                                    <span class="status-open">● Open</span>
+                                </div>
+                                <p style="color:#666; font-size:14px;">📍 Nairobi, Kenya | Full-time</p>
+                                <p style="font-size:13px; color:#888; margin:4px 0;">Deadline: December 31, 2026</p>
+                                <div style="margin:8px 0;">
+                                    <span class="field-tag required">Resume Required</span>
+                                    <span class="field-tag required">Certificates Required</span>
+                                    <span class="field-tag optional">ID Optional</span>
+                                    <span class="field-tag optional">Quiz: 3 questions</span>
+                                </div>
+                                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                                    <span class="app-count">📄 8 applicants</span>
+                                    <button class="btn btn-primary btn-sm" onclick="viewApplicants('Senior Furniture Designer')">View Applicants</button>
+                                    <button class="btn btn-warning btn-sm" onclick="toggleJobStatus(this)">Close Applications</button>
+                                </div>
+                            </div>
+
+                            <div class="application-card">
+                                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                                    <h3>Renovation Specialist</h3>
+                                    <span class="status-open">● Open</span>
+                                </div>
+                                <p style="color:#666; font-size:14px;">📍 Kisumu, Kenya | Contract</p>
+                                <p style="font-size:13px; color:#888; margin:4px 0;">Deadline: November 15, 2026</p>
+                                <div style="margin:8px 0;">
+                                    <span class="field-tag required">Resume Required</span>
+                                    <span class="field-tag required">Experience Required</span>
+                                    <span class="field-tag optional">Quiz: 2 questions</span>
+                                </div>
+                                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                                    <span class="app-count">📄 4 applicants</span>
+                                    <button class="btn btn-primary btn-sm" onclick="viewApplicants('Renovation Specialist')">View Applicants</button>
+                                    <button class="btn btn-warning btn-sm" onclick="toggleJobStatus(this)">Close Applications</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section" id="applicantsSection" style="display:none;">
+                        <h2><i class="fas fa-users"></i> Applicants for: <span id="jobTitleDisplay">Senior Furniture Designer</span></h2>
+                        <button class="btn btn-outline btn-sm" onclick="document.getElementById('applicantsSection').style.display='none'">← Back to Jobs</button>
+                        <div id="applicantsList" style="margin-top:16px;"></div>
+                    </div>
+                </section>
+
+                <!-- ===== BRANCHES ===== -->
+                <section id="branchesSection" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h1 style="font-size:28px; color:#1a2a3a;">🏪 Branches Overview</h1>
+                            <p style="color:#888;">View all branches and generate reports</p>
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button class="btn btn-success" onclick="showGenerateReport()"><i class="fas fa-chart-bar"></i> Generate Report</button>
+                            <button class="btn btn-outline" onclick="loadBranches()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-store"></i></div><div class="stat-info"><h3 id="totalBranches">3</h3><p>Total Branches</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-couch" style="background:#3b82f6;"></i></div><div class="stat-info"><h3 id="totalBranchProducts">45</h3><p>Total Products</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-shopping-bag" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="totalBranchOrders">128</h3><p>Total Orders</p></div></div>
+                    </div>
+
+                    <div class="grid-3" id="branchesContainer">
+                        <!-- Branches loaded dynamically -->
+                    </div>
+                </section>
+
+                <!-- Generate Report Modal -->
+                <div class="modal" id="reportModal">
+                    <div class="modal-content" style="max-width:600px;">
+                        <button class="close-modal" onclick="closeReportModal()">&times;</button>
+                        <h2><i class="fas fa-chart-bar"></i> Generate Report</h2>
+                        <p style="color:#888; margin-bottom:16px;">Describe what you want in the report</p>
+                        <form onsubmit="generateReport(event)">
+                            <div class="form-group">
+                                <label><i class="fas fa-store"></i> Branch</label>
+                                <select id="reportBranch" required>
+                                    <option value="all">All Branches</option>
+                                    <option value="ruiru">Ruiru</option>
+                                    <option value="nyeri">Nyeri</option>
+                                    <option value="nakuru">Nakuru</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-align-left"></i> Report Description</label>
+                                <textarea id="reportDescription" placeholder="e.g., Show me sales report for Ruiru branch for the last month. Include top selling products and revenue." rows="4" required></textarea>
+                                <div class="helper">Describe exactly what you want to see in the report</div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-users"></i> Share With</label>
+                                <select id="reportShareWith">
+                                    <option value="none">Just Generate</option>
+                                    <option value="super_admin">Super Admin</option>
+                                    <option value="branch_admin">Branch Admins</option>
+                                    <option value="specific">Specific Admin</option>
+                                </select>
+                                <div class="helper">Share the generated report with specific admins</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;"><i class="fas fa-file-alt"></i> Generate Report</button>
+                            <div id="reportMessage" style="margin-top:12px;"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Report Result Modal -->
+                <div class="modal" id="reportResultModal">
+                    <div class="modal-content" style="max-width:700px;">
+                        <button class="close-modal" onclick="closeReportResultModal()">&times;</button>
+                        <h2><i class="fas fa-file-alt"></i> Report Generated</h2>
+                        <div id="reportResultContent"></div>
+                        <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
+                            <button class="btn btn-success" onclick="downloadReport()"><i class="fas fa-download"></i> Download</button>
+                            <button class="btn btn-primary" onclick="shareReport()"><i class="fas fa-share-alt"></i> Share</button>
+                            <button class="btn btn-danger" onclick="closeReportResultModal()">Close</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== PRODUCTS ===== -->
+                <section id="productsSection" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h1 style="font-size:28px; color:#1a2a3a;">Products Management</h1>
+                            <p style="color:#888;">View all products across all branches</p>
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button class="btn btn-success" onclick="showAddProductForm()"><i class="fas fa-plus"></i> Add Product</button>
+                            <button class="btn btn-outline" onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                    </div>
+
+                    <div class="section" style="padding:16px 24px;">
+                        <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                            <div style="flex:1; min-width:150px;">
+                                <input type="text" id="productSearch" placeholder="Search products..." onkeyup="filterProducts()" style="width:100%; padding:10px 16px; border:2px solid #e9e7e2; border-radius:8px; font-size:14px;" />
+                            </div>
+                            <div style="min-width:130px;">
+                                <select id="productCategoryFilter" onchange="filterProducts()" style="width:100%; padding:10px 16px; border:2px solid #e9e7e2; border-radius:8px; font-size:14px; background:white;">
+                                    <option value="all">All Categories</option>
+                                    <option value="Beds">Beds</option>
+                                    <option value="Sofas">Sofas</option>
+                                    <option value="Tables">Tables</option>
+                                    <option value="Chairs">Chairs</option>
+                                    <option value="Cabinets">Cabinets</option>
+                                    <option value="Dressing Tables">Dressing Tables</option>
+                                    <option value="Wardrobes">Wardrobes</option>
+                                </select>
+                            </div>
+                            <div style="min-width:130px;">
+                                <select id="productStatusFilter" onchange="filterProducts()" style="width:100%; padding:10px 16px; border:2px solid #e9e7e2; border-radius:8px; font-size:14px; background:white;">
+                                    <option value="all">All Status</option>
+                                    <option value="available">Available</option>
+                                    <option value="sold">Sold</option>
+                                    <option value="pre-order">Pre-order</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="productsGrid" class="section">
+                        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:20px;" id="productsContainer"></div>
+                    </div>
+                </section>
+
+                <!-- ===== PRODUCT MODAL ===== -->
+                <div class="modal" id="productModal">
+                    <div class="modal-content" style="max-width:700px;">
+                        <button class="close-modal" onclick="closeProductModal()">&times;</button>
+                        <h2 id="productModalTitle"><i class="fas fa-plus-circle"></i> Add New Product</h2>
+                        <form onsubmit="saveProduct(event)" id="productForm">
+                            <input type="hidden" id="productId" />
+                            <div class="grid-2">
+                                <div class="form-group"><label><i class="fas fa-tag"></i> Product Name</label><input type="text" id="prodName" placeholder="e.g., Mahogany Bed Frame" required /></div>
+                                <div class="form-group"><label><i class="fas fa-th-large"></i> Category</label><select id="prodCategory" required><option value="">Select Category</option><option value="Beds">Beds</option><option value="Sofas">Sofas</option><option value="Tables">Tables</option><option value="Chairs">Chairs</option><option value="Cabinets">Cabinets</option><option value="Dressing Tables">Dressing Tables</option><option value="Wardrobes">Wardrobes</option></select></div>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group"><label><i class="fas fa-money-bill-wave"></i> Price (KSh)</label><input type="number" id="prodPrice" placeholder="e.g., 89999" required /></div>
+                                <div class="form-group"><label><i class="fas fa-tags"></i> Sale Price (KSh)</label><input type="number" id="prodSalePrice" placeholder="Leave empty if no sale" /><div class="helper">Discounted price for promotions</div></div>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group"><label><i class="fas fa-boxes"></i> Stock Quantity</label><input type="number" id="prodStock" placeholder="e.g., 10" required /></div>
+                                <div class="form-group"><label><i class="fas fa-circle"></i> Status</label><select id="prodStatus"><option value="available">Available</option><option value="sold">Sold</option><option value="pre-order">Pre-order</option></select></div>
+                            </div>
+                            <div class="form-group"><label><i class="fas fa-align-left"></i> Description</label><textarea id="prodDescription" placeholder="Describe the product..." rows="3"></textarea></div>
+                            <div class="grid-2">
+                                <div class="form-group"><label><i class="fas fa-store"></i> Branch</label><select id="prodBranch"><option value="all">All Branches</option><option value="ruiru">Ruiru</option><option value="nyeri">Nyeri</option><option value="nakuru">Nakuru</option></select></div>
+                                <div class="form-group"><label><i class="fas fa-list"></i> Features</label><input type="text" id="prodFeatures" placeholder="e.g., Solid wood, Durable finish (comma separated)" /><div class="helper">Separate features with commas</div></div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-upload"></i> Product Images</label>
+                                <div class="upload-area" onclick="document.getElementById('fileUpload').click()">
+                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                    <p style="color:#888; margin-top:8px;">Click to upload images or videos</p>
+                                    <p style="color:#aaa; font-size:12px;">Supports: JPG, PNG, GIF, MP4, WebM, MOV</p>
+                                    <input type="file" id="fileUpload" multiple accept="image/*,video/*" style="display:none" onchange="handleFileUpload(this)" />
+                                </div>
+                                <div id="uploadedFiles" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;"></div>
+                                <input type="hidden" id="prodImages" value="" />
+                            </div>
+                            <div style="display:flex; gap:12px; margin-top:16px;">
+                                <button type="submit" class="btn btn-primary" style="flex:1; justify-content:center;"><i class="fas fa-save"></i> Save Product</button>
+                                <button type="button" class="btn btn-danger" onclick="closeProductModal()">Cancel</button>
+                            </div>
+                            <div id="productMessage" style="margin-top:12px;"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ===== SUPPLIERS ===== -->
+                <section id="suppliersSection" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h1 style="font-size:28px; color:#1a2a3a;">Suppliers Management</h1>
+                            <p style="color:#888;">Manage supplier requests and approvals</p>
+                        </div>
+                        <button class="btn btn-outline" onclick="loadSuppliers()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                    <div class="section" id="suppliersList"></div>
+                </section>
+
+                <!-- ===== ROOM SCANNER ===== -->
+                <section id="scannerSection" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h1 style="font-size:28px; color:#1a2a3a;">Room Scanner Submissions</h1>
+                            <p style="color:#888;">View customer room measurements</p>
+                        </div>
+                        <button class="btn btn-outline" onclick="loadScannerData()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                    <div class="section" id="scannerDataList"></div>
+                </section>
+
+                <!-- ===== REVIEWS ===== -->
+                <section id="reviewsSection" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h1 style="font-size:28px; color:#1a2a3a;">Reviews Management</h1>
+                            <p style="color:#888;">Moderate customer reviews across all branches</p>
+                        </div>
+                        <button class="btn btn-outline" onclick="loadReviews()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                    <div class="section" id="reviewsList"></div>
+                </section>
+
+                <!-- ===== VIDEOS - With Upload, Notes, Send to Users, Edit/Delete ===== -->
+                <section id="videosSection" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h1 style="font-size:28px; color:#1a2a3a;">Video & Media Management</h1>
+                            <p style="color:#888;">Upload media with notes and send to users</p>
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button class="btn btn-success" onclick="showUploadVideo()"><i class="fas fa-upload"></i> Upload Media</button>
+                            <button class="btn btn-outline" onclick="loadVideos()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-video"></i></div><div class="stat-info"><h3 id="totalVideos">0</h3><p>Total Media</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-eye" style="background:#3b82f6;"></i></div><div class="stat-info"><h3 id="totalViews">0</h3><p>Total Views</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-users" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="sentCount">0</h3><p>Sent to Users</p></div></div>
+                    </div>
+
+                    <div class="section" id="videoContainer" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:20px;"></div>
+                </section>
+
+                <!-- Video Upload Modal -->
+                <div class="modal" id="videoUploadModal">
+                    <div class="modal-content" style="max-width:600px;">
+                        <button class="close-modal" onclick="closeVideoUpload()">&times;</button>
+                        <h2><i class="fas fa-upload"></i> Upload Media</h2>
+                        <form onsubmit="uploadMedia(event)">
+                            <div class="form-group">
+                                <label><i class="fas fa-tag"></i> Title</label>
+                                <input type="text" id="videoTitle" placeholder="e.g., Easter Sale 2026" required />
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-align-left"></i> Note for Users</label>
+                                <textarea id="videoNote" placeholder="Add a note or description for users..." rows="3"></textarea>
+                                <div class="helper">This note will be shown to users when they view this media</div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-upload"></i> Upload File</label>
+                                <div class="upload-area" onclick="document.getElementById('videoFileInput').click()">
+                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                    <p style="color:#888; margin-top:8px;">Click to upload image or video</p>
+                                    <p style="color:#aaa; font-size:12px;">Supports: JPG, PNG, GIF, MP4, WebM, MOV</p>
+                                    <input type="file" id="videoFileInput" accept="image/*,video/*" style="display:none" onchange="handleVideoFile(this)" required />
+                                </div>
+                                <div id="videoFilePreview" style="display:none; margin-top:12px; padding:12px; background:#f8f7f4; border-radius:8px;">
+                                    <span id="videoFileName" style="font-weight:500;"></span>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeVideoFile()"><i class="fas fa-times"></i> Remove</button>
+                                </div>
+                                <input type="hidden" id="videoFileData" value="" />
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-store"></i> Branch</label>
+                                <select id="videoBranch">
+                                    <option value="all">All Branches</option>
+                                    <option value="ruiru">Ruiru</option>
+                                    <option value="nyeri">Nyeri</option>
+                                    <option value="nakuru">Nakuru</option>
+                                </select>
+                                <div class="helper">Select which branch this media is for</div>
+                            </div>
+                            <div style="display:flex; gap:12px; margin-top:16px;">
+                                <button type="submit" class="btn btn-primary" style="flex:1; justify-content:center;"><i class="fas fa-cloud-upload-alt"></i> Upload & Send</button>
+                                <button type="button" class="btn btn-danger" onclick="closeVideoUpload()">Cancel</button>
+                            </div>
+                            <div id="videoUploadMsg" style="margin-top:12px;"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ===== CUSTOMER CARE ===== -->
+                <section id="customerCareSection" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h1 style="font-size:28px; color:#1a2a3a;">Customer Care</h1>
+                            <p style="color:#888;">Manage customer inquiries and support tickets</p>
+                        </div>
+                        <button class="btn btn-outline" onclick="loadCustomerCare()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+
+                    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-comments"></i></div><div class="stat-info"><h3 id="totalCare">0</h3><p>Total</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock" style="background:#f59e0b;"></i></div><div class="stat-info"><h3 id="openCare">0</h3><p>Open</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="closedCare">0</h3><p>Closed</p></div></div>
+                    </div>
+
+                    <div class="section" id="careContainer"></div>
+                </section>
+
+                <!-- ===== CUSTOMER CARE MODAL ===== -->
+                <div class="modal" id="careModal">
+                    <div class="modal-content" style="max-width:700px;">
+                        <button class="close-modal" onclick="closeCareModal()">&times;</button>
+                        <h2><i class="fas fa-comment-dots"></i> <span id="careSubject">Conversation</span></h2>
+                        <p style="color:#888; margin-bottom:16px;">From: <strong id="careUserName">User</strong> | Status: <span id="careStatus" class="status-badge open">Open</span></p>
+                        <div id="careMessages" style="max-height:400px; overflow-y:auto; background:#f8f7f4; border-radius:12px; padding:16px; margin-bottom:16px;"></div>
+                        <form onsubmit="sendCareReply(event)">
+                            <input type="hidden" id="careConvId" />
+                            <div style="display:flex; gap:12px;">
+                                <input type="text" id="careReply" placeholder="Type your reply..." style="flex:1; padding:12px 16px; border:2px solid #e9e7e2; border-radius:8px; font-size:14px;" required />
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send</button>
+                            </div>
+                            <div id="careReplyMsg" style="margin-top:12px;"></div>
+                        </form>
+                        <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
+                            <button class="btn btn-success" onclick="closeCareTicket()"><i class="fas fa-check"></i> Close Ticket</button>
+                            <button class="btn btn-danger" onclick="closeCareModal()">Close</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== APPLICANT DETAILS MODAL ===== -->
+                <div class="modal" id="applicantModal">
+                    <div class="modal-content" style="max-width:750px;">
+                        <button class="close-modal" onclick="closeApplicantModal()">&times;</button>
+                        <h2><i class="fas fa-user"></i> Applicant Details</h2>
+                        <div id="applicantDetails"></div>
+                    </div>
+                </div>
+
+                <!-- ===== REPORTS ===== -->
+                <section id="reportsSection" style="display:none;">
+                    <h1 style="font-size:28px; color:#1a2a3a; margin-bottom:8px;">Reports</h1>
+                    <p style="color:#888; margin-bottom:24px;">View business reports and analytics</p>
+                    <div class="section">
+                        <div style="text-align:center; padding:20px;">
+                            <i class="fas fa-chart-bar" style="font-size:48px; color:#ddd;"></i>
+                            <p style="color:#888; margin-top:12px;">Reports coming soon.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ===== PROFILE ===== -->
+                <section id="profileSection" style="display:none;">
+                    <h1 style="font-size:28px; color:#1a2a3a; margin-bottom:8px;">My Profile</h1>
+                    <p style="color:#888; margin-bottom:24px;">Update your profile information</p>
+                    <div class="section">
+                        <form onsubmit="updateProfile(event)">
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> Full Name</label>
+                                <input type="text" id="profileName" value="CEO Admin" required />
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-envelope"></i> Email</label>
+                                <input type="email" id="profileEmail" value="ceo@modernfurniturepacific.com" disabled />
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-phone"></i> Phone</label>
+                                <input type="tel" id="profilePhone" placeholder="+254 700 123 457" />
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Profile</button>
+                        </form>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        let currentUser = null;
+        let allProducts = [];
+        let editingProductId = null;
+        let uploadedFiles = [];
+        let allApplicants = [];
+        let allCareConversations = [];
+        let allVideos = [];
+        let videoFileData = null;
+        let videoFileName = null;
+
+        // ===== TOGGLE SIDEBAR =====
+        function toggleSidebar() {
+            document.getElementById('adminSidebar').classList.toggle('active');
+        }
+
+        // ===== SHOW SECTION =====
+        function showSection(section) {
+            const sections = ['dashboard', 'announcements', 'applications', 'branches', 'products', 'suppliers', 'scanner', 'reviews', 'videos', 'customerCare', 'reports', 'profile'];
+            sections.forEach(s => {
+                const el = document.getElementById(s + 'Section');
+                if (el) el.style.display = 'none';
+            });
+            const target = document.getElementById(section + 'Section');
+            if (target) target.style.display = 'block';
+            document.querySelectorAll('.admin-nav a').forEach(el => el.classList.remove('active'));
+            const navLinks = document.querySelectorAll('.admin-nav a');
+            navLinks.forEach(el => {
+                if (el.textContent.toLowerCase().includes(section)) {
+                    el.classList.add('active');
+                }
+            });
+            if (window.innerWidth <= 768) {
+                document.getElementById('adminSidebar').classList.remove('active');
+            }
+        }
+
+        // ===== POST ANNOUNCEMENT =====
+        function postAnnouncement(event) {
+            event.preventDefault();
+            const title = document.getElementById('announcementTitle').value;
+            const message = document.getElementById('announcementMessage').value;
+            const msgBox = document.getElementById('announcementMessageBox');
+            
+            msgBox.innerHTML = '<span style="color:#10b981;">✅ Announcement posted successfully!</span>';
+            document.getElementById('announcementTitle').value = '';
+            document.getElementById('announcementMessage').value = '';
+            
+            const list = document.getElementById('announcementsList');
+            const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            const newAnnouncement = document.createElement('div');
+            newAnnouncement.className = 'announcement';
+            newAnnouncement.innerHTML = `<h4>${title}</h4><p>${message}</p><span class="date">Posted: ${today}</span>`;
+            list.prepend(newAnnouncement);
+            showToast('✅ Announcement posted!');
+        }
+
+        // ===== CREATE JOB POSTING =====
+        function createJobPosting(event) {
+            event.preventDefault();
+            const title = document.getElementById('jobTitle').value;
+            const location = document.getElementById('jobLocation').value;
+            const type = document.getElementById('jobType').value;
+            const deadline = document.getElementById('jobDeadline').value;
+            const description = document.getElementById('jobDescription').value;
+            const msgBox = document.getElementById('jobPostingMessage');
+
+            const fields = {
+                phone: { required: document.getElementById('fieldPhoneRequired').checked, show: document.getElementById('fieldPhoneShow').checked },
+                location: { required: document.getElementById('fieldLocationRequired').checked, show: document.getElementById('fieldLocationShow').checked },
+                experience: { required: document.getElementById('fieldExperienceRequired').checked, show: document.getElementById('fieldExperienceShow').checked },
+                cover: { required: document.getElementById('fieldCoverRequired').checked, show: document.getElementById('fieldCoverShow').checked },
+                resume: { required: document.getElementById('fieldResumeRequired').checked, show: document.getElementById('fieldResumeShow').checked },
+                certificates: { required: document.getElementById('fieldCertRequired').checked, show: document.getElementById('fieldCertShow').checked },
+                idDocs: { required: document.getElementById('fieldIdRequired').checked, show: document.getElementById('fieldIdShow').checked },
+                portfolio: { required: document.getElementById('fieldPortfolioRequired').checked, show: document.getElementById('fieldPortfolioShow').checked }
+            };
+
+            const quizQ1 = document.getElementById('quizQ1').value;
+            const quizQ2 = document.getElementById('quizQ2').value;
+            const quizQ3 = document.getElementById('quizQ3').value;
+            const quizQuestions = [quizQ1, quizQ2, quizQ3].filter(q => q.trim() !== '');
+
+            const formattedDeadline = new Date(deadline).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            
+            const jobsContainer = document.getElementById('activeJobs');
+            const newJob = document.createElement('div');
+            newJob.className = 'application-card';
+            
+            let fieldTags = '';
+            fieldTags += '<span class="field-tag required">Name Required</span>';
+            fieldTags += '<span class="field-tag required">Email Required</span>';
+            if (fields.phone.show) fieldTags += `<span class="field-tag ${fields.phone.required ? 'required' : 'optional'}">Phone ${fields.phone.required ? 'Required' : 'Optional'}</span>`;
+            if (fields.location.show) fieldTags += `<span class="field-tag ${fields.location.required ? 'required' : 'optional'}">Location ${fields.location.required ? 'Required' : 'Optional'}</span>`;
+            if (fields.experience.show) fieldTags += `<span class="field-tag ${fields.experience.required ? 'required' : 'optional'}">Experience ${fields.experience.required ? 'Required' : 'Optional'}</span>`;
+            if (fields.cover.show) fieldTags += `<span class="field-tag ${fields.cover.required ? 'required' : 'optional'}">Cover Letter ${fields.cover.required ? 'Required' : 'Optional'}</span>`;
+            if (fields.resume.show) fieldTags += `<span class="field-tag required">Resume Required</span>`;
+            if (fields.certificates.show) fieldTags += `<span class="field-tag ${fields.certificates.required ? 'required' : 'optional'}">Certificates ${fields.certificates.required ? 'Required' : 'Optional'}</span>`;
+            if (fields.idDocs.show) fieldTags += `<span class="field-tag ${fields.idDocs.required ? 'required' : 'optional'}">ID/Passport ${fields.idDocs.required ? 'Required' : 'Optional'}</span>`;
+            if (fields.portfolio.show) fieldTags += `<span class="field-tag ${fields.portfolio.required ? 'required' : 'optional'}">Portfolio ${fields.portfolio.required ? 'Required' : 'Optional'}</span>`;
+            if (quizQuestions.length > 0) fieldTags += `<span class="field-tag optional">📝 Quiz: ${quizQuestions.length} questions</span>`;
+
+            const quizHtml = quizQuestions.length > 0 ? `
+                <div style="margin:8px 0; font-size:12px; color:#888;">
+                    <strong>📝 Quiz Questions:</strong>
+                    ${quizQuestions.map((q, i) => `<div style="margin:2px 0;">${i+1}. ${q}</div>`).join('')}
+                </div>
+            ` : '';
+
+            newJob.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                    <h3>${title}</h3>
+                    <span class="status-open">● Open</span>
+                </div>
+                <p style="color:#666; font-size:14px;">📍 ${location} | ${type.replace('-', ' ').toUpperCase()}</p>
+                <p style="font-size:13px; color:#888; margin:4px 0;">Deadline: ${formattedDeadline}</p>
+                <div style="margin:8px 0;">${fieldTags}</div>
+                ${quizHtml}
+                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                    <span class="app-count">📄 0 applicants</span>
+                    <button class="btn btn-primary btn-sm" onclick="viewApplicants('${title}')">View Applicants</button>
+                    <button class="btn btn-warning btn-sm" onclick="toggleJobStatus(this)">Close Applications</button>
+                </div>
+            `;
+            jobsContainer.prepend(newJob);
+
+            msgBox.innerHTML = '<span style="color:#10b981;">✅ Job posting created successfully!</span>';
+            document.getElementById('jobTitle').value = '';
+            document.getElementById('jobLocation').value = '';
+            document.getElementById('jobDescription').value = '';
+            document.getElementById('quizQ1').value = '';
+            document.getElementById('quizQ2').value = '';
+            document.getElementById('quizQ3').value = '';
+            
+            const openJobs = document.querySelectorAll('.application-card .status-open').length;
+            document.getElementById('openJobs').textContent = openJobs;
+            document.getElementById('appBadge').textContent = openJobs;
+            
+            showToast('✅ Job posting created!');
+            setTimeout(() => { msgBox.innerHTML = ''; }, 3000);
+        }
+
+        // ===== VIEW APPLICANTS =====
+        function viewApplicants(jobTitle) {
+            document.getElementById('jobTitleDisplay').textContent = jobTitle;
+            document.getElementById('applicantsSection').style.display = 'block';
+            document.getElementById('applicantsSection').scrollIntoView({ behavior: 'smooth' });
+            loadApplicants(jobTitle);
+        }
+
+        function loadApplicants(jobTitle) {
+            const container = document.getElementById('applicantsList');
+            
+            const applicants = [
+                {
+                    id: 'a1',
+                    name: 'John Doe',
+                    email: 'john@example.com',
+                    phone: '+254 700 123 456',
+                    location: 'Nairobi',
+                    experience: '5+ years experience in furniture design',
+                    coverLetter: 'I am passionate about furniture design and have worked with various clients...',
+                    resume: 'resume_john_doe.pdf',
+                    certificates: ['Certificate in Furniture Design.pdf', 'Advanced Woodworking.pdf'],
+                    idDocs: ['Passport_John_Doe.pdf'],
+                    quizAnswers: ['I want to work with Modern Furniture because of their reputation for quality.', 'I have 5 years of experience in furniture design.', 'I see myself leading a design team in 5 years.'],
+                    status: 'pending'
+                },
+                {
+                    id: 'a2',
+                    name: 'Jane Smith',
+                    email: 'jane@example.com',
+                    phone: '+254 700 123 457',
+                    location: 'Mombasa',
+                    experience: '3 years experience in furniture restoration',
+                    coverLetter: 'I have a keen eye for detail and love restoring old furniture...',
+                    resume: 'resume_jane_smith.pdf',
+                    certificates: ['Certificate in Restoration.pdf'],
+                    idDocs: ['ID_Jane_Smith.pdf', 'Driving_License.pdf'],
+                    quizAnswers: ['I admire Modern Furniture\'s designs.', 'I have 3 years of experience in restoration.', 'I want to become a master craftsman.'],
+                    status: 'pending'
+                },
+                {
+                    id: 'a3',
+                    name: 'Michael Ochieng',
+                    email: 'michael@example.com',
+                    phone: '+254 700 123 458',
+                    location: 'Kisumu',
+                    experience: '10+ years experience in woodworking',
+                    coverLetter: 'I have been in the woodworking industry for over a decade...',
+                    resume: 'resume_michael_ochieng.pdf',
+                    certificates: ['Certificate in Woodworking.pdf', 'Advanced Carpentry.pdf'],
+                    idDocs: ['ID_Michael_Ochieng.pdf'],
+                    quizAnswers: ['I want to bring my woodworking expertise to Modern Furniture.', 'I have 10+ years of experience.', 'I want to mentor young craftsmen.'],
+                    status: 'pending'
+                }
+            ];
+            
+            allApplicants = applicants;
+            renderApplicants(applicants);
+        }
+
+        function renderApplicants(applicants) {
+            const container = document.getElementById('applicantsList');
+            
+            if (!applicants || applicants.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><h3>No Applicants</h3><p>No applicants have applied yet.</p></div>`;
+                return;
+            }
+            
+            container.innerHTML = applicants.map(applicant => {
+                const statusColors = { 'pending': 'pending', 'approved': 'approved', 'rejected': 'rejected' };
+                const statusClass = statusColors[applicant.status] || 'pending';
+                
+                let fileTags = '';
+                if (applicant.resume) fileTags += `<span class="file-tag" onclick="viewFile('${applicant.id}', 'resume')"><i class="fas fa-file-pdf doc-icon"></i> Resume</span>`;
+                if (applicant.certificates && applicant.certificates.length > 0) {
+                    applicant.certificates.forEach(cert => {
+                        fileTags += `<span class="file-tag" onclick="viewFile('${applicant.id}', 'certificate', '${cert}')"><i class="fas fa-graduation-cap cert-icon"></i> ${cert}</span>`;
+                    });
+                }
+                if (applicant.idDocs && applicant.idDocs.length > 0) {
+                    applicant.idDocs.forEach(doc => {
+                        fileTags += `<span class="file-tag" onclick="viewFile('${applicant.id}', 'id', '${doc}')"><i class="fas fa-id-card id-icon"></i> ${doc}</span>`;
+                    });
+                }
+                
+                let quizHtml = '';
+                if (applicant.quizAnswers && applicant.quizAnswers.length > 0) {
+                    quizHtml = `
+                        <div style="margin:8px 0; background:white; padding:12px; border-radius:8px;">
+                            <strong style="font-size:13px;">📝 Quiz Answers:</strong>
+                            ${applicant.quizAnswers.map((a, i) => `<div style="font-size:13px; margin:2px 0; color:#666;"><strong>Q${i+1}:</strong> ${a}</div>`).join('')}
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${applicant.status === 'approved' ? '#10b981' : applicant.status === 'rejected' ? '#ef4444' : '#c9a94e'};">
+                        <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap;">
+                            <div style="flex:1;">
+                                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                                    <strong style="font-size:16px;">${applicant.name}</strong>
+                                    <span class="status-badge ${statusClass}">${applicant.status}</span>
+                                </div>
+                                <p style="color:#666; font-size:13px;">📧 ${applicant.email} | 📱 ${applicant.phone || 'N/A'}</p>
+                                <p style="color:#666; font-size:13px;">📍 ${applicant.location || 'N/A'} | 💼 ${applicant.experience || 'N/A'}</p>
+                                ${applicant.coverLetter ? `<p style="color:#888; font-size:13px; margin-top:4px;">📄 "${applicant.coverLetter}"</p>` : ''}
+                                <div style="margin:8px 0;">
+                                    <strong style="font-size:13px;">📎 Documents:</strong>
+                                    <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:4px;">${fileTags}</div>
+                                </div>
+                                ${quizHtml}
+                            </div>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+                                <button class="btn btn-success btn-sm" onclick="reviewApplicant('${applicant.id}', 'approve')"><i class="fas fa-check"></i> Approve</button>
+                                <button class="btn btn-danger btn-sm" onclick="reviewApplicant('${applicant.id}', 'reject')"><i class="fas fa-times"></i> Reject</button>
+                                <button class="btn btn-info btn-sm" onclick="viewApplicantDetails('${applicant.id}')"><i class="fas fa-eye"></i> Full Details</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function viewApplicantDetails(id) {
+            const applicant = allApplicants.find(a => a.id === id);
+            if (!applicant) return;
+            
+            const detailsHtml = `
+                <div class="grid-2">
+                    <div class="form-group"><label>Full Name</label><p style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">${applicant.name}</p></div>
+                    <div class="form-group"><label>Email</label><p style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">${applicant.email}</p></div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group"><label>Phone</label><p style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">${applicant.phone || 'N/A'}</p></div>
+                    <div class="form-group"><label>Location</label><p style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">${applicant.location || 'N/A'}</p></div>
+                </div>
+                <div class="form-group"><label>Experience</label><p style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">${applicant.experience || 'N/A'}</p></div>
+                <div class="form-group"><label>Cover Letter</label><p style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">${applicant.coverLetter || 'N/A'}</p></div>
+                <div class="form-group"><label>📎 Documents</label>
+                    <div style="display:flex; flex-wrap:wrap; gap:8px; padding:8px 12px; background:#f8f7f4; border-radius:8px;">
+                        ${applicant.resume ? `<span class="file-tag"><i class="fas fa-file-pdf doc-icon"></i> ${applicant.resume}</span>` : ''}
+                        ${applicant.certificates ? applicant.certificates.map(c => `<span class="file-tag"><i class="fas fa-graduation-cap cert-icon"></i> ${c}</span>`).join('') : ''}
+                        ${applicant.idDocs ? applicant.idDocs.map(d => `<span class="file-tag"><i class="fas fa-id-card id-icon"></i> ${d}</span>`).join('') : ''}
+                    </div>
+                </div>
+                ${applicant.quizAnswers ? `
+                <div class="form-group"><label>📝 Quiz Answers</label>
+                    <div style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">
+                        ${applicant.quizAnswers.map((a, i) => `<div style="margin:4px 0;"><strong>Q${i+1}:</strong> ${a}</div>`).join('')}
+                    </div>
+                </div>` : ''}
+                <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
+                    <button class="btn btn-success" onclick="reviewApplicant('${applicant.id}', 'approve'); closeApplicantModal();"><i class="fas fa-check"></i> Approve</button>
+                    <button class="btn btn-danger" onclick="reviewApplicant('${applicant.id}', 'reject'); closeApplicantModal();"><i class="fas fa-times"></i> Reject</button>
+                    <button class="btn btn-danger" onclick="closeApplicantModal()">Close</button>
+                </div>
+            `;
+            
+            document.getElementById('applicantDetails').innerHTML = detailsHtml;
+            document.getElementById('applicantModal').classList.add('active');
+        }
+
+        function closeApplicantModal() {
+            document.getElementById('applicantModal').classList.remove('active');
+        }
+
+        function viewFile(applicantId, type, filename) {
+            const applicant = allApplicants.find(a => a.id === applicantId);
+            if (!applicant) return;
+            let fileContent = '';
+            if (type === 'resume') fileContent = applicant.resume;
+            else if (type === 'certificate') fileContent = filename;
+            else if (type === 'id') fileContent = filename;
+            showToast(`📄 Viewing file: ${fileContent}`);
+        }
+
+        function reviewApplicant(id, action) {
+            const applicant = allApplicants.find(a => a.id === id);
+            if (!applicant) return;
+            
+            if (action === 'approve') {
+                if (confirm(`✅ Approve ${applicant.name}? The system will send a congratulation email.`)) {
+                    applicant.status = 'approved';
+                    renderApplicants(allApplicants);
+                    showToast(`✅ ${applicant.name} approved! Congratulation email sent.`);
+                    sendEmail(applicant.email, 'approved', applicant.name);
+                }
+            } else {
+                const reason = prompt(`❌ Reject ${applicant.name}?\n\nEnter the reason for rejection:`);
+                if (reason !== null) {
+                    applicant.status = 'rejected';
+                    renderApplicants(allApplicants);
+                    showToast(`❌ ${applicant.name} rejected. Email sent.`);
+                    sendEmail(applicant.email, 'rejected', applicant.name, reason);
+                }
+            }
+        }
+
+        function sendEmail(email, type, name, reason = '') {
+            let subject = '', message = '';
+            
+            if (type === 'approved') {
+                subject = '🎉 Congratulations! Your Application is Approved';
+                message = `Dear ${name},\n\nWe are delighted to inform you that your application has been APPROVED!\n\nOur HR team will contact you within 48 hours.\n\nWelcome to Modern Furniture Pacific Ltd!`;
+            } else {
+                subject = 'Update on Your Application - Modern Furniture Pacific Ltd';
+                message = `Dear ${name},\n\nAfter careful review, we regret to inform you that we will not be proceeding with your application.\n\nReason: ${reason || 'We have selected candidates whose qualifications more closely match our requirements.'}\n\nWe wish you all the best.`;
+            }
+            
+            console.log(`📧 Sending ${type} email to ${email}:`, { subject, message });
+            showToast(`📧 ${type === 'approved' ? '✅ Congratulation' : '📧 Rejection'} email sent to ${name}`);
+        }
+
+        // ===== TOGGLE JOB STATUS =====
+        function toggleJobStatus(btn) {
+            const card = btn.closest('.application-card');
+            const statusSpan = card.querySelector('.status-open, .status-closed');
+            const isOpen = statusSpan.classList.contains('status-open');
+            
+            if (isOpen) {
+                statusSpan.className = 'status-closed';
+                statusSpan.textContent = '● Closed';
+                btn.textContent = 'Reopen Applications';
+                btn.className = 'btn btn-success btn-sm';
+                showToast('🔒 Applications closed');
+            } else {
+                statusSpan.className = 'status-open';
+                statusSpan.textContent = '● Open';
+                btn.textContent = 'Close Applications';
+                btn.className = 'btn btn-warning btn-sm';
+                showToast('🔓 Applications reopened');
+            }
+        }
+
+        // ===== TOAST =====
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            msg.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function closeToast() {
+            document.getElementById('toast').classList.remove('show');
+        }
+
+        // ===== LOGOUT =====
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'admin-login.html';
+            }
+        }
+
+        // ===== PRODUCT MANAGEMENT =====
+        async function loadProducts() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/products`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allProducts = data.products || [];
+                    renderProducts(allProducts);
+                    const productCountEl = document.getElementById('productCount');
+                    if (productCountEl) productCountEl.textContent = allProducts.length;
+                }
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showToast('❌ Failed to load products');
+            }
+        }
+
+        function renderProducts(products) {
+            const container = document.getElementById('productsContainer');
+            if (!products || products.length === 0) {
+                container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:#888;"><i class="fas fa-couch" style="font-size:48px; color:#ddd; margin-bottom:16px;"></i><h3>No Products Found</h3><p style="margin-top:8px;">Click "Add Product" to create your first product.</p></div>`;
+                return;
+            }
+            container.innerHTML = products.map(product => {
+                const statusColors = { 'available': 'available', 'sold': 'sold', 'pre-order': 'pre-order' };
+                const statusClass = statusColors[product.status] || 'available';
+                const saleBadge = product.salePrice ? `<span style="background:#ef4444; color:white; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:600; margin-left:8px;">SALE</span>` : '';
+                const branchName = product.branch === 'all' ? 'All Branches' : product.branch.charAt(0).toUpperCase() + product.branch.slice(1);
+                const hasVideo = product.images && product.images.some(img => img.match(/\.(mp4|webm|mov|avi|mkv)$/i) || img.match(/^data:video\//));
+                const mediaIcon = hasVideo ? '<i class="fas fa-video" style="font-size:48px;"></i>' : '<i class="fas fa-couch" style="font-size:48px;"></i>';
+                return `<div class="product-card"><div class="product-image">${mediaIcon}</div><div class="product-body"><div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;"><h3 style="font-size:16px; color:#1a2a3a; margin:0;">${product.name}</h3><span class="status-badge ${statusClass}">${product.status}</span></div><p style="color:#888; font-size:13px; margin-bottom:8px;">${product.category} • ${branchName}</p><div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;"><span style="font-weight:700; color:#1a2a3a; font-size:18px;">KSh ${(product.price || 0).toLocaleString()}</span>${product.salePrice ? `<span style="text-decoration:line-through; color:#888; font-size:14px;">KSh ${(product.salePrice || 0).toLocaleString()}</span>` : ''}${saleBadge}</div><p style="color:#888; font-size:13px;">Stock: ${product.stock || 0} units</p><div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;"><button class="btn btn-primary btn-sm" onclick="editProduct('${product.id}')"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-warning btn-sm" onclick="toggleProductStatus('${product.id}')"><i class="fas fa-exchange-alt"></i> Status</button></div></div></div>`;
+            }).join('');
+        }
+
+        function filterProducts() {
+            const search = document.getElementById('productSearch').value.toLowerCase();
+            const category = document.getElementById('productCategoryFilter').value;
+            const status = document.getElementById('productStatusFilter').value;
+            let filtered = allProducts;
+            if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search) || (p.description && p.description.toLowerCase().includes(search)));
+            if (category !== 'all') filtered = filtered.filter(p => p.category === category);
+            if (status !== 'all') filtered = filtered.filter(p => p.status === status);
+            renderProducts(filtered);
+        }
+
+        function showAddProductForm() {
+            editingProductId = null;
+            uploadedFiles = [];
+            document.getElementById('uploadedFiles').innerHTML = '';
+            document.getElementById('productModalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Product';
+            document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
+            document.getElementById('prodBranch').value = 'all';
+            document.getElementById('prodStatus').value = 'available';
+            document.getElementById('productMessage').innerHTML = '';
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        async function editProduct(id) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/products/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const product = data.product;
+                    editingProductId = id;
+                    document.getElementById('productModalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Product';
+                    document.getElementById('productId').value = id;
+                    document.getElementById('prodName').value = product.name || '';
+                    document.getElementById('prodCategory').value = product.category || '';
+                    document.getElementById('prodPrice').value = product.price || '';
+                    document.getElementById('prodSalePrice').value = product.salePrice || '';
+                    document.getElementById('prodStock').value = product.stock || 0;
+                    document.getElementById('prodStatus').value = product.status || 'available';
+                    document.getElementById('prodDescription').value = product.description || '';
+                    document.getElementById('prodBranch').value = product.branch || 'all';
+                    document.getElementById('prodFeatures').value = (product.features || []).join(', ');
+                    if (product.images && product.images.length > 0) {
+                        uploadedFiles = product.images.map(img => ({ name: img.substring(0, 30) + '...', url: img, type: img.match(/^data:video\//) ? 'video' : 'image', file: null }));
+                        renderUploadedFiles();
+                    }
+                    document.getElementById('productMessage').innerHTML = '';
+                    document.getElementById('productModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading product:', error);
+                showToast('❌ Failed to load product');
+            }
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        function handleFileUpload(input) {
+            const files = input.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const fileUrl = URL.createObjectURL(file);
+                const fileType = file.type.startsWith('video/') ? 'video' : 'image';
+                uploadedFiles.push({ name: file.name, url: fileUrl, type: fileType, file: file });
+            }
+            renderUploadedFiles();
+            input.value = '';
+        }
+
+        function removeFile(index) {
+            uploadedFiles.splice(index, 1);
+            renderUploadedFiles();
+        }
+
+        function renderUploadedFiles() {
+            const container = document.getElementById('uploadedFiles');
+            container.innerHTML = '';
+            uploadedFiles.forEach((file, index) => {
+                const fileElement = document.createElement('div');
+                fileElement.style.cssText = 'position:relative; display:inline-block; margin:4px;';
+                const fileType = file.type === 'video' ? 'video' : 'image';
+                fileElement.innerHTML = `<div style="width:80px; height:80px; background:#f8f7f4; border-radius:8px; display:flex; align-items:center; justify-content:center; border:1px solid #e9e7e2; overflow:hidden;">${fileType === 'video' ? `<i class="fas fa-video" style="font-size:30px; color:#c9a94e;"></i>` : `<img src="${file.url}" style="width:100%; height:100%; object-fit:cover;" />`}</div><button type="button" onclick="removeFile(${index})" style="position:absolute; top:-6px; right:-6px; background:#ef4444; color:white; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center;">×</button><div style="font-size:10px; color:#888; text-align:center; margin-top:2px; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${file.name}</div>`;
+                container.appendChild(fileElement);
+            });
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        async function saveProduct(event) {
+            event.preventDefault();
+            const id = document.getElementById('productId').value;
+            const name = document.getElementById('prodName').value;
+            const category = document.getElementById('prodCategory').value;
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const salePrice = document.getElementById('prodSalePrice').value ? parseFloat(document.getElementById('prodSalePrice').value) : null;
+            const stock = parseInt(document.getElementById('prodStock').value) || 0;
+            const status = document.getElementById('prodStatus').value;
+            const description = document.getElementById('prodDescription').value;
+            const branch = document.getElementById('prodBranch').value;
+            const features = document.getElementById('prodFeatures').value.split(',').map(f => f.trim()).filter(f => f);
+            
+            const images = [];
+            for (const fileData of uploadedFiles) {
+                if (fileData.file) {
+                    try { const base64 = await fileToBase64(fileData.file); images.push(base64); } catch (err) {}
+                } else if (fileData.url) { images.push(fileData.url); }
+            }
+            
+            const productData = { name, category, price, salePrice, stock, status, description, branch, features, images };
+            
+            try {
+                const token = localStorage.getItem('token');
+                const url = id ? `${API_URL}/products/${id}` : `${API_URL}/products`;
+                const method = id ? 'PUT' : 'POST';
+                const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(productData) });
+                const data = await response.json();
+                if (data.success) {
+                    closeProductModal();
+                    loadProducts();
+                    uploadedFiles = [];
+                    document.getElementById('uploadedFiles').innerHTML = '';
+                    showToast(id ? '✅ Product updated and published!' : '✅ Product created and published!');
+                } else {
+                    document.getElementById('productMessage').innerHTML = `<span style="color:#ef4444;">❌ ${data.message}</span>`;
+                }
+            } catch (error) {
+                console.error('Error saving product:', error);
+                document.getElementById('productMessage').innerHTML = `<span style="color:#ef4444;">❌ Failed to save product</span>`;
+            }
+        }
+
+        async function toggleProductStatus(id) {
+            const statuses = ['available', 'sold', 'pre-order'];
+            const product = allProducts.find(p => p.id === id);
+            if (!product) return;
+            const currentIndex = statuses.indexOf(product.status);
+            const nextIndex = (currentIndex + 1) % statuses.length;
+            const newStatus = statuses[nextIndex];
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/products/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ status: newStatus }) });
+                const data = await response.json();
+                if (data.success) { loadProducts(); showToast(`✅ Status changed to ${newStatus}`); }
+            } catch (error) { showToast('❌ Failed to update status'); }
+        }
+
+        // ===== BRANCH FUNCTIONS =====
+        function loadBranches() {
+            const saved = localStorage.getItem('superBranches');
+            let branches = [];
+            
+            if (saved) {
+                try {
+                    branches = JSON.parse(saved);
+                } catch (e) {
+                    branches = getDefaultBranches();
+                }
+            } else {
+                branches = getDefaultBranches();
+                localStorage.setItem('superBranches', JSON.stringify(branches));
+            }
+            
+            renderBranches(branches);
+            updateBranchStats(branches);
+            showToast('🔄 Branches loaded!');
+        }
+
+        function getDefaultBranches() {
+            return [
+                { id: 'ruiru', name: 'Ruiru', location: 'Ruiru Town, Main Street', products: 15, orders: 45, manager: null },
+                { id: 'nyeri', name: 'Nyeri', location: 'Nyeri Town, Kenyatta Road', products: 12, orders: 38, manager: null },
+                { id: 'nakuru', name: 'Nakuru', location: 'Nakuru Town, Moi Road', products: 18, orders: 45, manager: null }
+            ];
+        }
+
+        function renderBranches(branches) {
+            const container = document.getElementById('branchesContainer');
+            if (!container) return;
+            
+            if (!branches || branches.length === 0) {
+                container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#888;"><i class="fas fa-store" style="font-size:48px; color:#ddd;"></i><p style="margin-top:12px;">No branches available.</p></div>`;
+                return;
+            }
+            
+            container.innerHTML = branches.map(branch => {
+                const managerDisplay = branch.manager ? 
+                    `<span style="color:#10b981; font-weight:600;">${branch.manager}</span>` : 
+                    `<span style="color:#f59e0b; font-weight:600;">Not assigned</span>`;
+                
+                return `
+                    <div class="branch-card" style="background:#f8f7f4; padding:20px; border-radius:12px; border:1px solid #e9e7e2;">
+                        <h3>🏪 ${branch.name}</h3>
+                        <p>📍 ${branch.location}</p>
+                        <p>📦 ${branch.products} products</p>
+                        <p>📊 ${branch.orders} orders</p>
+                        <p>👤 Manager: ${managerDisplay}</p>
+                        <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+                            <button class="btn btn-primary btn-sm" onclick="viewBranchDetails('${branch.id}')">View Details</button>
+                            <button class="btn btn-info btn-sm" onclick="generateBranchReport('${branch.id}')">📊 Report</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateBranchStats(branches) {
+            document.getElementById('totalBranches').textContent = branches.length;
+            document.getElementById('totalBranchProducts').textContent = branches.reduce((sum, b) => sum + (b.products || 0), 0);
+            document.getElementById('totalBranchOrders').textContent = branches.reduce((sum, b) => sum + (b.orders || 0), 0);
+        }
+
+        function viewBranchDetails(branch) {
+            const branchNames = { ruiru: 'Ruiru', nyeri: 'Nyeri', nakuru: 'Nakuru' };
+            showToast(`📋 Viewing ${branchNames[branch] || branch} branch details`);
+        }
+
+        function generateBranchReport(branch) {
+            document.getElementById('reportBranch').value = branch;
+            showGenerateReport();
+        }
+
+        // ===== REPORT GENERATOR =====
+        function showGenerateReport() {
+            document.getElementById('reportDescription').value = '';
+            document.getElementById('reportMessage').innerHTML = '';
+            document.getElementById('reportModal').classList.add('active');
+        }
+
+        function closeReportModal() {
+            document.getElementById('reportModal').classList.remove('active');
+        }
+
+        function closeReportResultModal() {
+            document.getElementById('reportResultModal').classList.remove('active');
+        }
+
+        function generateReport(event) {
+            event.preventDefault();
+            const branch = document.getElementById('reportBranch').value;
+            const description = document.getElementById('reportDescription').value;
+            const shareWith = document.getElementById('reportShareWith').value;
+            const msgBox = document.getElementById('reportMessage');
+            
+            if (!description.trim()) {
+                msgBox.innerHTML = '<span style="color:#ef4444;">❌ Please describe what you want</span>';
+                return;
+            }
+            
+            msgBox.innerHTML = '<span style="color:#3b82f6;">⏳ Generating report...</span>';
+            
+            setTimeout(() => {
+                const branchNames = { all: 'All Branches', ruiru: 'Ruiru', nyeri: 'Nyeri', nakuru: 'Nakuru' };
+                
+                const reportData = {
+                    title: `📊 Report for ${branchNames[branch]}`,
+                    generated: new Date().toLocaleString(),
+                    description: description,
+                    data: {
+                        totalProducts: branch === 'all' ? 45 : branch === 'ruiru' ? 15 : branch === 'nyeri' ? 12 : 18,
+                        totalOrders: branch === 'all' ? 128 : branch === 'ruiru' ? 45 : branch === 'nyeri' ? 38 : 45,
+                        revenue: branch === 'all' ? 'KSh 2,450,000' : branch === 'ruiru' ? 'KSh 850,000' : branch === 'nyeri' ? 'KSh 720,000' : 'KSh 880,000',
+                        topProducts: branch === 'all' ? ['Mahogany Bed Frame', 'Luxury Sofa', 'Dining Table'] : ['Mahogany Bed Frame', 'Dining Table'],
+                        summary: `Report generated based on: ${description.substring(0, 100)}...`
+                    }
+                };
+                
+                window.currentReport = reportData;
+                
+                document.getElementById('reportResultContent').innerHTML = `
+                    <div style="background:#f8f7f4; padding:20px; border-radius:12px;">
+                        <h3 style="color:#1a2a3a;">${reportData.title}</h3>
+                        <p style="color:#888; font-size:13px;">Generated: ${reportData.generated}</p>
+                        <hr style="margin:12px 0; border-color:#e9e7e2;" />
+                        <div class="grid-2">
+                            <div><strong>📦 Products:</strong> ${reportData.data.totalProducts}</div>
+                            <div><strong>📊 Orders:</strong> ${reportData.data.totalOrders}</div>
+                        </div>
+                        <div style="margin:8px 0;"><strong>💰 Revenue:</strong> ${reportData.data.revenue}</div>
+                        <div style="margin:8px 0;">
+                            <strong>🏆 Top Products:</strong><br />
+                            ${reportData.data.topProducts.map(p => `• ${p}`).join('<br />')}
+                        </div>
+                        <div style="background:white; padding:12px; border-radius:8px; margin-top:8px;">
+                            <strong>📝 Report Description:</strong>
+                            <p style="color:#666; margin-top:4px;">${reportData.description}</p>
+                        </div>
+                        ${shareWith !== 'none' ? `<div style="background:#d1fae5; padding:12px; border-radius:8px; margin-top:8px; color:#065f46;">✅ Report shared with: ${shareWith.replace('_', ' ').toUpperCase()}</div>` : ''}
+                    </div>
+                `;
+                
+                msgBox.innerHTML = '<span style="color:#10b981;">✅ Report generated successfully!</span>';
+                setTimeout(() => { msgBox.innerHTML = ''; }, 3000);
+                
+                closeReportModal();
+                document.getElementById('reportResultModal').classList.add('active');
+                showToast('📊 Report generated!');
+            }, 2000);
+        }
+
+        function downloadReport() {
+            const report = window.currentReport;
+            if (!report) return;
+            
+            const content = `
+MODERN FURNITURE PACIFIC - REPORT
+================================
+${report.title}
+Generated: ${report.generated}
+--------------------------------
+Products: ${report.data.totalProducts}
+Orders: ${report.data.totalOrders}
+Revenue: ${report.data.revenue}
+Top Products: ${report.data.topProducts.join(', ')}
+--------------------------------
+Description: ${report.description}
+            `;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `report-${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📥 Report downloaded!');
+        }
+
+        function shareReport() {
+            const report = window.currentReport;
+            if (!report) return;
+            const admin = prompt('Enter admin email to share with:');
+            if (admin) {
+                showToast(`📧 Report shared with ${admin}`);
+            }
+        }
+
+        // ===== SUPPLIER FUNCTIONS =====
+        function loadSuppliers() {
+            const container = document.getElementById('suppliersList');
+            const suppliers = [
+                { id: 'sp1', companyName: 'WoodWorks Ltd', name: 'Peter Wood', email: 'peter@woodworks.com', phone: '+254 712 345 678', status: 'pending', createdAt: new Date().toISOString() },
+                { id: 'sp2', companyName: 'Metal Masters', name: 'James Steel', email: 'james@metalmasters.com', phone: '+254 722 345 678', status: 'approved', createdAt: new Date(Date.now() - 86400000).toISOString() }
+            ];
+            container.innerHTML = suppliers.map(s => `
+                <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${s.status === 'approved' ? '#10b981' : '#f59e0b'};">
+                    <div><strong>${s.companyName || s.name || 'Supplier'}</strong></div>
+                    <div style="color:#666;font-size:13px;">${s.email || ''} | ${s.phone || ''}</div>
+                    <span class="status-badge ${s.status === 'approved' ? 'approved' : 'pending'}">${s.status || 'pending'}</span>
+                    ${s.status !== 'approved' ? `<button class="btn btn-success btn-sm" onclick="approveSupplier('${s.id}')">Approve</button>` : ''}
+                    <button class="btn btn-info btn-sm" onclick="showToast('📄 View supplier ${s.id}')">View</button>
+                </div>
+            `).join('');
+            showToast('🚚 Suppliers loaded!');
+        }
+
+        function approveSupplier(id) {
+            showToast('✅ Supplier approved!');
+            loadSuppliers();
+        }
+
+        // ===== SCANNER FUNCTIONS =====
+        function loadScannerData() {
+            const container = document.getElementById('scannerDataList');
+            const scans = [
+                { id: 's1', userName: 'John Doe', userEmail: 'john@example.com', dimensions: { width: 4.5, length: 6.0, height: 3.0 }, status: 'pending', createdAt: new Date().toISOString() },
+                { id: 's2', userName: 'Jane Smith', userEmail: 'jane@example.com', dimensions: { width: 3.0, length: 5.0, height: 2.8 }, status: 'matched', createdAt: new Date(Date.now() - 86400000).toISOString() }
+            ];
+            container.innerHTML = scans.map(s => `
+                <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid #c9a94e;">
+                    <div><strong>${s.userName || 'Guest'}</strong> <span style="color:#888;font-size:12px;">${s.userEmail || ''}</span></div>
+                    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:8px 0;">
+                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;"><span style="color:#888;font-size:11px;">Width</span><div style="font-weight:600;">${s.dimensions?.width || 0}m</div></div>
+                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;"><span style="color:#888;font-size:11px;">Length</span><div style="font-weight:600;">${s.dimensions?.length || 0}m</div></div>
+                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;"><span style="color:#888;font-size:11px;">Height</span><div style="font-weight:600;">${s.dimensions?.height || 0}m</div></div>
+                        <div style="background:white; padding:8px; border-radius:8px; text-align:center; border:2px solid #c9a94e;"><span style="color:#888;font-size:11px;">Area</span><div style="font-weight:700;color:#c9a94e;">${((s.dimensions?.width || 0) * (s.dimensions?.length || 0)).toFixed(2)}m²</div></div>
+                    </div>
+                    <span class="status-badge ${s.status === 'matched' ? 'approved' : s.status === 'contacted' ? 'active' : 'pending'}">${s.status || 'pending'}</span>
+                    <button class="btn btn-primary btn-sm" onclick="showToast('📏 View scan ${s.id}')">View</button>
+                    <button class="btn btn-success btn-sm" onclick="showToast('📧 Contact ${s.userName}')">Contact</button>
+                </div>
+            `).join('');
+            showToast('📷 Scanner data loaded!');
+        }
+
+        // ===== REVIEW FUNCTIONS =====
+        function loadReviews() {
+            const container = document.getElementById('reviewsList');
+            const sampleReviews = [
+                { id: 'r1', name: 'John Doe', rating: 5, comment: 'Amazing quality! The sofa is exactly what we wanted.', branch: 'Ruiru', date: '2 days ago', status: 'pending' },
+                { id: 'r2', name: 'Jane Smith', rating: 4, comment: 'Great service! The delivery was prompt.', branch: 'Nyeri', date: '5 days ago', status: 'approved' },
+                { id: 'r3', name: 'Michael Ochieng', rating: 3, comment: 'The bed frame had some scratches on delivery.', branch: 'Nakuru', date: '1 week ago', status: 'rejected' }
+            ];
+            container.innerHTML = sampleReviews.map(r => `
+                <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${r.status === 'approved' ? '#10b981' : r.status === 'rejected' ? '#ef4444' : '#c9a94e'};">
+                    <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
+                        <div><strong>${r.name}</strong> <span style="color:#f59e0b;">${'⭐'.repeat(r.rating)}</span> <span style="color:#888; font-size:12px; margin-left:8px;">${r.branch}</span></div>
+                        <span style="color:#888; font-size:12px;">${r.date}</span>
+                    </div>
+                    <p style="color:#666; margin:8px 0;">"${r.comment}"</p>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                        <span class="status-badge ${r.status === 'approved' ? 'approved' : r.status === 'rejected' ? 'rejected' : 'pending'}">${r.status}</span>
+                        ${r.status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="approveReview('${r.id}')">Approve</button><button class="btn btn-danger btn-sm" onclick="rejectReview('${r.id}')">Reject</button>` : ''}
+                        <button class="btn btn-danger btn-sm" onclick="deleteReview('${r.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+            showToast('📋 Reviews loaded!');
+        }
+
+        function approveReview(id) { showToast('✅ Review approved and visible to users!'); loadReviews(); }
+        function rejectReview(id) { showToast('❌ Review rejected'); loadReviews(); }
+        function deleteReview(id) { if (!confirm('⚠️ Delete this review?')) return; showToast('🗑️ Review deleted'); loadReviews(); }
+
+        // ===== VIDEO FUNCTIONS =====
+        function loadVideos() {
+            const saved = localStorage.getItem('ceoVideos');
+            if (saved) {
+                try {
+                    allVideos = JSON.parse(saved);
+                } catch (e) {
+                    allVideos = [];
+                }
+            } else {
+                allVideos = [];
+                localStorage.setItem('ceoVideos', JSON.stringify(allVideos));
+            }
+            renderVideos();
+            updateVideoStats();
+        }
+
+        function renderVideos() {
+            const container = document.getElementById('videoContainer');
+            if (!container) return;
+            
+            if (!allVideos || allVideos.length === 0) {
+                container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:#888;">
+                    <i class="fas fa-video" style="font-size:48px; color:#ddd; margin-bottom:16px;"></i>
+                    <h3>No Media Uploaded</h3>
+                    <p style="margin-top:8px;">Click "Upload Media" to add videos or images for users.</p>
+                </div>`;
+                return;
+            }
+            
+            container.innerHTML = allVideos.map(v => {
+                const isVideo = v.fileType === 'video' || v.type === 'video';
+                const branchName = v.branch === 'all' ? '🌍 All Branches' : v.branch.charAt(0).toUpperCase() + v.branch.slice(1);
+                const isSent = v.sentToUsers === true;
+                
+                return `
+                    <div class="video-card" style="border:1px solid ${isSent ? '#10b981' : '#e9e7e2'};">
+                        <div class="video-preview">
+                            ${v.fileData ? (isVideo ? `<video muted loop><source src="${v.fileData}"></video>` : `<img src="${v.fileData}" />`) : `<i class="fas fa-${isVideo ? 'video' : 'image'}" style="font-size:48px;"></i>`}
+                            ${isVideo ? `<div class="play-icon"><i class="fas fa-play-circle"></i></div>` : ''}
+                            ${isSent ? `<div style="position:absolute;top:12px;left:12px;background:#10b981;color:white;padding:2px 12px;border-radius:20px;font-size:10px;font-weight:600;">✓ Sent to Users</div>` : ''}
+                            <div style="position:absolute;top:12px;right:12px;background:${isVideo ? '#ef4444' : '#3b82f6'};color:white;padding:2px 12px;border-radius:20px;font-size:10px;font-weight:600;">${isVideo ? '🎬 Video' : '🖼️ Image'}</div>
+                        </div>
+                        <div class="video-body">
+                            <h4>${v.title}</h4>
+                            <p>${v.note || 'No description'}</p>
+                            <div class="video-meta">
+                                <span>📁 ${branchName}</span>
+                                <span>👁️ ${v.views || 0} views</span>
+                                <span>👤 ${v.uploadedBy || 'CEO Admin'}</span>
+                                <span>📅 ${new Date(v.uploadedAt).toLocaleDateString()}</span>
+                            </div>
+                            <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+                                ${!isSent ? `<button class="btn btn-success btn-sm" onclick="sendToUsers('${v.id}')"><i class="fas fa-paper-plane"></i> Send to Users</button>` : `<span style="background:#10b981;color:white;padding:4px 12px;border-radius:20px;font-size:12px;">✓ Sent</span>`}
+                                <button class="btn btn-primary btn-sm" onclick="editVideo('${v.id}')"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteVideo('${v.id}')"><i class="fas fa-trash"></i> Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateVideoStats() {
+            document.getElementById('totalVideos').textContent = allVideos.length;
+            document.getElementById('totalViews').textContent = allVideos.reduce((sum, v) => sum + (v.views || 0), 0);
+            document.getElementById('sentCount').textContent = allVideos.filter(v => v.sentToUsers === true).length;
+        }
+
+        function showUploadVideo() {
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoNote').value = '';
+            document.getElementById('videoFileData').value = '';
+            document.getElementById('videoFilePreview').style.display = 'none';
+            document.getElementById('videoUploadMsg').innerHTML = '';
+            videoFileData = null;
+            videoFileName = null;
+            document.getElementById('videoUploadModal').classList.add('active');
+        }
+
+        function closeVideoUpload() {
+            document.getElementById('videoUploadModal').classList.remove('active');
+        }
+
+        function handleVideoFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                videoFileData = e.target.result;
+                videoFileName = file.name;
+                document.getElementById('videoFileName').textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+                document.getElementById('videoFilePreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+            input.value = '';
+        }
+
+        function removeVideoFile() {
+            videoFileData = null;
+            videoFileName = null;
+            document.getElementById('videoFilePreview').style.display = 'none';
+            document.getElementById('videoFileInput').value = '';
+        }
+
+        function uploadMedia(event) {
+            event.preventDefault();
+            const title = document.getElementById('videoTitle').value;
+            const note = document.getElementById('videoNote').value;
+            const branch = document.getElementById('videoBranch').value;
+            const msgBox = document.getElementById('videoUploadMsg');
+            
+            if (!videoFileData) {
+                msgBox.innerHTML = '<span style="color:#ef4444;">❌ Please select a file to upload</span>';
+                return;
+            }
+            
+            const isVideo = videoFileName.match(/\.(mp4|webm|mov|avi|mkv|flv)$/i);
+            const newVideo = {
+                id: 'v' + Date.now(),
+                title: title,
+                note: note,
+                branch: branch,
+                fileData: videoFileData,
+                fileName: videoFileName,
+                fileType: isVideo ? 'video' : 'image',
+                type: isVideo ? 'video' : 'image',
+                views: 0,
+                sentToUsers: false,
+                uploadedBy: currentUser ? currentUser.name : 'CEO Admin',
+                uploadedAt: new Date().toISOString()
+            };
+            
+            allVideos.push(newVideo);
+            localStorage.setItem('ceoVideos', JSON.stringify(allVideos));
+            
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoNote').value = '';
+            document.getElementById('videoFilePreview').style.display = 'none';
+            videoFileData = null;
+            videoFileName = null;
+            
+            msgBox.innerHTML = '<span style="color:#10b981;">✅ Media uploaded successfully!</span>';
+            setTimeout(() => { msgBox.innerHTML = ''; }, 3000);
+            
+            renderVideos();
+            updateVideoStats();
+            showToast('📤 Media uploaded successfully!');
+            setTimeout(() => closeVideoUpload(), 1500);
+        }
+
+        function sendToUsers(id) {
+            const video = allVideos.find(v => v.id === id);
+            if (!video) return;
+            
+            if (!confirm(`Send "${video.title}" to all users? Users will see this in their video section.`)) return;
+            
+            video.sentToUsers = true;
+            video.sentAt = new Date().toISOString();
+            
+            localStorage.setItem('ceoVideos', JSON.stringify(allVideos));
+            
+            renderVideos();
+            updateVideoStats();
+            showToast(`✅ "${video.title}" sent to users!`);
+        }
+
+        function editVideo(id) {
+            const video = allVideos.find(v => v.id === id);
+            if (!video) return;
+            
+            const newTitle = prompt('Edit Title:', video.title);
+            if (newTitle !== null) video.title = newTitle;
+            
+            const newNote = prompt('Edit Note/Description:', video.note || '');
+            if (newNote !== null) video.note = newNote;
+            
+            localStorage.setItem('ceoVideos', JSON.stringify(allVideos));
+            renderVideos();
+            showToast('✅ Video updated!');
+        }
+
+        function deleteVideo(id) {
+            if (!confirm('⚠️ Delete this media? It will also be removed from user accounts.')) return;
+            
+            const video = allVideos.find(v => v.id === id);
+            if (!video) return;
+            
+            allVideos = allVideos.filter(v => v.id !== id);
+            localStorage.setItem('ceoVideos', JSON.stringify(allVideos));
+            
+            renderVideos();
+            updateVideoStats();
+            showToast('🗑️ Media deleted from admin and user accounts!');
+        }
+
+        // ===== CUSTOMER CARE FUNCTIONS =====
+        function loadCustomerCare() {
+            const conversations = [
+                { id: 'c1', userName: 'John Doe', userEmail: 'john@example.com', subject: 'Delivery Inquiry', status: 'open', messages: [{ sender: 'user', message: 'When will my order arrive?', timestamp: new Date().toISOString() }], createdAt: new Date().toISOString() },
+                { id: 'c2', userName: 'Jane Smith', userEmail: 'jane@example.com', subject: 'Product Question', status: 'in-progress', messages: [{ sender: 'user', message: 'Is the sofa available in blue?', timestamp: new Date().toISOString() }], createdAt: new Date(Date.now() - 86400000).toISOString() }
+            ];
+            allCareConversations = conversations;
+            renderCustomerCare(conversations);
+            updateCareStats();
+        }
+
+        function renderCustomerCare(conversations) {
+            const container = document.getElementById('careContainer');
+            if (!conversations || conversations.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:60px 20px; color:#888;"><i class="fas fa-headset" style="font-size:48px; color:#ddd; margin-bottom:16px;"></i><h3>No Conversations</h3></div>`;
+                return;
+            }
+            container.innerHTML = conversations.map(conv => {
+                const statusColors = { 'open': 'open', 'in-progress': 'in-progress', 'closed': 'closed' };
+                const statusClass = statusColors[conv.status] || 'open';
+                return `<div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${conv.status === 'closed' ? '#10b981' : conv.status === 'in-progress' ? '#3b82f6' : '#f59e0b'};">
+                    <div style="display:flex; justify-content:space-between; flex-wrap:wrap;"><div><strong>${conv.userName || 'Guest'}</strong> <span style="color:#888; font-size:12px; margin-left:8px;">${conv.userEmail || ''}</span></div><span style="color:#888; font-size:12px;">${new Date(conv.createdAt).toLocaleDateString()}</span></div>
+                    <div style="margin:8px 0;"><span style="font-weight:600; font-size:14px;">${conv.subject || 'General Inquiry'}</span><p style="color:#666; font-size:14px; margin-top:4px;">${conv.messages && conv.messages.length > 0 ? conv.messages[0].message : ''}</p></div>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px;">
+                        <span class="status-badge ${statusClass}">${conv.status}</span>
+                        <span style="color:#888; font-size:12px;">💬 ${conv.messages ? conv.messages.length : 0} messages</span>
+                        ${conv.status !== 'closed' ? `<button class="btn btn-primary btn-sm" onclick="openCareConversation('${conv.id}')"><i class="fas fa-reply"></i> Reply</button><button class="btn btn-success btn-sm" onclick="closeCareTicket('${conv.id}')"><i class="fas fa-check"></i> Close</button>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function updateCareStats() {
+            document.getElementById('totalCare').textContent = allCareConversations.length;
+            document.getElementById('openCare').textContent = allCareConversations.filter(c => c.status !== 'closed').length;
+            document.getElementById('closedCare').textContent = allCareConversations.filter(c => c.status === 'closed').length;
+            document.getElementById('careBadge').textContent = allCareConversations.filter(c => c.status !== 'closed').length;
+            document.getElementById('careCount').textContent = allCareConversations.filter(c => c.status !== 'closed').length;
+        }
+
+        function openCareConversation(id) {
+            const conv = allCareConversations.find(c => c.id === id);
+            if (!conv) return;
+            document.getElementById('careConvId').value = id;
+            document.getElementById('careSubject').textContent = conv.subject || 'Conversation';
+            document.getElementById('careUserName').textContent = conv.userName || 'Guest';
+            document.getElementById('careStatus').textContent = conv.status;
+            document.getElementById('careStatus').className = `status-badge ${conv.status === 'closed' ? 'closed' : conv.status === 'in-progress' ? 'in-progress' : 'open'}`;
+            const messagesContainer = document.getElementById('careMessages');
+            if (conv.messages && conv.messages.length > 0) {
+                messagesContainer.innerHTML = conv.messages.map(msg => `
+                    <div class="chat-message ${msg.sender === 'admin' ? 'admin' : 'user'}">
+                        <div class="msg-sender">${msg.sender === 'admin' ? 'Admin' : 'Customer'}</div>
+                        <div>${msg.message}</div>
+                        <span class="msg-time">${new Date(msg.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                `).join('');
+            } else {
+                messagesContainer.innerHTML = '<p style="color:#888; text-align:center;">No messages yet.</p>';
+            }
+            document.getElementById('careModal').classList.add('active');
+        }
+
+        function sendCareReply(event) {
+            event.preventDefault();
+            const id = document.getElementById('careConvId').value;
+            const message = document.getElementById('careReply').value;
+            const conv = allCareConversations.find(c => c.id === id);
+            if (!conv) return;
+            conv.messages.push({ sender: 'admin', message: message, timestamp: new Date().toISOString() });
+            conv.status = 'in-progress';
+            document.getElementById('careReply').value = '';
+            document.getElementById('careReplyMsg').innerHTML = '<span style="color:#10b981;">✅ Reply sent!</span>';
+            setTimeout(() => document.getElementById('careReplyMsg').innerHTML = '', 2000);
+            renderCustomerCare(allCareConversations);
+            updateCareStats();
+            openCareConversation(id);
+            showToast('✅ Reply sent to customer!');
+        }
+
+        function closeCareTicket(id) {
+            const conv = allCareConversations.find(c => c.id === id);
+            if (!conv) return;
+            conv.status = 'closed';
+            renderCustomerCare(allCareConversations);
+            updateCareStats();
+            document.getElementById('careModal').classList.remove('active');
+            showToast('✅ Ticket closed!');
+        }
+
+        function closeCareModal() {
+            document.getElementById('careModal').classList.remove('active');
+        }
+
+        // ===== UPDATE PROFILE =====
+        function updateProfile(event) {
+            event.preventDefault();
+            const name = document.getElementById('profileName').value;
+            const phone = document.getElementById('profilePhone').value;
+            if (currentUser) {
+                currentUser.name = name;
+                currentUser.phone = phone;
+                localStorage.setItem('user', JSON.stringify(currentUser));
+                document.getElementById('adminName').textContent = name;
+                showToast('✅ Profile updated!');
+            }
+        }
+
+        // ===== DOM READY =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('user');
+            if (!user) { window.location.href = 'admin-login.html'; return; }
+            currentUser = JSON.parse(user);
+            
+            if (currentUser.role !== 'ceo_admin' && currentUser.role !== 'super_admin') {
+                alert('Access denied. CEO Admin required.');
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            
+            document.getElementById('adminName').textContent = currentUser.name || 'CEO Admin';
+            document.getElementById('profileName').value = currentUser.name || 'CEO Admin';
+            document.getElementById('profileEmail').value = currentUser.email || 'ceo@modernfurniturepacific.com';
+            document.getElementById('profilePhone').value = currentUser.phone || '';
+            
+            document.getElementById('openJobs').textContent = document.querySelectorAll('.application-card .status-open').length;
+            document.getElementById('appBadge').textContent = document.querySelectorAll('.application-card .status-open').length;
+            document.getElementById('totalApplicants').textContent = '12';
+            
+            loadProducts();
+            loadCustomerCare();
+            loadBranches();
+            loadVideos();
+            
+            console.log('✅ CEO Admin loaded:', currentUser);
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                document.getElementById('adminSidebar').classList.remove('active');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeProductModal();
+                closeApplicantModal();
+                closeCareModal();
+                closeVideoUpload();
+                closeReportModal();
+                closeReportResultModal();
+            }
+        });
+        
+        document.getElementById('productModal').addEventListener('click', function(e) {
+            if (e.target === this) closeProductModal();
+        });
+        document.getElementById('applicantModal').addEventListener('click', function(e) {
+            if (e.target === this) closeApplicantModal();
+        });
+        document.getElementById('careModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCareModal();
+        });
+        document.getElementById('videoUploadModal').addEventListener('click', function(e) {
+            if (e.target === this) closeVideoUpload();
+        });
+        document.getElementById('reportModal').addEventListener('click', function(e) {
+            if (e.target === this) closeReportModal();
+        });
+        document.getElementById('reportResultModal').addEventListener('click', function(e) {
+            if (e.target === this) closeReportResultModal();
+        });
+    </script>
+</body>
+</html>

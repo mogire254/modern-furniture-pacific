@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        /* ===== VIDEO BACKGROUND ===== */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-background .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 42, 58, 0.6);
+        }
+
+        /* ===== LOGIN PAGE ===== */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 48px;
+            border-radius: var(--radius);
+            max-width: 440px;
+            width: 100%;
+            box-shadow: var(--shadow);
+        }
+        .login-container .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-container .logo img {
+            height: 50px;
+            width: auto;
+            margin-bottom: 12px;
+        }
+        .login-container .logo h1 {
+            font-size: 24px;
+            color: var(--primary);
+            margin-top: 8px;
+        }
+        .login-container .logo p {
+            color: var(--gray-600);
+            font-size: 14px;
+        }
+        .login-container .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+        .login-container .form-footer a {
+            color: var(--gold);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .login-container .form-footer a:hover {
+            text-decoration: underline;
+        }
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+        .message.success {
+            display: block;
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .message.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+            position: relative;
+            z-index: 2;
+        }
+        .back-home:hover {
+            color: var(--gold);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            text-decoration: none;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: var(--primary);
+        }
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201, 169, 78, 0.3);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .form-group label i {
+            color: var(--gold);
+            margin-right: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: var(--transition);
+            font-family: inherit;
+            background: var(--gray-100);
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(201, 169, 78, 0.15);
+        }
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .form-options a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .form-options a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="../assets/videos/ceo-intro.mp4" type="video/mp4" />
+        </video>
+        <div class="overlay"></div>
+    </div>
+
+    <div class="login-page">
+        <div class="login-container">
+            <a href="../index.html" class="back-home">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+
+            <div class="logo">
+                <img src="../assets/images/logo.png" alt="Modern Furniture Pacific" />
+                <h1>Modern Furniture Pacific</h1>
+                <p>Welcome back! Please login to your account.</p>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="loginEmail" placeholder="john@example.com" required />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required />
+                </div>
+                <div class="form-options">
+                    <label><input type="checkbox" /> Remember Me</label>
+                    <a href="#">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <p class="form-footer">
+                    Don't have an account? <a href="signup.html">Sign Up</a>
+                </p>
+                <div id="loginMessage" class="message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    const msg = document.getElementById('loginMessage');
+                    msg.textContent = '✅ Login successful!';
+                    msg.className = 'message success';
+                    msg.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                } else {
+                    const msg = document.getElementById('loginMessage');
+                    msg.textContent = data.message || 'Login failed';
+                    msg.className = 'message error';
+                    msg.style.display = 'block';
+                }
+            } catch (error) {
+                const msg = document.getElementById('loginMessage');
+                msg.textContent = 'Network error. Is the backend running?';
+                msg.className = 'message error';
+                msg.style.display = 'block';
+                console.error('Login error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

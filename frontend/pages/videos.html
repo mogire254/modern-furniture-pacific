@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Videos - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #1a2a3a;
+            --gold: #c9a94e;
+            --gold-light: #e8d5a3;
+            --white: #ffffff;
+            --gray-100: #f8f7f4;
+            --gray-200: #e9e7e2;
+            --gray-600: #888888;
+            --gray-800: #2d2d2d;
+            --radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            background: var(--primary);
+            color: white;
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-size: 40px;
+            font-weight: 800;
+        }
+        .page-header h1 span {
+            color: var(--gold);
+        }
+        .page-header p {
+            color: rgba(255,255,255,0.7);
+            margin-top: 8px;
+            font-size: 18px;
+        }
+        .page-header .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            margin-top: 16px;
+            transition: var(--transition);
+        }
+        .page-header .back-link:hover {
+            color: var(--gold);
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== FILTER BAR ===== */
+        .filter-bar {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin: 32px 0;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .filter-bar .filter-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .filter-bar select,
+        .filter-bar input {
+            padding: 10px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: white;
+            transition: var(--transition);
+        }
+        .filter-bar select:focus,
+        .filter-bar input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        .filter-bar .upload-btn {
+            background: var(--gold);
+            color: var(--primary);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-bar .upload-btn:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201,169,78,0.3);
+        }
+
+        /* ===== VIDEOS GRID ===== */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .video-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .video-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        .video-card .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            background: var(--gray-200);
+            overflow: hidden;
+        }
+        .video-card .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-card .video-wrapper .video-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            cursor: pointer;
+        }
+        .video-card .video-wrapper .video-placeholder i {
+            font-size: 64px;
+            color: var(--gold);
+            transition: var(--transition);
+        }
+        .video-card .video-wrapper .video-placeholder:hover i {
+            transform: scale(1.1);
+        }
+        .video-card .video-wrapper .video-placeholder .play-text {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        .video-card .video-duration {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .video-card .video-info {
+            padding: 20px;
+        }
+        .video-card .video-info .video-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .video-card .video-info .video-description {
+            color: var(--gray-600);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .video-card .video-info .video-meta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: var(--gray-600);
+            padding-top: 12px;
+            border-top: 1px solid var(--gray-200);
+        }
+        .video-card .video-info .video-meta i {
+            color: var(--gold);
+            margin-right: 4px;
+        }
+        .video-card .video-info .video-meta .tag {
+            background: var(--gray-100);
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        /* ===== UPLOAD MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius);
+            max-width: 550px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.3s ease-out;
+        }
+        .modal-content .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-content .modal-header h2 {
+            font-size: 24px;
+            color: var(--primary);
+        }
+        .modal-content .modal-header .close {
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--gray-600);
+            background: none;
+            border: none;
+            transition: var(--transition);
+        }
+        .modal-content .modal-header .close:hover {
+            color: #ef4444;
+            transform: rotate(90deg);
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .form-group label i {
+            color: var(--gold);
+            margin-right: 8px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+            font-family: inherit;
+            background: var(--gray-100);
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(201,169,78,0.15);
+        }
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .form-group input[type="file"] {
+            padding: 10px;
+            background: white;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: var(--primary);
+        }
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201,169,78,0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--gray-200);
+        }
+        .btn-outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* ===== NOTIFICATION ===== */
+        .notification-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--primary);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            z-index: 3000;
+            max-width: 400px;
+            animation: slideUp 0.3s ease-out;
+            display: none;
+        }
+        .notification-toast.show {
+            display: block;
+        }
+        .notification-toast .close {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            float: right;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 28px;
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-bar .filter-group {
+                flex-direction: column;
+            }
+            .videos-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal-content {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NOTIFICATION TOAST ===== -->
+    <div id="notificationToast" class="notification-toast">
+        <button class="close" onclick="closeNotification()">&times;</button>
+        <p id="notificationMessage">Notification</p>
+    </div>
+
+    <!-- ===== UPLOAD MODAL ===== -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-upload" style="color:var(--gold);"></i> Upload Video</h2>
+                <button class="close" onclick="closeUploadModal()">&times;</button>
+            </div>
+            <form id="uploadForm" onsubmit="handleUpload(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Video Title</label>
+                    <input type="text" id="videoTitle" placeholder="e.g., Mahogany Bed Collection" required />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-folder"></i> Category</label>
+                    <select id="videoCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="showroom">Showroom Tour</option>
+                        <option value="product">Product Showcase</option>
+                        <option value="craftsmanship">Craftsmanship</option>
+                        <option value="testimonial">Customer Testimonial</option>
+                        <option value="promo">Promotional</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-align-left"></i> Description</label>
+                    <textarea id="videoDescription" placeholder="Brief description of the video..." rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-video"></i> Video File</label>
+                    <input type="file" id="videoFile" accept="video/*" required />
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-cloud-upload-alt"></i> Upload Video
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Company <span>Videos</span></h1>
+            <p>Watch our latest videos showcasing our furniture, craftsmanship, and showrooms.</p>
+            <a href="dashboard.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container">
+
+        <!-- ===== FILTER BAR ===== -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <input type="text" placeholder="🔍 Search videos..." oninput="filterVideos(this.value)" />
+                <select onchange="filterVideos(document.getElementById('searchInput').value, this.value)">
+                    <option value="all">All Categories</option>
+                    <option value="showroom">Showroom Tour</option>
+                    <option value="product">Product Showcase</option>
+                    <option value="craftsmanship">Craftsmanship</option>
+                    <option value="testimonial">Customer Testimonial</option>
+                    <option value="promo">Promotional</option>
+                </select>
+            </div>
+            <button class="upload-btn" onclick="openUploadModal()">
+                <i class="fas fa-plus"></i> Upload Video
+            </button>
+        </div>
+
+        <!-- ===== VIDEOS GRID ===== -->
+        <div class="videos-grid" id="videosGrid">
+
+            <!-- Video 1 - CEO Introduction -->
+            <div class="video-card" data-category="promo">
+                <div class="video-wrapper">
+                    <video controls preload="metadata">
+                        <source src="../assets/videos/ceo-intro.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <span class="video-duration">1:45</span>
+                </div>
+                <div class="video-info">
+                    <div class="video-title">CEO Introduction</div>
+                    <div class="video-description">Welcome to Modern Furniture Pacific - Our CEO shares our vision and commitment to quality craftsmanship.</div>
+                    <div class="video-meta">
+                        <span><i class="fas fa-tag"></i> <span class="tag">Promotional</span></span>
+                        <span><i class="fas fa-calendar"></i> Aug 10, 2026</span>
+                        <span><i class="fas fa-eye"></i> 1.2K views</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video 2 - Showroom Tour -->
+            <div class="video-card" data-category="showroom">
+                <div class="video-wrapper">
+                    <div class="video-placeholder" onclick="playVideo(this)">
+                        <i class="fas fa-play-circle"></i>
+                        <span class="play-text">Click to Play</span>
+                    </div>
+                    <video controls preload="metadata" style="display:none;">
+                        <source src="#" type="video/mp4" />
+                    </video>
+                    <span class="video-duration">3:20</span>
+                </div>
+                <div class="video-info">
+                    <div class="video-title">Ruiru Showroom Tour</div>
+                    <div class="video-description">Take a walk through our Ruiru showroom and see our premium furniture collection up close.</div>
+                    <div class="video-meta">
+                        <span><i class="fas fa-tag"></i> <span class="tag">Showroom Tour</span></span>
+                        <span><i class="fas fa-calendar"></i> Aug 5, 2026</span>
+                        <span><i class="fas fa-eye"></i> 856 views</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video 3 - Craftsmanship -->
+            <div class="video-card" data-category="craftsmanship">
+                <div class="video-wrapper">
+                    <div class="video-placeholder" onclick="playVideo(this)">
+                        <i class="fas fa-play-circle"></i>
+                        <span class="play-text">Click to Play</span>
+                    </div>
+                    <video controls preload="metadata" style="display:none;">
+                        <source src="#" type="video/mp4" />
+                    </video>
+                    <span class="video-duration">4:15</span>
+                </div>
+                <div class="video-info">
+                    <div class="video-title">Mahogany Craftsmanship</div>
+                    <div class="video-description">Watch our skilled craftsmen create beautiful mahogany furniture pieces from raw timber to finished product.</div>
+                    <div class="video-meta">
+                        <span><i class="fas fa-tag"></i> <span class="tag">Craftsmanship</span></span>
+                        <span><i class="fas fa-calendar"></i> Jul 28, 2026</span>
+                        <span><i class="fas fa-eye"></i> 2.3K views</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video 4 - Customer Testimonial -->
+            <div class="video-card" data-category="testimonial">
+                <div class="video-wrapper">
+                    <div class="video-placeholder" onclick="playVideo(this)">
+                        <i class="fas fa-play-circle"></i>
+                        <span class="play-text">Click to Play</span>
+                    </div>
+                    <video controls preload="metadata" style="display:none;">
+                        <source src="#" type="video/mp4" />
+                    </video>
+                    <span class="video-duration">2:30</span>
+                </div>
+                <div class="video-info">
+                    <div class="video-title">Customer Testimonial - Amina K.</div>
+                    <div class="video-description">Hear from our happy customer Amina K. about her experience with Modern Furniture Pacific and her mahogany bed.</div>
+                    <div class="video-meta">
+                        <span><i class="fas fa-tag"></i> <span class="tag">Testimonial</span></span>
+                        <span><i class="fas fa-calendar"></i> Jul 20, 2026</span>
+                        <span><i class="fas fa-eye"></i> 634 views</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video 5 - Product Showcase -->
+            <div class="video-card" data-category="product">
+                <div class="video-wrapper">
+                    <div class="video-placeholder" onclick="playVideo(this)">
+                        <i class="fas fa-play-circle"></i>
+                        <span class="play-text">Click to Play</span>
+                    </div>
+                    <video controls preload="metadata" style="display:none;">
+                        <source src="#" type="video/mp4" />
+                    </video>
+                    <span class="video-duration">2:45</span>
+                </div>
+                <div class="video-info">
+                    <div class="video-title">Luxury Sofa Collection</div>
+                    <div class="video-description">Explore our luxury sofa collection featuring premium fabrics, solid wood frames, and elegant designs.</div>
+                    <div class="video-meta">
+                        <span><i class="fas fa-tag"></i> <span class="tag">Product Showcase</span></span>
+                        <span><i class="fas fa-calendar"></i> Jul 15, 2026</span>
+                        <span><i class="fas fa-eye"></i> 1.8K views</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video 6 - Nyeri Showroom -->
+            <div class="video-card" data-category="showroom">
+                <div class="video-wrapper">
+                    <div class="video-placeholder" onclick="playVideo(this)">
+                        <i class="fas fa-play-circle"></i>
+                        <span class="play-text">Click to Play</span>
+                    </div>
+                    <video controls preload="metadata" style="display:none;">
+                        <source src="#" type="video/mp4" />
+                    </video>
+                    <span class="video-duration">3:00</span>
+                </div>
+                <div class="video-info">
+                    <div class="video-title">Nyeri Showroom Tour</div>
+                    <div class="video-description">Visit our Nyeri showroom and discover our collection of premium furniture pieces.</div>
+                    <div class="video-meta">
+                        <span><i class="fas fa-tag"></i> <span class="tag">Showroom Tour</span></span>
+                        <span><i class="fas fa-calendar"></i> Jul 10, 2026</span>
+                        <span><i class="fas fa-eye"></i> 423 views</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Empty State (hidden by default) -->
+        <div id="emptyState" style="display:none; text-align:center; padding:60px 20px; background:white; border-radius:var(--radius); box-shadow:var(--shadow);">
+            <i class="fas fa-video" style="font-size:64px; color:var(--gray-200);"></i>
+            <h3 style="margin-top:16px; color:var(--gray-600);">No Videos Found</h3>
+            <p style="color:var(--gray-600);">Try adjusting your search or filter criteria.</p>
+        </div>
+
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script>
+        // ===== FILTER VIDEOS =====
+        function filterVideos(search, category) {
+            const cards = document.querySelectorAll('.video-card');
+            const searchValue = (search || document.querySelector('.filter-bar input')?.value || '').toLowerCase();
+            const categoryValue = category || document.querySelector('.filter-bar select')?.value || 'all';
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const title = card.querySelector('.video-title')?.textContent?.toLowerCase() || '';
+                const description = card.querySelector('.video-description')?.textContent?.toLowerCase() || '';
+                const cardCategory = card.dataset.category || '';
+                const matchSearch = title.includes(searchValue) || description.includes(searchValue);
+                const matchCategory = categoryValue === 'all' || cardCategory === categoryValue;
+                const visible = matchSearch && matchCategory;
+                card.style.display = visible ? '' : 'none';
+                if (visible) visibleCount++;
+            });
+
+            // Show empty state if no videos visible
+            const emptyState = document.getElementById('emptyState');
+            if (visibleCount === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // ===== PLAY VIDEO =====
+        function playVideo(el) {
+            const wrapper = el.closest('.video-wrapper');
+            const placeholder = wrapper.querySelector('.video-placeholder');
+            const video = wrapper.querySelector('video');
+            if (video) {
+                placeholder.style.display = 'none';
+                video.style.display = 'block';
+                video.play();
+            }
+        }
+
+        // ===== UPLOAD MODAL =====
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on background click
+        document.getElementById('uploadModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeUploadModal();
+            }
+        });
+
+        // ===== HANDLE UPLOAD =====
+        function handleUpload(event) {
+            event.preventDefault();
+            const title = document.getElementById('videoTitle').value;
+            const category = document.getElementById('videoCategory').value;
+            const description = document.getElementById('videoDescription').value;
+            const file = document.getElementById('videoFile').files[0];
+
+            if (!file) {
+                showNotification('⚠️ Please select a video file.');
+                return;
+            }
+
+            // Simulate upload
+            showNotification('📹 Uploading "' + title + '"...');
+
+            setTimeout(() => {
+                showNotification('✅ "' + title + '" uploaded successfully!');
+                closeUploadModal();
+                document.getElementById('uploadForm').reset();
+
+                // Add new video to grid (simulated)
+                const grid = document.getElementById('videosGrid');
+                const newCard = document.createElement('div');
+                newCard.className = 'video-card';
+                newCard.dataset.category = category;
+                newCard.innerHTML = `
+                    <div class="video-wrapper">
+                        <div class="video-placeholder" onclick="playVideo(this)">
+                            <i class="fas fa-play-circle"></i>
+                            <span class="play-text">Click to Play</span>
+                        </div>
+                        <video controls preload="metadata" style="display:none;">
+                            <source src="${URL.createObjectURL(file)}" type="${file.type}" />
+                        </video>
+                        <span class="video-duration">New</span>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">${title}</div>
+                        <div class="video-description">${description || 'No description provided.'}</div>
+                        <div class="video-meta">
+                            <span><i class="fas fa-tag"></i> <span class="tag">${category.charAt(0).toUpperCase() + category.slice(1)}</span></span>
+                            <span><i class="fas fa-calendar"></i> ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                            <span><i class="fas fa-eye"></i> 0 views</span>
+                        </div>
+                    </div>
+                `;
+                grid.prepend(newCard);
+                showNotification('🎉 Video added to the gallery!');
+            }, 2000);
+        }
+
+        // ===== NOTIFICATION =====
+        function showNotification(message) {
+            const toast = document.getElementById('notificationToast');
+            const msg = document.getElementById('notificationMessage');
+            msg.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        function closeNotification() {
+            document.getElementById('notificationToast').classList.remove('show');
+        }
+
+        // ===== CLOSE ON ESCAPE =====
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeUploadModal();
+                closeNotification();
+            }
+        });
+    </script>
+
+</body>
+</html>

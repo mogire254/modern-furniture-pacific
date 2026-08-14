@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        /* ===== FIX: Transparent Header ===== */
+        .header {
+            background: transparent !important;
+            backdrop-filter: none !important;
+            border-bottom: none !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 20px 0;
+        }
+        
+        /* Logo text color - white on video */
+        .logo a {
+            color: white !important;
+        }
+        .logo span {
+            color: white !important;
+        }
+        
+        /* Button styles on transparent header */
+        .header .btn-outline {
+            border-color: rgba(255,255,255,0.5) !important;
+            color: white !important;
+        }
+        .header .btn-outline:hover {
+            border-color: var(--gold) !important;
+            color: var(--gold) !important;
+            background: rgba(201, 169, 78, 0.1) !important;
+        }
+        .header .btn-primary {
+            background: var(--gold) !important;
+            color: var(--primary) !important;
+        }
+        .header .btn-primary:hover {
+            background: var(--gold-light) !important;
+        }
+
+        /* Fix for video background visibility */
+        .video-background .overlay {
+            background: rgba(26, 42, 58, 0.4) !important;
+        }
+        
+        /* Logo image style */
+        .logo img {
+            height: 45px;
+            width: auto;
+            display: block;
+        }
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        /* Hamburger icon color on transparent header */
+        .hamburger {
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline id="bgVideo">
+            <source src="assets/videos/ceo-intro.mp4" type="video/mp4" />
+        </video>
+        <div class="overlay" style="background: rgba(26, 42, 58, 0.4);"></div>
+    </div>
+
+    <!-- Header - Transparent -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="assets/images/logo.png" alt="Modern Furniture Pacific" />
+                    <span>Modern Furniture Pacific</span>
+                </a>
+            </div>
+            <div class="auth-buttons">
+                <a href="pages/login.html" class="btn btn-outline">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a href="pages/signup.html" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Welcome to <span>Modern Furniture Pacific</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Where Luxury Meets Innovation — Transform Your Space Today
+                </p>
+                <div class="hero-cta">
+                    <a href="pages/signup.html" class="btn btn-primary btn-lg">
+                        <i class="fas fa-shopping-bag"></i> Get Started
+                    </a>
+                    <a href="#showrooms" class="btn btn-outline btn-lg">
+                        <i class="fas fa-arrow-right"></i> Our Showrooms
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="number">15+</span>
+                        <span class="label">Years of Excellence</span>
+                    </div>
+                    <div class="stat">
+                        <span class="number">1000+</span>
+                        <span class="label">Happy Clients</span>
+                    </div>
+                    <div class="stat">
+                        <span class="number">3</span>
+                        <span class="label">Showrooms</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer with Showrooms -->
+    <footer class="footer" id="showrooms">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3><img src="assets/images/logo.png" alt="Modern Furniture Pacific" style="height:30px; width:auto; margin-bottom:8px;" /></h3>
+                    <p>Redefining living spaces with premium craftsmanship and innovative design since 2010.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="pages/login.html"><i class="fas fa-chevron-right"></i> Login</a>
+                    <a href="pages/signup.html"><i class="fas fa-chevron-right"></i> Sign Up</a>
+                    <a href="#"><i class="fas fa-chevron-right"></i> About Us</a>
+                    <a href="#"><i class="fas fa-chevron-right"></i> Contact</a>
+                </div>
+                <div class="footer-showrooms">
+                    <h4><i class="fas fa-store"></i> Our Showrooms</h4>
+                    <div class="showroom">
+                        <i class="fas fa-map-pin"></i>
+                        <div>
+                            <strong>Ruiru Showroom</strong>
+                            <span>Ruiru Town, Main Street</span>
+                            <span>Mon-Sat: 9AM - 6PM</span>
+                        </div>
+                    </div>
+                    <div class="showroom">
+                        <i class="fas fa-map-pin"></i>
+                        <div>
+                            <strong>Nyeri Showroom</strong>
+                            <span>Nyeri Town, Kenyatta Road</span>
+                            <span>Mon-Sat: 9AM - 6PM</span>
+                        </div>
+                    </div>
+                    <div class="showroom">
+                        <i class="fas fa-map-pin"></i>
+                        <div>
+                            <strong>Nakuru Showroom</strong>
+                            <span>Nakuru Town, Moi Road</span>
+                            <span>Mon-Sat: 9AM - 6PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Modern Furniture Pacific. All rights reserved.</p>
+                <div>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Video Background
+        document.addEventListener('DOMContentLoaded', () => {
+            const video = document.getElementById('bgVideo');
+            if (video) {
+                video.play().catch(() => {
+                    console.log('Video autoplay prevented.');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

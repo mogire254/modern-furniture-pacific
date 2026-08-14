@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Repair Service - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1a2a3a;
+            --gold: #c9a94e;
+            --gold-light: #e8d5a3;
+            --white: #ffffff;
+            --gray-100: #f8f7f4;
+            --gray-200: #e9e7e2;
+            --gray-600: #888888;
+            --gray-800: #2d2d2d;
+            --radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+        }
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+        .page-header {
+            margin-bottom: 32px;
+        }
+        .page-header h1 {
+            font-size: 32px;
+            color: var(--primary);
+        }
+        .page-header h1 span {
+            color: var(--gold);
+        }
+        .page-header p {
+            color: var(--gray-600);
+            margin-top: 8px;
+            font-size: 16px;
+        }
+        .repair-form {
+            background: white;
+            padding: 32px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .repair-form h2 {
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .form-group label i {
+            color: var(--gold);
+            margin-right: 8px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+            font-family: inherit;
+            background: var(--gray-100);
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(201,169,78,0.15);
+        }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: var(--primary);
+        }
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201,169,78,0.3);
+        }
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .notification-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--primary);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            z-index: 3000;
+            max-width: 400px;
+            animation: slideUp 0.3s ease-out;
+            display: none;
+        }
+        .notification-toast.show { display: block; }
+        .notification-toast .close {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            float: right;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .info-box {
+            background: var(--gray-100);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--gold);
+        }
+        .info-box p {
+            color: var(--gray-600);
+            font-size: 14px;
+        }
+        .info-box i {
+            color: var(--gold);
+            margin-right: 8px;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .repair-form {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="notification-toast">
+        <button class="close" onclick="closeNotification()">&times;</button>
+        <p id="notificationMessage">Notification</p>
+    </div>
+
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Repair <span>Service</span></h1>
+            <p>Need your furniture fixed? Request a repair and we'll send a renovator.</p>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <p><i class="fas fa-info-circle"></i> Our expert renovators will assess your furniture, provide a cost estimate, and schedule a repair visit at your convenience.</p>
+        </div>
+
+        <!-- Repair Form -->
+        <div class="repair-form">
+            <h2><i class="fas fa-tools" style="color:var(--gold);"></i> Request a Repair</h2>
+            <form id="repairForm" onsubmit="submitRepair(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-couch"></i> Item Type</label>
+                    <select required>
+                        <option value="">Select item type</option>
+                        <option value="chair">Chair</option>
+                        <option value="bed">Bed</option>
+                        <option value="mattress">Mattress</option>
+                        <option value="sofa">Sofa</option>
+                        <option value="table">Table</option>
+                        <option value="wardrobe">Wardrobe</option>
+                        <option value="desk">Desk</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-info-circle"></i> Description</label>
+                    <textarea placeholder="Describe the issue in detail..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-image"></i> Upload Photo</label>
+                    <input type="file" accept="image/*" />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar"></i> Preferred Date</label>
+                        <input type="date" required />
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-clock"></i> Preferred Time</label>
+                        <input type="time" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-map-marker-alt"></i> Location</label>
+                    <input type="text" placeholder="Your address for the repair visit" required />
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-paper-plane"></i> Request Repair
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showNotification(message) {
+            const toast = document.getElementById('notificationToast');
+            const msg = document.getElementById('notificationMessage');
+            msg.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+
+        function closeNotification() {
+            document.getElementById('notificationToast').classList.remove('show');
+        }
+
+        function submitRepair(event) {
+            event.preventDefault();
+            showNotification('🔧 Repair request submitted! A renovator will contact you soon.');
+            event.target.reset();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeNotification();
+        });
+    </script>
+
+</body>
+</html>

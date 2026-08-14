@@ -1,0 +1,15 @@
+[
+  {
+    "id": "ac3944aa-5bab-454b-92e6-84e3a06270ab",
+    "name": "muthonimuthoga",
+    "email": "muthonimuthoga@gmail.com",
+    "password": "$2a$10$bY8FiHju2R2nwDbQTngiluymwhSaGzKptuWwI1zkS1rvqdiHbDAy.",
+    "role": "user",
+    "profileImage": "avatar-default.png",
+    "phone": "",
+    "address": {},
+    "isActive": true,
+    "createdAt": "2026-08-11T12:09:52.650Z",
+    "lastLogin": "2026-08-11T12:10:23.145Z"
+  }
+]

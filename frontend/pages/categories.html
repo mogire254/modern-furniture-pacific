@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Categories - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1a2a3a;
+            --gold: #c9a94e;
+            --gold-light: #e8d5a3;
+            --white: #ffffff;
+            --gray-100: #f8f7f4;
+            --gray-200: #e9e7e2;
+            --gray-600: #888888;
+            --gray-800: #2d2d2d;
+            --radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+        }
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+        .page-header {
+            margin-bottom: 32px;
+        }
+        .page-header h1 {
+            font-size: 32px;
+            color: var(--primary);
+        }
+        .page-header h1 span {
+            color: var(--gold);
+        }
+        .page-header p {
+            color: var(--gray-600);
+            margin-top: 8px;
+            font-size: 16px;
+        }
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .category-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        .category-card .category-image {
+            height: 200px;
+            background: var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            color: var(--gold);
+            transition: var(--transition);
+        }
+        .category-card:hover .category-image {
+            background: var(--gold-light);
+        }
+        .category-card .category-info {
+            padding: 24px;
+        }
+        .category-card .category-info h3 {
+            font-size: 20px;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .category-card .category-info p {
+            color: var(--gray-600);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .category-card .category-info .count {
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .category-card .category-info .count i {
+            margin-right: 6px;
+        }
+        @media (max-width: 768px) {
+            .categories-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Shop by <span>Category</span></h1>
+            <p>Find exactly what you're looking for in our curated collections.</p>
+        </div>
+
+        <!-- Categories Grid -->
+        <div class="categories-grid">
+            <!-- Bedroom -->
+            <a href="products.html?category=bedroom" class="category-card">
+                <div class="category-image"><i class="fas fa-bed"></i></div>
+                <div class="category-info">
+                    <h3>Bedroom</h3>
+                    <p>Luxurious beds, wardrobes, nightstands and more</p>
+                    <span class="count"><i class="fas fa-tag"></i> 12 Products</span>
+                </div>
+            </a>
+
+            <!-- Dining -->
+            <a href="products.html?category=dining" class="category-card">
+                <div class="category-image"><i class="fas fa-utensils"></i></div>
+                <div class="category-info">
+                    <h3>Dining</h3>
+                    <p>Elegant dining tables, chairs, buffets and bar stools</p>
+                    <span class="count"><i class="fas fa-tag"></i> 8 Products</span>
+                </div>
+            </a>
+
+            <!-- Sitting Room -->
+            <a href="products.html?category=sitting" class="category-card">
+                <div class="category-image"><i class="fas fa-couch"></i></div>
+                <div class="category-info">
+                    <h3>Sitting Room</h3>
+                    <p>Premium sofas, armchairs, coffee tables and TV units</p>
+                    <span class="count"><i class="fas fa-tag"></i> 15 Products</span>
+                </div>
+            </a>
+
+            <!-- Balcony -->
+            <a href="products.html?category=balcony" class="category-card">
+                <div class="category-image"><i class="fas fa-leaf"></i></div>
+                <div class="category-info">
+                    <h3>Balcony</h3>
+                    <p>Outdoor chairs, tables, planters and hammocks</p>
+                    <span class="count"><i class="fas fa-tag"></i> 6 Products</span>
+                </div>
+            </a>
+
+            <!-- Office -->
+            <a href="products.html?category=office" class="category-card">
+                <div class="category-image"><i class="fas fa-laptop"></i></div>
+                <div class="category-info">
+                    <h3>Office</h3>
+                    <p>Ergonomic desks, chairs and office storage solutions</p>
+                    <span class="count"><i class="fas fa-tag"></i> 4 Products</span>
+                </div>
+            </a>
+
+            <!-- All Products -->
+            <a href="products.html" class="category-card">
+                <div class="category-image"><i class="fas fa-th-large"></i></div>
+                <div class="category-info">
+                    <h3>All Products</h3>
+                    <p>View our complete furniture collection</p>
+                    <span class="count"><i class="fas fa-tag"></i> 45 Products</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

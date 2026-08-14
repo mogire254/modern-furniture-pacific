@@ -1,0 +1,24 @@
+[
+  {
+    "id": "6c6d1545-4027-4c84-9530-ddfc6facbe77",
+    "name": "mahogan bed",
+    "description": "best feeling ",
+    "price": 100000,
+    "salePrice": 150000,
+    "category": "Beds",
+    "stock": 1,
+    "images": [],
+    "status": "available",
+    "branch": "all",
+    "features": [
+      "solid wood"
+    ],
+    "dimensions": {},
+    "rating": 0,
+    "numReviews": 0,
+    "isFeatured": false,
+    "isNew": true,
+    "createdAt": "2026-08-11T15:58:03.297Z",
+    "updatedAt": "2026-08-11T16:00:40.186Z"
+  }
+]

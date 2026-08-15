@@ -9,7 +9,16 @@ dotenv.config();
 
 // Import routes
 const authRoutes = require('./src/routes/auth');
-// ... (all your other route imports remain the same)
+const productRoutes = require('./src/routes/products');
+const categoryRoutes = require('./src/routes/categories');
+const orderRoutes = require('./src/routes/orders');
+const cartRoutes = require('./src/routes/cart');
+const reviewRoutes = require('./src/routes/reviews');
+const applicationRoutes = require('./src/routes/applications');
+const supplierRoutes = require('./src/routes/suppliers');
+const repairRoutes = require('./src/routes/repairs');
+const adminRoutes = require('./src/routes/admin');
+const chatRoutes = require('./src/routes/chat');
 
 const app = express();
 
@@ -30,35 +39,30 @@ app.use(morgan('dev'));
 // Static files for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// ===== ✅ NEW: ROOT ROUTE (Add this here) =====
+// ===== ROOT ROUTE =====
 app.get('/', (req, res) => {
   res.json({
     status: 'OK',
     message: 'Modern Furniture Pacific API is running',
-    version: '1.0.0',
-    endpoints: {
-      auth: '/api/auth',
-      products: '/api/products',
-      categories: '/api/categories',
-      orders: '/api/orders',
-      cart: '/api/cart',
-      reviews: '/api/reviews',
-      applications: '/api/applications',
-      suppliers: '/api/suppliers',
-      repairs: '/api/repairs',
-      admins: '/api/admins',
-      chat: '/api/chat',
-      health: '/api/health'
-    }
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
-// ===== API ROUTES (Your existing routes) =====
+// ===== API ROUTES =====
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
-// ... (all your other app.use routes remain the same)
+app.use('/api/categories', categoryRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/applications', applicationRoutes);
+app.use('/api/suppliers', supplierRoutes);
+app.use('/api/repairs', repairRoutes);
+app.use('/api/admins', adminRoutes);
+app.use('/api/chat', chatRoutes);
 
-// Health check (keep this too)
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
@@ -68,9 +72,17 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Error handler (keep this at the end)
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found'
+  });
+});
+
+// Error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('❌ Error:', err.stack);
   res.status(500).json({
     success: false,
     message: err.message || 'Something went wrong!'
@@ -79,7 +91,6 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Backend running at http://localhost:${PORT}`);
+  console.log(`🚀 Backend running on port ${PORT}`);
   console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔓 CORS: All origins allowed`);
 });

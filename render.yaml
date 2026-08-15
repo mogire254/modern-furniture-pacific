@@ -15,14 +15,11 @@
         value: modern_furniture_pacific_live_secret_key_2026
       - key: JWT_EXPIRE
         value: 7d
-      - key: CLIENT_URL
-        sync: false
 
-  # Frontend Static Site
+  # Frontend Static Site - REMOVE plan: free
   - type: web
     name: modern-furniture-frontend
     runtime: static
-    plan: free
     buildCommand: echo "Static site - no build needed"
     staticPublishPath: ./frontend
     envVars:

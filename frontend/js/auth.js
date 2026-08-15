@@ -1,5 +1,5 @@
-﻿// API Configuration
-const API_URL = 'http://localhost:5000/api';
+﻿// API Configuration - LIVE
+const API_URL = 'https://modern-furniture-api.onrender.com/api';
 
 // Modal Functions
 function openModal(id) {
@@ -41,7 +41,7 @@ function showMessage(elementId, message, type = 'success') {
     }
 }
 
-// Login Handler - ✅ FIXED
+// Login Handler - LIVE
 async function handleLogin(event) {
     event.preventDefault();
     
@@ -62,7 +62,6 @@ async function handleLogin(event) {
         console.log('Login response:', data);
         
         if (data.success) {
-            // Store token and user info
             localStorage.setItem('token', data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
             
@@ -70,8 +69,12 @@ async function handleLogin(event) {
             
             setTimeout(() => {
                 closeModal('loginModal');
-                // ✅ FIXED: Redirect to pages/dashboard.html
-                window.location.href = 'pages/dashboard.html';
+                const user = data.user;
+                if (['super_admin', 'ceo_admin', 'branch_admin'].includes(user.role)) {
+                    window.location.href = 'pages/admin/admin-login.html';
+                } else {
+                    window.location.href = 'pages/dashboard.html';
+                }
             }, 1000);
         } else {
             showMessage('loginMessage', data.message || 'Login failed', 'error');
@@ -166,7 +169,7 @@ async function handleForgotPassword(event) {
     }
 }
 
-// Show Dashboard Preview (for index.html)
+// Show Dashboard Preview
 function showDashboardPreview(user) {
     const preview = document.getElementById('dashboardPreview');
     const userInfo = document.getElementById('userInfo');
@@ -181,17 +184,14 @@ function showDashboardPreview(user) {
     }
 }
 
-// ✅ FIXED: Close Dashboard Preview and go to dashboard
 function closeDashboardPreview() {
     const preview = document.getElementById('dashboardPreview');
     if (preview) {
         preview.style.display = 'none';
-        // ✅ FIXED: Redirect to pages/dashboard.html
         window.location.href = 'pages/dashboard.html';
     }
 }
 
-// Logout Handler
 function handleLogout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -226,13 +226,12 @@ function toggleMobileMenu() {
     }
 }
 
-// Check if user is already logged in (for index.html)
+// Check if user is already logged in
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
     
     if (token && user) {
-        // If on index.html, show dashboard preview
         const preview = document.getElementById('dashboardPreview');
         if (preview) {
             showDashboardPreview(JSON.parse(user));
@@ -240,4 +239,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-console.log('✅ auth.js loaded with fixed redirects to pages/dashboard.html!');
+console.log('✅ auth.js loaded with LIVE API URL:', API_URL);

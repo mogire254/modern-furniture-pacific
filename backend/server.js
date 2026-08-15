@@ -9,21 +9,11 @@ dotenv.config();
 
 // Import routes
 const authRoutes = require('./src/routes/auth');
-const productRoutes = require('./src/routes/products');
-const categoryRoutes = require('./src/routes/categories');
-const orderRoutes = require('./src/routes/orders');
-const cartRoutes = require('./src/routes/cart');
-const reviewRoutes = require('./src/routes/reviews');
-const applicationRoutes = require('./src/routes/applications');
-const supplierRoutes = require('./src/routes/suppliers');
-const repairRoutes = require('./src/routes/repairs');
-const adminRoutes = require('./src/routes/admin');
-const chatRoutes = require('./src/routes/chat');
+// ... (all your other route imports remain the same)
 
 const app = express();
 
 // ===== CORS CONFIGURATION =====
-// Allow all origins for production (or specify your frontend URL)
 app.use(cors({
   origin: '*',
   credentials: true,
@@ -31,7 +21,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Handle preflight requests
 app.options('*', cors());
 
 app.use(express.json({ limit: '50mb' }));
@@ -41,20 +30,35 @@ app.use(morgan('dev'));
 // Static files for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// ===== API ROUTES =====
+// ===== ✅ NEW: ROOT ROUTE (Add this here) =====
+app.get('/', (req, res) => {
+  res.json({
+    status: 'OK',
+    message: 'Modern Furniture Pacific API is running',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      products: '/api/products',
+      categories: '/api/categories',
+      orders: '/api/orders',
+      cart: '/api/cart',
+      reviews: '/api/reviews',
+      applications: '/api/applications',
+      suppliers: '/api/suppliers',
+      repairs: '/api/repairs',
+      admins: '/api/admins',
+      chat: '/api/chat',
+      health: '/api/health'
+    }
+  });
+});
+
+// ===== API ROUTES (Your existing routes) =====
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/cart', cartRoutes);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api/applications', applicationRoutes);
-app.use('/api/suppliers', supplierRoutes);
-app.use('/api/repairs', repairRoutes);
-app.use('/api/admins', adminRoutes);
-app.use('/api/chat', chatRoutes);
+// ... (all your other app.use routes remain the same)
 
-// Health check
+// Health check (keep this too)
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
@@ -64,7 +68,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Error handler
+// Error handler (keep this at the end)
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({

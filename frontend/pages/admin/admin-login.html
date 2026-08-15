@@ -69,13 +69,23 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000/api';
+        // ============================================
+        // LIVE API URL - Updated for Render Deployment
+        // ============================================
+        const API_URL = 'https://modern-furniture-api.onrender.com/api';
 
         async function handleAdminLogin(event) {
             event.preventDefault();
             const email = document.getElementById('adminEmail').value;
             const password = document.getElementById('adminPassword').value;
             const msg = document.getElementById('adminLoginMessage');
+            
+            // Show loading state
+            msg.textContent = '⏳ Logging in...';
+            msg.className = 'message';
+            msg.style.display = 'block';
+            msg.style.background = '#dbeafe';
+            msg.style.color = '#1e40af';
             
             try {
                 const response = await fetch(`${API_URL}/auth/login`, {
@@ -99,7 +109,7 @@
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(user));
                     
-                    msg.textContent = '✅ Admin login successful!';
+                    msg.textContent = '✅ Admin login successful! Redirecting...';
                     msg.className = 'message success';
                     msg.style.display = 'block';
                     
@@ -110,20 +120,52 @@
                             window.location.href = 'ceo-admin.html';
                         } else if (user.role === 'branch_admin') {
                             window.location.href = 'branch-admin.html';
+                        } else {
+                            window.location.href = '../../index.html';
                         }
                     }, 1000);
                 } else {
-                    msg.textContent = data.message || 'Login failed';
+                    msg.textContent = '❌ ' + (data.message || 'Login failed. Please check your credentials.');
                     msg.className = 'message error';
                     msg.style.display = 'block';
                 }
             } catch (error) {
-                msg.textContent = 'Network error. Is the backend running?';
+                console.error('Admin login error:', error);
+                msg.textContent = '❌ Network error. Please check your connection or backend status.';
                 msg.className = 'message error';
                 msg.style.display = 'block';
-                console.error('Admin login error:', error);
             }
         }
+
+        // ============================================
+        // Check if already logged in
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            if (token && user) {
+                try {
+                    const userData = JSON.parse(user);
+                    const adminRoles = ['super_admin', 'ceo_admin', 'branch_admin'];
+                    
+                    if (adminRoles.includes(userData.role)) {
+                        // Redirect to appropriate dashboard
+                        if (userData.role === 'super_admin') {
+                            window.location.href = 'super-admin.html';
+                        } else if (userData.role === 'ceo_admin') {
+                            window.location.href = 'ceo-admin.html';
+                        } else if (userData.role === 'branch_admin') {
+                            window.location.href = 'branch-admin.html';
+                        }
+                    }
+                } catch (e) {
+                    // Invalid user data, clear localStorage
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                }
+            }
+        });
     </script>
 </body>
 </html>

@@ -11,5 +11,18 @@
     "isActive": true,
     "createdAt": "2026-08-11T12:09:52.650Z",
     "lastLogin": "2026-08-11T12:10:23.145Z"
+  },
+  {
+    "id": "b17d2779-9140-42a6-9752-e12b82b22246",
+    "name": "brian mogire",
+    "email": "josephkingothi@gmail.com",
+    "password": "$2a$10$JzWThDVKrzIftuyfJRxDueFG0RsBFV4/T2AFdV8IDhwuRJCZznRJq",
+    "role": "user",
+    "profileImage": "avatar-default.png",
+    "phone": "",
+    "address": {},
+    "isActive": true,
+    "createdAt": "2026-08-15T10:53:50.955Z",
+    "lastLogin": "2026-08-15T10:54:31.767Z"
   }
 ]

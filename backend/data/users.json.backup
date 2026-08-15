@@ -1,0 +1,62 @@
+﻿[
+  {
+    "id": "admin1",
+    "name": "Super Admin",
+    "email": "brian@modernfurniturepacific.com",
+    "password": "$2a$10$hUkoFMKkp9QpF6beq6jLe.Jwv//G8dS7PquaYAQcHG/2sIvSNl8Iu",
+    "role": "super_admin",
+    "branch": "all",
+    "phone": "+254 700 123 456",
+    "isActive": true,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "lastLogin": null
+  },
+  {
+    "id": "admin2",
+    "name": "CEO Admin",
+    "email": "ceo@modernfurniturepacific.com",
+    "password": "$2a$10$hUkoFMKkp9QpF6beq6jLe.Jwv//G8dS7PquaYAQcHG/2sIvSNl8Iu",
+    "role": "ceo_admin",
+    "branch": "all",
+    "phone": "+254 700 123 457",
+    "isActive": true,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "lastLogin": null
+  },
+  {
+    "id": "admin3",
+    "name": "Ruiru Manager",
+    "email": "ruiru@modernfurniturepacific.com",
+    "password": "$2a$10$hUkoFMKkp9QpF6beq6jLe.Jwv//G8dS7PquaYAQcHG/2sIvSNl8Iu",
+    "role": "branch_admin",
+    "branch": "ruiru",
+    "phone": "+254 700 123 458",
+    "isActive": true,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "lastLogin": null
+  },
+  {
+    "id": "admin4",
+    "name": "Nyeri Manager",
+    "email": "nyeri@modernfurniturepacific.com",
+    "password": "$2a$10$hUkoFMKkp9QpF6beq6jLe.Jwv//G8dS7PquaYAQcHG/2sIvSNl8Iu",
+    "role": "branch_admin",
+    "branch": "nyeri",
+    "phone": "+254 700 123 459",
+    "isActive": true,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "lastLogin": null
+  },
+  {
+    "id": "admin5",
+    "name": "Nakuru Manager",
+    "email": "nakuru@modernfurniturepacific.com",
+    "password": "$2a$10$hUkoFMKkp9QpF6beq6jLe.Jwv//G8dS7PquaYAQcHG/2sIvSNl8Iu",
+    "role": "branch_admin",
+    "branch": "nakuru",
+    "phone": "+254 700 123 460",
+    "isActive": true,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "lastLogin": null
+  }
+]

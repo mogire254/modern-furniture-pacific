@@ -1,0 +1,70 @@
+[
+    {
+        "id": "admin1",
+        "name": "Brian Mogire",
+        "email": "brian@modernfurniturepacific.com",
+        "password": "$2a$10$h7wFqEbuB8tWnDRFR1fOeO9W6gW3NkLqV7sX9yZ2cB5nM8pQrS1tU",
+        "role": "super_admin",
+        "branch": "all",
+        "phone": "+254 700 123 456",
+        "isActive": true,
+        "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+        "id": "admin2",
+        "name": "CEO Admin",
+        "email": "ceo@modernfurniturepacific.com",
+        "password": "$2a$10$h7wFqEbuB8tWnDRFR1fOeO9W6gW3NkLqV7sX9yZ2cB5nM8pQrS1tU",
+        "role": "ceo_admin",
+        "branch": "all",
+        "phone": "+254 700 123 457",
+        "isActive": true,
+        "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+        "id": "admin3",
+        "name": "Ruiru Manager",
+        "email": "ruiru@modernfurniturepacific.com",
+        "password": "$2a$10$h7wFqEbuB8tWnDRFR1fOeO9W6gW3NkLqV7sX9yZ2cB5nM8pQrS1tU",
+        "role": "branch_admin",
+        "branch": "ruiru",
+        "phone": "+254 700 123 458",
+        "isActive": true,
+        "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+        "id": "admin4",
+        "name": "Nyeri Manager",
+        "email": "nyeri@modernfurniturepacific.com",
+        "password": "$2a$10$h7wFqEbuB8tWnDRFR1fOeO9W6gW3NkLqV7sX9yZ2cB5nM8pQrS1tU",
+        "role": "branch_admin",
+        "branch": "nyeri",
+        "phone": "+254 700 123 459",
+        "isActive": true,
+        "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+        "id": "admin5",
+        "name": "Nakuru Manager",
+        "email": "nakuru@modernfurniturepacific.com",
+        "password": "$2a$10$h7wFqEbuB8tWnDRFR1fOeO9W6gW3NkLqV7sX9yZ2cB5nM8pQrS1tU",
+        "role": "branch_admin",
+        "branch": "nakuru",
+        "phone": "+254 700 123 460",
+        "isActive": true,
+        "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+    "id": "7ea52d7f-1a59-4dcc-9b1d-3a22a0ba00b2",
+    "name": "muthoni muthoga ",
+    "email": "josephkingothi@gmail.com",
+    "password": "$2a$10$ktzuQ7U9Yj4JBUvtIkrsFOU4Gb9YQm9u1s3Btl/7IgimKamjLcz3q",
+    "role": "user",
+    "profileImage": "avatar-default.png",
+    "phone": "",
+    "address": {},
+    "isActive": true,
+    "createdAt": "2026-08-09T10:57:51.366Z",
+    "lastLogin": "2026-08-10T17:17:50.755Z"
+  }
+]

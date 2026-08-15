@@ -1,27 +1,5 @@
 ﻿services:
-  # Backend API Service
   - type: web
-    name: modern-furniture-api
-    runtime: node
-    plan: free
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && node server.js
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 5000
-      - key: JWT_SECRET
-        value: modern_furniture_pacific_live_secret_key_2026
-      - key: JWT_EXPIRE
-        value: 7d
-
-  # Frontend Static Site - REMOVE plan: free
-  - type: web
-    name: modern-furniture-frontend
+    name: modern-furniture-pacific
     runtime: static
-    buildCommand: echo "Static site - no build needed"
     staticPublishPath: ./frontend
-    envVars:
-      - key: API_URL
-        value: https://modern-furniture-api.onrender.com/api

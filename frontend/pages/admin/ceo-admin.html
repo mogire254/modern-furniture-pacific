@@ -1125,13 +1125,11 @@
                         </div>
                         <button class="btn btn-outline" onclick="loadCustomerCare()"><i class="fas fa-sync-alt"></i> Refresh</button>
                     </div>
-
                     <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
                         <div class="stat-card"><div class="stat-icon"><i class="fas fa-comments"></i></div><div class="stat-info"><h3 id="totalCare">0</h3><p>Total</p></div></div>
                         <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock" style="background:#f59e0b;"></i></div><div class="stat-info"><h3 id="openCare">0</h3><p>Open</p></div></div>
                         <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="closedCare">0</h3><p>Closed</p></div></div>
                     </div>
-
                     <div class="section" id="careContainer"></div>
                 </section>
 
@@ -1206,7 +1204,10 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000/api';
+        // ============================================
+        // UPDATED TO LIVE URL
+        // ============================================
+        const API_URL = 'https://modern-furniture-api.onrender.com/api';
         let currentUser = null;
         let allProducts = [];
         let editingProductId = null;
@@ -2065,203 +2066,6 @@ Description: ${report.description}
         function approveReview(id) { showToast('✅ Review approved and visible to users!'); loadReviews(); }
         function rejectReview(id) { showToast('❌ Review rejected'); loadReviews(); }
         function deleteReview(id) { if (!confirm('⚠️ Delete this review?')) return; showToast('🗑️ Review deleted'); loadReviews(); }
-
-        // ===== VIDEO FUNCTIONS =====
-        function loadVideos() {
-            const saved = localStorage.getItem('ceoVideos');
-            if (saved) {
-                try {
-                    allVideos = JSON.parse(saved);
-                } catch (e) {
-                    allVideos = [];
-                }
-            } else {
-                allVideos = [];
-                localStorage.setItem('ceoVideos', JSON.stringify(allVideos));
-            }
-            renderVideos();
-            updateVideoStats();
-        }
-
-        function renderVideos() {
-            const container = document.getElementById('videoContainer');
-            if (!container) return;
-            
-            if (!allVideos || allVideos.length === 0) {
-                container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:#888;">
-                    <i class="fas fa-video" style="font-size:48px; color:#ddd; margin-bottom:16px;"></i>
-                    <h3>No Media Uploaded</h3>
-                    <p style="margin-top:8px;">Click "Upload Media" to add videos or images for users.</p>
-                </div>`;
-                return;
-            }
-            
-            container.innerHTML = allVideos.map(v => {
-                const isVideo = v.fileType === 'video' || v.type === 'video';
-                const branchName = v.branch === 'all' ? '🌍 All Branches' : v.branch.charAt(0).toUpperCase() + v.branch.slice(1);
-                const isSent = v.sentToUsers === true;
-                
-                return `
-                    <div class="video-card" style="border:1px solid ${isSent ? '#10b981' : '#e9e7e2'};">
-                        <div class="video-preview">
-                            ${v.fileData ? (isVideo ? `<video muted loop><source src="${v.fileData}"></video>` : `<img src="${v.fileData}" />`) : `<i class="fas fa-${isVideo ? 'video' : 'image'}" style="font-size:48px;"></i>`}
-                            ${isVideo ? `<div class="play-icon"><i class="fas fa-play-circle"></i></div>` : ''}
-                            ${isSent ? `<div style="position:absolute;top:12px;left:12px;background:#10b981;color:white;padding:2px 12px;border-radius:20px;font-size:10px;font-weight:600;">✓ Sent to Users</div>` : ''}
-                            <div style="position:absolute;top:12px;right:12px;background:${isVideo ? '#ef4444' : '#3b82f6'};color:white;padding:2px 12px;border-radius:20px;font-size:10px;font-weight:600;">${isVideo ? '🎬 Video' : '🖼️ Image'}</div>
-                        </div>
-                        <div class="video-body">
-                            <h4>${v.title}</h4>
-                            <p>${v.note || 'No description'}</p>
-                            <div class="video-meta">
-                                <span>📁 ${branchName}</span>
-                                <span>👁️ ${v.views || 0} views</span>
-                                <span>👤 ${v.uploadedBy || 'CEO Admin'}</span>
-                                <span>📅 ${new Date(v.uploadedAt).toLocaleDateString()}</span>
-                            </div>
-                            <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
-                                ${!isSent ? `<button class="btn btn-success btn-sm" onclick="sendToUsers('${v.id}')"><i class="fas fa-paper-plane"></i> Send to Users</button>` : `<span style="background:#10b981;color:white;padding:4px 12px;border-radius:20px;font-size:12px;">✓ Sent</span>`}
-                                <button class="btn btn-primary btn-sm" onclick="editVideo('${v.id}')"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteVideo('${v.id}')"><i class="fas fa-trash"></i> Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function updateVideoStats() {
-            document.getElementById('totalVideos').textContent = allVideos.length;
-            document.getElementById('totalViews').textContent = allVideos.reduce((sum, v) => sum + (v.views || 0), 0);
-            document.getElementById('sentCount').textContent = allVideos.filter(v => v.sentToUsers === true).length;
-        }
-
-        function showUploadVideo() {
-            document.getElementById('videoTitle').value = '';
-            document.getElementById('videoNote').value = '';
-            document.getElementById('videoFileData').value = '';
-            document.getElementById('videoFilePreview').style.display = 'none';
-            document.getElementById('videoUploadMsg').innerHTML = '';
-            videoFileData = null;
-            videoFileName = null;
-            document.getElementById('videoUploadModal').classList.add('active');
-        }
-
-        function closeVideoUpload() {
-            document.getElementById('videoUploadModal').classList.remove('active');
-        }
-
-        function handleVideoFile(input) {
-            const file = input.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                videoFileData = e.target.result;
-                videoFileName = file.name;
-                document.getElementById('videoFileName').textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
-                document.getElementById('videoFilePreview').style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-            input.value = '';
-        }
-
-        function removeVideoFile() {
-            videoFileData = null;
-            videoFileName = null;
-            document.getElementById('videoFilePreview').style.display = 'none';
-            document.getElementById('videoFileInput').value = '';
-        }
-
-        function uploadMedia(event) {
-            event.preventDefault();
-            const title = document.getElementById('videoTitle').value;
-            const note = document.getElementById('videoNote').value;
-            const branch = document.getElementById('videoBranch').value;
-            const msgBox = document.getElementById('videoUploadMsg');
-            
-            if (!videoFileData) {
-                msgBox.innerHTML = '<span style="color:#ef4444;">❌ Please select a file to upload</span>';
-                return;
-            }
-            
-            const isVideo = videoFileName.match(/\.(mp4|webm|mov|avi|mkv|flv)$/i);
-            const newVideo = {
-                id: 'v' + Date.now(),
-                title: title,
-                note: note,
-                branch: branch,
-                fileData: videoFileData,
-                fileName: videoFileName,
-                fileType: isVideo ? 'video' : 'image',
-                type: isVideo ? 'video' : 'image',
-                views: 0,
-                sentToUsers: false,
-                uploadedBy: currentUser ? currentUser.name : 'CEO Admin',
-                uploadedAt: new Date().toISOString()
-            };
-            
-            allVideos.push(newVideo);
-            localStorage.setItem('ceoVideos', JSON.stringify(allVideos));
-            
-            document.getElementById('videoTitle').value = '';
-            document.getElementById('videoNote').value = '';
-            document.getElementById('videoFilePreview').style.display = 'none';
-            videoFileData = null;
-            videoFileName = null;
-            
-            msgBox.innerHTML = '<span style="color:#10b981;">✅ Media uploaded successfully!</span>';
-            setTimeout(() => { msgBox.innerHTML = ''; }, 3000);
-            
-            renderVideos();
-            updateVideoStats();
-            showToast('📤 Media uploaded successfully!');
-            setTimeout(() => closeVideoUpload(), 1500);
-        }
-
-        function sendToUsers(id) {
-            const video = allVideos.find(v => v.id === id);
-            if (!video) return;
-            
-            if (!confirm(`Send "${video.title}" to all users? Users will see this in their video section.`)) return;
-            
-            video.sentToUsers = true;
-            video.sentAt = new Date().toISOString();
-            
-            localStorage.setItem('ceoVideos', JSON.stringify(allVideos));
-            
-            renderVideos();
-            updateVideoStats();
-            showToast(`✅ "${video.title}" sent to users!`);
-        }
-
-        function editVideo(id) {
-            const video = allVideos.find(v => v.id === id);
-            if (!video) return;
-            
-            const newTitle = prompt('Edit Title:', video.title);
-            if (newTitle !== null) video.title = newTitle;
-            
-            const newNote = prompt('Edit Note/Description:', video.note || '');
-            if (newNote !== null) video.note = newNote;
-            
-            localStorage.setItem('ceoVideos', JSON.stringify(allVideos));
-            renderVideos();
-            showToast('✅ Video updated!');
-        }
-
-        function deleteVideo(id) {
-            if (!confirm('⚠️ Delete this media? It will also be removed from user accounts.')) return;
-            
-            const video = allVideos.find(v => v.id === id);
-            if (!video) return;
-            
-            allVideos = allVideos.filter(v => v.id !== id);
-            localStorage.setItem('ceoVideos', JSON.stringify(allVideos));
-            
-            renderVideos();
-            updateVideoStats();
-            showToast('🗑️ Media deleted from admin and user accounts!');
-        }
 
         // ===== CUSTOMER CARE FUNCTIONS =====
         function loadCustomerCare() {

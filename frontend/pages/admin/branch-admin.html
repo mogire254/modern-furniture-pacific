@@ -11,12 +11,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #f8f7f4; }
         
-        .admin-wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
+        .admin-wrapper { display: flex; min-height: 100vh; }
         
-        /* Sidebar */
         .admin-sidebar {
             width: 280px;
             background: #1a2a3a;
@@ -98,16 +94,7 @@
             z-index: 100;
             flex-wrap: wrap;
         }
-        .hamburger-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #1a2a3a;
-            padding: 8px;
-            transition: all 0.3s ease;
-        }
+        .hamburger-btn { display: none; background: none; border: none; font-size: 24px; cursor: pointer; color: #1a2a3a; padding: 8px; transition: all 0.3s ease; }
         .hamburger-btn:hover { color: #c9a94e; }
         
         .admin-topbar .user-info {
@@ -116,22 +103,9 @@
             gap: 12px;
             margin-left: auto;
         }
-        .admin-topbar .user-info img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid #c9a94e;
-            object-fit: cover;
-        }
+        .admin-topbar .user-info img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #c9a94e; object-fit: cover; }
         .admin-topbar .user-info span { font-weight: 500; color: #1a2a3a; }
-        .admin-topbar .branch-name {
-            background: #c9a94e;
-            color: #1a2a3a;
-            padding: 4px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+        .admin-topbar .branch-name { background: #c9a94e; color: #1a2a3a; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; }
         
         .admin-content { padding: 32px; }
         
@@ -152,27 +126,11 @@
             transition: all 0.3s ease;
         }
         .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            background: #c9a94e;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-        }
+        .stat-icon { width: 48px; height: 48px; background: #c9a94e; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
         .stat-info h3 { font-size: 24px; font-weight: 700; color: #1a2a3a; }
         .stat-info p { color: #888; font-size: 14px; }
         
-        .section {
-            background: white;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-bottom: 24px;
-        }
+        .section { background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 24px; }
         .section h2 { margin-bottom: 16px; color: #1a2a3a; }
         .section h2 i { color: #c9a94e; margin-right: 8px; }
         
@@ -204,29 +162,12 @@
         .btn-info:hover { background: #2563eb; }
         
         .form-group { margin-bottom: 16px; }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 14px;
-            color: #1a2a3a;
-            margin-bottom: 6px;
-        }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; color: #1a2a3a; margin-bottom: 6px; }
         .form-group label i { color: #c9a94e; margin-right: 8px; }
         .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e9e7e2;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: inherit;
-            background: #f8f7f4;
-            transition: all 0.3s ease;
+            width: 100%; padding: 12px 16px; border: 2px solid #e9e7e2; border-radius: 8px; font-size: 14px; font-family: inherit; background: #f8f7f4; transition: all 0.3s ease;
         }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #c9a94e;
-            box-shadow: 0 0 0 4px rgba(201,169,78,0.15);
-        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #c9a94e; box-shadow: 0 0 0 4px rgba(201,169,78,0.15); }
         .form-group textarea { min-height: 80px; resize: vertical; }
         
         .toast {
@@ -244,37 +185,16 @@
             display: none;
         }
         .toast.show { display: block; }
-        .toast .close-toast {
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.6);
-            float: right;
-            cursor: pointer;
-            font-size: 18px;
-        }
+        .toast .close-toast { background: none; border: none; color: rgba(255,255,255,0.6); float: right; cursor: pointer; font-size: 18px; }
         
         .empty-state { text-align: center; padding: 40px; color: #888; }
         .empty-state i { font-size: 48px; color: #ddd; margin-bottom: 16px; }
         .empty-state h3 { color: #666; margin-bottom: 8px; }
         
-        .product-item {
-            background: #f8f7f4;
-            padding: 16px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
+        .product-item { background: #f8f7f4; padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
         .product-item .actions { display: flex; gap: 8px; }
         
-        .chat-message {
-            padding: 10px 14px;
-            margin-bottom: 8px;
-            border-radius: 12px;
-            max-width: 80%;
-        }
+        .chat-message { padding: 10px 14px; margin-bottom: 8px; border-radius: 12px; max-width: 80%; }
         .chat-message.admin { background: #dbeafe; margin-left: auto; }
         .chat-message.user { background: white; margin-right: auto; }
         .chat-message .msg-sender { font-size: 11px; font-weight: 600; margin-bottom: 2px; }
@@ -304,23 +224,10 @@
             overflow-y: auto;
             animation: slideUp 0.3s ease-out;
         }
-        .modal-content .close-modal {
-            float: right;
-            font-size: 24px;
-            cursor: pointer;
-            color: #888;
-            background: none;
-            border: none;
-            transition: all 0.3s ease;
-        }
+        .modal-content .close-modal { float: right; font-size: 24px; cursor: pointer; color: #888; background: none; border: none; transition: all 0.3s ease; }
         .modal-content .close-modal:hover { color: #ef4444; transform: rotate(90deg); }
         
-        .status-badge {
-            padding: 2px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
+        .status-badge { padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
         .status-badge.pending { background: #fef3c7; color: #92400e; }
         .status-badge.approved { background: #d1fae5; color: #065f46; }
         .status-badge.rejected { background: #fee2e2; color: #991b1b; }
@@ -340,134 +247,39 @@
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
         
-        .review-item {
-            background: #f8f7f4;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            border-left: 4px solid #c9a94e;
-        }
+        .review-item { background: #f8f7f4; padding: 16px; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid #c9a94e; }
         .review-item .review-status { font-size: 11px; }
         
-        .upload-area {
-            border: 2px dashed #e9e7e2;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+        .upload-area { border: 2px dashed #e9e7e2; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; }
         .upload-area:hover { border-color: #c9a94e; background: #fef9f0; }
         .upload-area .upload-icon { font-size: 36px; color: #c9a94e; }
         
-        .product-card {
-            background: #f8f7f4;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #e9e7e2;
-            transition: all 0.3s ease;
-        }
+        .product-card { background: #f8f7f4; border-radius: 12px; overflow: hidden; border: 1px solid #e9e7e2; transition: all 0.3s ease; }
         .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
-        .product-card .product-image {
-            background: #1a2a3a;
-            height: 160px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
+        .product-card .product-image { background: #1a2a3a; height: 160px; display: flex; align-items: center; justify-content: center; color: white; }
         .product-card .product-body { padding: 16px; }
         
         /* Video Card Styles */
-        .video-card {
-            background: #f8f7f4;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #e9e7e2;
-            transition: all 0.3s ease;
-        }
-        .video-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-        }
-        .video-card .video-preview {
-            height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #1a2a3a;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-        .video-card .video-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .video-card .video-preview video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .video-card .video-preview .play-icon {
-            position: absolute;
-            font-size: 50px;
-            color: rgba(255,255,255,0.8);
-            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
-            z-index: 2;
-        }
-        .video-card .video-preview .badge-top {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 700;
-            z-index: 2;
-        }
+        .video-card { background: #f8f7f4; border-radius: 12px; overflow: hidden; border: 1px solid #e9e7e2; transition: all 0.3s ease; }
+        .video-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+        .video-card .video-preview { height: 180px; display: flex; align-items: center; justify-content: center; background: #1a2a3a; color: white; position: relative; overflow: hidden; }
+        .video-card .video-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .video-card .video-preview video { width: 100%; height: 100%; object-fit: cover; }
+        .video-card .video-preview .play-icon { position: absolute; font-size: 50px; color: rgba(255,255,255,0.8); text-shadow: 0 2px 20px rgba(0,0,0,0.5); z-index: 2; }
+        .video-card .video-preview .badge-top { position: absolute; top: 12px; right: 12px; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 700; z-index: 2; }
         .video-card .video-preview .badge-top.video { background: #ef4444; color: white; }
         .video-card .video-preview .badge-top.image { background: #3b82f6; color: white; }
         .video-card .video-preview .badge-top.sent { background: #10b981; color: white; left: 12px; right: auto; }
         .video-card .video-body { padding: 16px; }
-        .video-card .video-body .video-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1a2a3a;
-            margin-bottom: 4px;
-        }
-        .video-card .video-body .video-note {
-            color: #666;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
-        .video-card .video-body .video-meta {
-            display: flex;
-            gap: 12px;
-            font-size: 12px;
-            color: #888;
-            flex-wrap: wrap;
-        }
-        .video-card .video-body .video-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
+        .video-card .video-body .video-title { font-size: 16px; font-weight: 600; color: #1a2a3a; margin-bottom: 4px; }
+        .video-card .video-body .video-note { color: #666; font-size: 13px; margin-bottom: 8px; }
+        .video-card .video-body .video-meta { display: flex; gap: 12px; font-size: 12px; color: #888; flex-wrap: wrap; }
+        .video-card .video-body .video-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
         
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         
         @media (max-width: 768px) {
-            .admin-sidebar {
-                transform: translateX(-100%);
-                width: 280px;
-                max-width: 80%;
-                box-shadow: 2px 0 20px rgba(0,0,0,0.2);
-            }
+            .admin-sidebar { transform: translateX(-100%); width: 280px; max-width: 80%; box-shadow: 2px 0 20px rgba(0,0,0,0.2); }
             .admin-sidebar.active { transform: translateX(0); }
             .close-sidebar { display: block; }
             .admin-main { margin-left: 0; }
@@ -731,18 +543,9 @@
 
                     <!-- Video Stats -->
                     <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fas fa-video"></i></div>
-                            <div class="stat-info"><h3 id="totalVideos">0</h3><p>Total Media</p></div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fas fa-eye" style="background:#3b82f6;"></i></div>
-                            <div class="stat-info"><h3 id="totalViews">0</h3><p>Total Views</p></div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fas fa-paper-plane" style="background:#10b981;"></i></div>
-                            <div class="stat-info"><h3 id="sentCount">0</h3><p>Sent to Clients</p></div>
-                        </div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-video"></i></div><div class="stat-info"><h3 id="totalVideos">0</h3><p>Total Media</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-eye" style="background:#3b82f6;"></i></div><div class="stat-info"><h3 id="totalViews">0</h3><p>Total Views</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-paper-plane" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="sentCount">0</h3><p>Sent to Clients</p></div></div>
                     </div>
 
                     <!-- Video Grid -->
@@ -886,7 +689,10 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000/api';
+        // ============================================
+        // UPDATED TO LIVE URL
+        // ============================================
+        const API_URL = 'https://modern-furniture-api.onrender.com/api';
         let currentUser = null;
         let allProducts = [];
         let editingProductId = null;

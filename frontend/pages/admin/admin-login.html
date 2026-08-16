@@ -37,6 +37,8 @@
         .back-home:hover { color: #c9a94e; }
         .admin-banner { background: linear-gradient(135deg, #c9a94e, #e8d5a3); padding: 12px 20px; border-radius: 8px; text-align: center; margin-bottom: 24px; color: #1a2a3a; font-weight: 600; font-size: 14px; }
         .admin-banner i { margin-right: 8px; }
+        .auto-login-badge { background: #10b981; color: white; padding: 8px 16px; border-radius: 8px; font-size: 13px; text-align: center; margin-bottom: 16px; display: none; }
+        .auto-login-badge i { margin-right: 8px; }
     </style>
 </head>
 <body>
@@ -48,6 +50,7 @@
             <span class="badge">🔒 Secure Access</span>
             <p>Sign in to manage your branch or system</p>
         </div>
+        <div id="autoLoginBadge" class="auto-login-badge"><i class="fas fa-robot"></i> Auto-login in progress...</div>
         <div class="admin-banner"><i class="fas fa-shield-alt"></i> Admin access is restricted to authorized personnel only</div>
         <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
             <div class="form-group">
@@ -59,7 +62,7 @@
                 <input type="password" id="adminPassword" placeholder="••••••••" required />
             </div>
             <div class="form-options">
-                <label><input type="checkbox" /> Remember Me</label>
+                <label><input type="checkbox" id="rememberMe" /> Remember Me</label>
                 <a href="#">Forgot Password?</a>
             </div>
             <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Admin Login</button>
@@ -74,6 +77,9 @@
         // ============================================
         const API_URL = 'https://modern-furniture-api.onrender.com/api';
 
+        // ============================================
+        // HANDLE ADMIN LOGIN
+        // ============================================
         async function handleAdminLogin(event) {
             event.preventDefault();
             const email = document.getElementById('adminEmail').value;
@@ -109,6 +115,10 @@
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(user));
                     
+                    // Clear auto-login session data
+                    sessionStorage.removeItem('loginEmail');
+                    sessionStorage.removeItem('autoLogin');
+                    
                     msg.textContent = '✅ Admin login successful! Redirecting...';
                     msg.className = 'message success';
                     msg.style.display = 'block';
@@ -138,9 +148,43 @@
         }
 
         // ============================================
-        // Check if already logged in
+        // CHECK IF ALREADY LOGGED IN / AUTO-LOGIN
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
+            // Check for auto-login
+            const loginEmail = sessionStorage.getItem('loginEmail');
+            const autoLogin = sessionStorage.getItem('autoLogin');
+            
+            // Show auto-login badge if auto-login is in progress
+            if (loginEmail && autoLogin === 'true') {
+                const badge = document.getElementById('autoLoginBadge');
+                badge.style.display = 'block';
+                badge.innerHTML = `<i class="fas fa-robot"></i> Auto-login as ${loginEmail}...`;
+            }
+            
+            if (loginEmail && autoLogin === 'true') {
+                // Auto-fill the email
+                const emailField = document.getElementById('adminEmail');
+                if (emailField) {
+                    emailField.value = loginEmail;
+                }
+                
+                // Auto-submit the form
+                setTimeout(() => {
+                    document.getElementById('adminLoginForm').dispatchEvent(new Event('submit'));
+                }, 600);
+                
+                // Clear session storage after use (cleared in handleAdminLogin on success)
+                // If login fails, clear it anyway after a delay
+                setTimeout(() => {
+                    sessionStorage.removeItem('loginEmail');
+                    sessionStorage.removeItem('autoLogin');
+                }, 10000);
+                
+                return;
+            }
+            
+            // Regular login check - redirect if already logged in
             const token = localStorage.getItem('token');
             const user = localStorage.getItem('user');
             
@@ -150,7 +194,6 @@
                     const adminRoles = ['super_admin', 'ceo_admin', 'branch_admin'];
                     
                     if (adminRoles.includes(userData.role)) {
-                        // Redirect to appropriate dashboard
                         if (userData.role === 'super_admin') {
                             window.location.href = 'super-admin.html';
                         } else if (userData.role === 'ceo_admin') {
@@ -160,7 +203,6 @@
                         }
                     }
                 } catch (e) {
-                    // Invalid user data, clear localStorage
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
                 }

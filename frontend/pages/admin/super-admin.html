@@ -1550,6 +1550,10 @@
         function showToast(message) {
             const toast = document.getElementById('toast');
             const msg = document.getElementById('toastMessage');
+            if (!toast || !msg) {
+                alert(message);
+                return;
+            }
             msg.textContent = message;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
@@ -1559,11 +1563,43 @@
         // ===== COPY EMAIL =====
         function copyEmail(email) { navigator.clipboard.writeText(email).then(() => { showToast(`📧 Copied: ${email}`); }); }
 
-        // ===== OPEN ADMIN LOGIN =====
-        function openAdminLogin(email) { sessionStorage.setItem('loginEmail', email); window.open('admin-login.html', '_blank'); }
+        // ===== OPEN ADMIN LOGIN (FIXED) =====
+        async function openAdminLogin(email) {
+            try {
+                // Show loading state
+                showToast('⏳ Logging in as ' + email + '...');
+                
+                // Find the admin by email
+                const admin = allAdmins.find(a => a.email === email);
+                if (!admin) {
+                    showToast('❌ Admin not found');
+                    return;
+                }
+                
+                // Store the email to auto-fill and set auto-login flag
+                sessionStorage.setItem('loginEmail', email);
+                sessionStorage.setItem('autoLogin', 'true');
+                
+                // Redirect to admin-login.html in the same tab
+                window.location.href = 'admin-login.html';
+            } catch (error) {
+                console.error('Error logging in as admin:', error);
+                showToast('❌ Failed to login as admin');
+            }
+        }
 
         // ===== REFRESH =====
         function refreshAdminList() { loadAdmins(); showToast('🔄 Admin list refreshed!'); }
+
+        // ===== TOGGLE CREATE ADMIN =====
+        function toggleCreateAdmin() {
+            const form = document.getElementById('createAdminForm');
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
 
         // ===== LOGOUT =====
         function handleLogout() { if (confirm('Logout?')) { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = 'admin-login.html'; } }

@@ -29,6 +29,7 @@ const cartRoutes = require('./src/routes/cart');
 const customerCareRoutes = require('./src/routes/customer-care');
 const uploadRoutes = require('./src/routes/upload');
 const settingsRoutes = require('./src/routes/settings');
+const adminChatRoutes = require('./src/routes/admin-chat');
 
 const app = express();
 const server = http.createServer(app);
@@ -81,6 +82,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/customer-care', customerCareRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/admin-chat', adminChatRoutes);
 
 // ===== HEALTH CHECK =====
 app.get('/api/health', (req, res) => {
@@ -112,7 +114,8 @@ app.get('/api/health', (req, res) => {
                 '/api/cart',
                 '/api/customer-care',
                 '/api/upload',
-                '/api/settings'
+                '/api/settings',
+                '/api/admin-chat'
             ]
         }
     });
@@ -147,7 +150,8 @@ app.get('/', (req, res) => {
             cart: '/api/cart',
             'customer-care': '/api/customer-care',
             upload: '/api/upload',
-            settings: '/api/settings'
+            settings: '/api/settings',
+            'admin-chat': '/api/admin-chat'
         },
         documentation: 'https://modern-furniture-api.onrender.com/api/health'
     });
@@ -182,7 +186,8 @@ app.use((req, res) => {
             '/api/cart',
             '/api/customer-care',
             '/api/upload',
-            '/api/settings'
+            '/api/settings',
+            '/api/admin-chat'
         ]
     });
 });
@@ -229,8 +234,9 @@ server.listen(PORT, () => {
     console.log('   - /api/customer-care ✅');
     console.log('   - /api/upload ✅');
     console.log('   - /api/settings ✅');
+    console.log('   - /api/admin-chat ✅');
     console.log('');
-    console.log('💡 All 21 routes registered successfully!');
+    console.log('💡 All 22 routes registered successfully!');
 });
 
 module.exports = { app, io };

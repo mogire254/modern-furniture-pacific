@@ -26,7 +26,7 @@ exports.initiatePayment = async (req, res) => {
             });
         }
 
-        // Format phone number (remove leading 0 or +254)
+        // Format phone number
         let formattedPhone = phoneNumber.replace(/^0/, '');
         formattedPhone = formattedPhone.replace(/^\+254/, '');
         if (!formattedPhone.startsWith('254')) {
@@ -39,6 +39,7 @@ exports.initiatePayment = async (req, res) => {
             orderId,
             userId: req.user.id,
             userEmail: req.user.email,
+            userName: req.user.name,
             phoneNumber: formattedPhone,
             amount: parseFloat(amount),
             paymentMethod,
@@ -53,14 +54,13 @@ exports.initiatePayment = async (req, res) => {
         // If M-Pesa, initiate STK Push
         if (paymentMethod === 'mpesa') {
             try {
-                // This is where you'd call M-Pesa API
-                // For now, simulate STK Push
                 console.log(`💳 M-Pesa STK Push initiated for ${formattedPhone}`);
                 console.log(`💰 Amount: KES ${amount}`);
-                
-                // Simulate callback after 5 seconds (in production, this comes from M-Pesa)
+                console.log(`📦 Order: ${orderId}`);
+
+                // In production, call M-Pesa API here
+                // For now, simulate STK Push with callback after 5 seconds
                 setTimeout(async () => {
-                    // Simulate successful payment (70% success rate for demo)
                     const success = Math.random() > 0.3;
                     const updatedPayment = findById('payments', payment.id);
                     if (updatedPayment) {
@@ -69,12 +69,12 @@ exports.initiatePayment = async (req, res) => {
                         updatedPayment.updatedAt = new Date().toISOString();
                         updateItem('payments', payment.id, updatedPayment);
 
-                        // Update order status
                         if (success) {
                             const order = findById('orders', payment.orderId);
                             if (order) {
                                 order.paymentStatus = 'paid';
                                 order.status = 'processing';
+                                order.paidAt = new Date().toISOString();
                                 updateItem('orders', order.id, order);
                                 console.log(`✅ Payment successful for order ${order.id}`);
                             }
@@ -84,7 +84,6 @@ exports.initiatePayment = async (req, res) => {
                     }
                 }, 5000);
 
-                // Return success with payment pending
                 res.json({
                     success: true,
                     payment: {
@@ -159,8 +158,7 @@ exports.mpesaCallback = async (req, res) => {
 
         console.log('📞 M-Pesa Callback received:', ResultCode, ResultDesc);
 
-        // Find payment by transaction ID or phone number
-        // For demo, we'll update the most recent pending payment
+        // Find the most recent pending payment
         const payments = readData('payments');
         const pendingPayment = payments
             .filter(p => p.status === 'pending')
@@ -185,6 +183,7 @@ exports.mpesaCallback = async (req, res) => {
                 if (order) {
                     order.paymentStatus = 'paid';
                     order.status = 'processing';
+                    order.paidAt = new Date().toISOString();
                     order.updatedAt = new Date().toISOString();
                     updateItem('orders', order.id, order);
                     
@@ -213,14 +212,27 @@ exports.mpesaCallback = async (req, res) => {
     }
 };
 
-// Get payment history (Admin only)
+// Get all payments (Admin only)
 exports.getPayments = async (req, res) => {
     try {
-        const payments = readData('payments');
+        const { status } = req.query;
+        let payments = readData('payments');
+
+        if (status) {
+            payments = payments.filter(p => p.status === status);
+        }
+
+        // Calculate totals
+        const totalPaid = payments
+            .filter(p => p.status === 'completed')
+            .reduce((sum, p) => sum + (p.amount || 0), 0);
+
         res.json({
             success: true,
             payments,
-            total: payments.length
+            total: payments.length,
+            totalPaid,
+            pendingCount: payments.filter(p => p.status === 'pending').length
         });
     } catch (error) {
         res.status(500).json({
@@ -277,6 +289,54 @@ exports.retryPayment = async (req, res) => {
             success: true,
             message: 'Payment retry initiated. Please check your phone for STK Push.',
             payment
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// Update payment status manually (Admin only)
+exports.updateStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        const payment = findById('payments', id);
+        if (!payment) {
+            return res.status(404).json({
+                success: false,
+                message: 'Payment not found'
+            });
+        }
+
+        payment.status = status;
+        payment.updatedAt = new Date().toISOString();
+        payment.reviewedBy = req.user.id;
+
+        if (status === 'completed' && !payment.transactionId) {
+            payment.transactionId = `MANUAL-${Date.now()}`;
+        }
+
+        updateItem('payments', id, payment);
+
+        // Update order if payment completed
+        if (status === 'completed') {
+            const order = findById('orders', payment.orderId);
+            if (order) {
+                order.paymentStatus = 'paid';
+                order.status = 'processing';
+                order.paidAt = new Date().toISOString();
+                updateItem('orders', order.id, order);
+            }
+        }
+
+        res.json({
+            success: true,
+            payment,
+            message: `Payment status updated to ${status}`
         });
     } catch (error) {
         res.status(500).json({

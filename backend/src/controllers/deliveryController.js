@@ -80,9 +80,8 @@ exports.createDelivery = async (req, res) => {
     }
 };
 
-// Calculate distance (simplified)
+// Calculate distance (simplified - in production use Google Maps API)
 function calculateDistance(location) {
-    // In production, use Google Maps API
     return (Math.random() * 20 + 1).toFixed(1); // 1-20 km
 }
 
@@ -195,13 +194,22 @@ exports.updateStatus = async (req, res) => {
 
         if (status === 'delivered') {
             updates.actualDelivery = new Date().toISOString();
-            // Update product status
+            // Update order
             const order = findById('orders', delivery.orderId);
             if (order) {
                 order.status = 'completed';
                 order.deliveryStatus = 'delivered';
                 order.completedAt = new Date().toISOString();
                 updateItem('orders', order.id, order);
+
+                // Mark product as sold
+                const product = findById('products', order.productId);
+                if (product) {
+                    product.status = 'sold';
+                    product.soldCount = (product.soldCount || 0) + 1;
+                    updateItem('products', product.id, product);
+                    console.log(`🔴 Product ${product.name} marked as sold`);
+                }
             }
         }
 
@@ -219,7 +227,6 @@ exports.updateStatus = async (req, res) => {
 
         if (statusMessages[status]) {
             console.log(`📱 ${statusMessages[status]}`);
-            // Send SMS/Email notification
             console.log(`📧 Notifying ${delivery.userEmail}`);
         }
 
@@ -268,18 +275,6 @@ exports.confirmDelivery = async (req, res) => {
         delivery.updatedAt = new Date().toISOString();
         updateItem('deliveries', id, delivery);
 
-        // Mark product as sold
-        const order = findById('orders', delivery.orderId);
-        if (order) {
-            const product = findById('products', order.productId);
-            if (product) {
-                product.status = 'sold';
-                product.soldCount = (product.soldCount || 0) + 1;
-                updateItem('products', product.id, product);
-                console.log(`🔴 Product ${product.name} marked as sold`);
-            }
-        }
-
         res.json({
             success: true,
             message: 'Delivery confirmed. Thank you for your purchase!'
@@ -316,6 +311,49 @@ exports.trackDelivery = async (req, res) => {
                 assignedTo: delivery.assignedByName || 'Unassigned',
                 lastUpdate: delivery.updatedAt
             }
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// Assign delivery to admin (Super Admin only)
+exports.assignDelivery = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { adminId } = req.body;
+
+        const delivery = findById('deliveries', id);
+        if (!delivery) {
+            return res.status(404).json({
+                success: false,
+                message: 'Delivery not found'
+            });
+        }
+
+        const admins = readData('admins');
+        const admin = admins.find(a => a.id === adminId);
+        if (!admin) {
+            return res.status(404).json({
+                success: false,
+                message: 'Admin not found'
+            });
+        }
+
+        delivery.assignedTo = adminId;
+        delivery.assignedByName = admin.name;
+        delivery.status = 'processing';
+        delivery.updatedAt = new Date().toISOString();
+
+        updateItem('deliveries', id, delivery);
+
+        res.json({
+            success: true,
+            delivery,
+            message: `Delivery assigned to ${admin.name}`
         });
     } catch (error) {
         res.status(500).json({

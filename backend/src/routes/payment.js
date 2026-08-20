@@ -14,5 +14,6 @@ router.post('/:id/retry', protect, paymentController.retryPayment);
 
 // Admin routes
 router.get('/', protect, isAdmin, paymentController.getPayments);
+router.put('/:id/status', protect, isAdmin, paymentController.updateStatus);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const { readData, writeData, addItem, updateItem, findById } = require('../utils/fileHandler');
 const { v4: uuidv4 } = require('uuid');
 
-// Submit supplier application
+// Submit supplier application (User)
 exports.submitSupplier = async (req, res) => {
     try {
         const { 
@@ -43,7 +43,7 @@ exports.submitSupplier = async (req, res) => {
         res.status(201).json({
             success: true,
             supplier,
-            message: 'Supplier application submitted successfully'
+            message: '✅ Thank you for your interest! We\'ll get back to you soon. Stay tuned!'
         });
     } catch (error) {
         console.error('❌ Supplier error:', error);
@@ -94,13 +94,12 @@ exports.getMySuppliers = async (req, res) => {
     }
 };
 
-// Update supplier status (Admin only)
-exports.updateStatus = async (req, res) => {
+// Approve supplier (Admin only)
+exports.approveSupplier = async (req, res) => {
     try {
         const { id } = req.params;
-        const { status, feedback } = req.body;
-
         const supplier = findById('suppliers', id);
+
         if (!supplier) {
             return res.status(404).json({
                 success: false,
@@ -108,25 +107,59 @@ exports.updateStatus = async (req, res) => {
             });
         }
 
-        supplier.status = status;
-        supplier.feedback = feedback || '';
+        supplier.status = 'approved';
+        supplier.approvedAt = new Date().toISOString();
+        supplier.approvedBy = req.user.id;
         supplier.updatedAt = new Date().toISOString();
-        supplier.reviewedBy = req.user.id;
 
         updateItem('suppliers', id, supplier);
 
-        // Prepare response message based on status
-        let message = '';
-        if (status === 'accepted') {
-            message = `🎉 Congratulations! Your supplier application has been accepted. Our team will contact you at ${supplier.userEmail} and ${supplier.userPhone}. You can also reach us via live chat for immediate questions.`;
-        } else if (status === 'declined') {
-            message = `Thank you for your interest in supplying Modern Pacific Furniture. We will contact you when we need your materials. You can reach us at info@modernfurniturepacificltd.com or chat with us live.`;
-        }
+        // Send notification to user
+        console.log(`📧 Supplier approved for ${supplier.userName} (${supplier.userEmail})`);
+        console.log(`📞 Contact: ${supplier.userPhone}`);
+        console.log(`💬 Message: Please contact us via Customer Care or WhatsApp for negotiation`);
 
         res.json({
             success: true,
             supplier,
-            message: message || `Supplier status updated to ${status}`
+            message: '✅ Supplier approved! Contact info sent to user.'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// Reject supplier (Admin only)
+exports.rejectSupplier = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const supplier = findById('suppliers', id);
+
+        if (!supplier) {
+            return res.status(404).json({
+                success: false,
+                message: 'Supplier application not found'
+            });
+        }
+
+        supplier.status = 'rejected';
+        supplier.rejectedAt = new Date().toISOString();
+        supplier.rejectedBy = req.user.id;
+        supplier.updatedAt = new Date().toISOString();
+
+        updateItem('suppliers', id, supplier);
+
+        // Send notification to user
+        console.log(`📧 Supplier rejected for ${supplier.userName} (${supplier.userEmail})`);
+        console.log(`📝 Message: Thank you for your support. We'll contact you when we require your materials.`);
+
+        res.json({
+            success: true,
+            supplier,
+            message: '✅ Supplier rejected. Thank you for your support. We\'ll contact you when we require your materials.'
         });
     } catch (error) {
         res.status(500).json({

@@ -1,7 +1,5 @@
 const { readData, writeData, addItem, updateItem, deleteItem, findById } = require('../utils/fileHandler');
 const { v4: uuidv4 } = require('uuid');
-const fs = require('fs');
-const path = require('path');
 
 // Upload video (Admin only)
 exports.uploadVideo = async (req, res) => {
@@ -9,7 +7,8 @@ exports.uploadVideo = async (req, res) => {
         const { 
             title, description, category, 
             tags = [], isFeatured = false,
-            videoUrl, thumbnailUrl
+            videoUrl, thumbnailUrl, fileData,
+            sendTo = 'video' // 'video', 'carousel', 'both'
         } = req.body;
 
         if (!title || !videoUrl) {
@@ -28,9 +27,13 @@ exports.uploadVideo = async (req, res) => {
             isFeatured,
             videoUrl,
             thumbnailUrl: thumbnailUrl || '',
+            fileData: fileData || '',
+            sendTo: sendTo || 'video',
             likes: 0,
             views: 0,
             status: 'active',
+            published: true,
+            sentToUsers: true,
             createdBy: req.user.id,
             createdByName: req.user.name,
             createdAt: new Date().toISOString(),
@@ -57,8 +60,9 @@ exports.uploadVideo = async (req, res) => {
 exports.aiGenerate = async (req, res) => {
     try {
         const { 
-            prompt, type, imageUrl, 
-            style, duration, resolution
+            prompt, type, imageData, 
+            style, duration, resolution,
+            sendTo = 'both'
         } = req.body;
 
         if (!prompt) {
@@ -72,9 +76,10 @@ exports.aiGenerate = async (req, res) => {
         console.log(`🎨 AI Generation requested:`);
         console.log(`📝 Prompt: ${prompt}`);
         console.log(`📷 Type: ${type || 'image'}`);
-        console.log(`🖼️ Source Image: ${imageUrl || 'none'}`);
+        console.log(`🖼️ Source Image: ${imageData ? 'Yes' : 'None'}`);
+        console.log(`📤 Send To: ${sendTo}`);
 
-        // Mock AI response - in production, call actual AI API
+        // Generate AI content (in production, call actual AI API)
         const generatedContent = {
             id: uuidv4(),
             prompt,
@@ -82,9 +87,12 @@ exports.aiGenerate = async (req, res) => {
             style: style || 'modern',
             duration: duration || 15,
             resolution: resolution || '1080p',
+            imageData: imageData || null,
+            sendTo: sendTo || 'both',
             url: `/uploads/ai-generated/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${type === 'video' ? 'mp4' : 'png'}`,
             createdAt: new Date().toISOString(),
-            createdBy: req.user.id
+            createdBy: req.user.id,
+            createdByName: req.user.name
         };
 
         // Save to AI generation history
@@ -92,10 +100,37 @@ exports.aiGenerate = async (req, res) => {
         aiHistory.push(generatedContent);
         writeData('ai-history', aiHistory);
 
+        // Also save as a video
+        const video = {
+            id: uuidv4(),
+            title: `AI Generated: ${prompt.substring(0, 50)}...`,
+            description: `AI generated ${type} based on: ${prompt}`,
+            category: 'ai-generated',
+            tags: ['ai', 'generated', style],
+            isFeatured: true,
+            videoUrl: generatedContent.url,
+            fileData: generatedContent.imageData || '',
+            sendTo: sendTo || 'both',
+            likes: 0,
+            views: 0,
+            status: 'active',
+            published: true,
+            sentToUsers: true,
+            createdBy: req.user.id,
+            createdByName: req.user.name,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            isAIGenerated: true,
+            aiPrompt: prompt
+        };
+
+        addItem('videos', video);
+
         res.json({
             success: true,
             content: generatedContent,
-            message: 'AI content generated successfully',
+            video: video,
+            message: 'AI content generated and published successfully',
             downloadUrl: generatedContent.url
         });
     } catch (error) {
@@ -107,19 +142,34 @@ exports.aiGenerate = async (req, res) => {
     }
 };
 
-// Get all videos
+// Get all videos (Public)
 exports.getVideos = async (req, res) => {
     try {
-        const { category, featured } = req.query;
+        const { category, featured, sendTo } = req.query;
         let videos = readData('videos');
 
+        // Filter by category
         if (category) {
             videos = videos.filter(v => v.category === category);
         }
 
+        // Filter by featured
         if (featured === 'true') {
             videos = videos.filter(v => v.isFeatured);
         }
+
+        // Filter by sendTo (video section only)
+        if (sendTo === 'video') {
+            videos = videos.filter(v => v.sendTo === 'video' || v.sendTo === 'both');
+        }
+
+        // Filter by sendTo (carousel only)
+        if (sendTo === 'carousel') {
+            videos = videos.filter(v => v.sendTo === 'carousel' || v.sendTo === 'both');
+        }
+
+        // Sort by newest first
+        videos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         res.json({
             success: true,

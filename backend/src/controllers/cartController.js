@@ -6,9 +6,28 @@ exports.getCart = async (req, res) => {
     try {
         const carts = readData('carts');
         const cart = carts.find(c => c.userId === req.user.id);
+        
+        if (!cart) {
+            // Return empty cart if none exists
+            return res.json({
+                success: true,
+                cart: { 
+                    items: [], 
+                    total: 0,
+                    subtotal: 0,
+                    transportCost: 0
+                }
+            });
+        }
+
+        // Calculate totals
+        const subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        cart.subtotal = subtotal;
+        cart.total = subtotal + (cart.transportCost || 0);
+
         res.json({
             success: true,
-            cart: cart || { items: [], total: 0 }
+            cart
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -31,6 +50,10 @@ exports.addToCart = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
 
+        if (product.status === 'sold') {
+            return res.status(400).json({ success: false, message: 'Product is sold out' });
+        }
+
         let carts = readData('carts');
         let cart = carts.find(c => c.userId === req.user.id);
 
@@ -39,8 +62,11 @@ exports.addToCart = async (req, res) => {
                 id: uuidv4(),
                 userId: req.user.id,
                 items: [],
+                subtotal: 0,
+                transportCost: 0,
                 total: 0,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             };
         }
 
@@ -53,11 +79,15 @@ exports.addToCart = async (req, res) => {
                 quantity: quantity,
                 price: product.price || 0,
                 name: product.name,
-                image: product.images && product.images.length > 0 ? product.images[0] : null
+                image: product.images && product.images.length > 0 ? product.images[0] : null,
+                category: product.category || '',
+                status: product.status || 'available'
             });
         }
 
-        cart.total = cart.items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        // Recalculate totals
+        cart.subtotal = cart.items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        cart.total = cart.subtotal + (cart.transportCost || 0);
         cart.updatedAt = new Date().toISOString();
 
         if (carts.find(c => c.userId === req.user.id)) {
@@ -66,7 +96,52 @@ exports.addToCart = async (req, res) => {
             addItem('carts', cart);
         }
 
-        res.json({ success: true, cart });
+        res.json({ 
+            success: true, 
+            cart,
+            message: 'Item added to cart successfully'
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Update cart item quantity
+exports.updateQuantity = async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const { quantity } = req.body;
+
+        if (quantity < 1) {
+            return res.status(400).json({ success: false, message: 'Quantity must be at least 1' });
+        }
+
+        const carts = readData('carts');
+        const cart = carts.find(c => c.userId === req.user.id);
+
+        if (!cart) {
+            return res.status(404).json({ success: false, message: 'Cart not found' });
+        }
+
+        const item = cart.items.find(i => i.productId === productId);
+        if (!item) {
+            return res.status(404).json({ success: false, message: 'Item not found in cart' });
+        }
+
+        item.quantity = quantity;
+        
+        // Recalculate totals
+        cart.subtotal = cart.items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        cart.total = cart.subtotal + (cart.transportCost || 0);
+        cart.updatedAt = new Date().toISOString();
+
+        updateItem('carts', cart.id, cart);
+
+        res.json({ 
+            success: true, 
+            cart,
+            message: 'Cart updated successfully'
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -84,11 +159,19 @@ exports.removeFromCart = async (req, res) => {
         }
 
         cart.items = cart.items.filter(i => i.productId !== productId);
-        cart.total = cart.items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        
+        // Recalculate totals
+        cart.subtotal = cart.items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        cart.total = cart.subtotal + (cart.transportCost || 0);
         cart.updatedAt = new Date().toISOString();
 
         updateItem('carts', cart.id, cart);
-        res.json({ success: true, cart });
+
+        res.json({ 
+            success: true, 
+            cart,
+            message: 'Item removed from cart'
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -102,12 +185,41 @@ exports.clearCart = async (req, res) => {
 
         if (cart) {
             cart.items = [];
+            cart.subtotal = 0;
             cart.total = 0;
+            cart.transportCost = 0;
             cart.updatedAt = new Date().toISOString();
             updateItem('carts', cart.id, cart);
         }
 
         res.json({ success: true, message: 'Cart cleared' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Set transport cost
+exports.setTransportCost = async (req, res) => {
+    try {
+        const { transportCost } = req.body;
+        const carts = readData('carts');
+        const cart = carts.find(c => c.userId === req.user.id);
+
+        if (!cart) {
+            return res.status(404).json({ success: false, message: 'Cart not found' });
+        }
+
+        cart.transportCost = transportCost || 0;
+        cart.total = cart.subtotal + cart.transportCost;
+        cart.updatedAt = new Date().toISOString();
+
+        updateItem('carts', cart.id, cart);
+
+        res.json({ 
+            success: true, 
+            cart,
+            message: 'Transport cost updated'
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

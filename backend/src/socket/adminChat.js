@@ -16,18 +16,29 @@ module.exports = (io) => {
             adminNamespace.emit('admin-online', { adminId, status: 'online' });
         });
 
-        // Send message
+        // Send message with @mentions
         socket.on('send-message', async (data) => {
             try {
-                const { fromAdminId, toAdminId, message, type = 'text', tag = null } = data;
+                const { fromAdminId, toAdminId, message, type = 'text', mentions = [] } = data;
+
+                // Process mentions - extract @username from message
+                const mentionRegex = /@(\w+)/g;
+                const foundMentions = [];
+                let match;
+                while ((match = mentionRegex.exec(message)) !== null) {
+                    foundMentions.push(match[1]);
+                }
+
+                // Merge with provided mentions
+                const allMentions = [...new Set([...mentions, ...foundMentions])];
 
                 const chatMessage = {
                     id: uuidv4(),
                     fromAdminId,
-                    toAdminId,
+                    toAdminId: toAdminId || 'all',
                     message,
                     type,
-                    tag: tag || null,
+                    mentions: allMentions,
                     status: 'sent',
                     read: false,
                     createdAt: new Date().toISOString()
@@ -38,25 +49,83 @@ module.exports = (io) => {
                 chatHistory.push(chatMessage);
                 writeData('admin-chat', chatHistory);
 
-                // Send to recipient
-                adminNamespace.to(`admin_${toAdminId}`).emit('receive-message', chatMessage);
+                // Send to specific admin if mentioned
+                if (toAdminId) {
+                    adminNamespace.to(`admin_${toAdminId}`).emit('receive-message', chatMessage);
+                } else {
+                    // Send to all admins
+                    adminNamespace.emit('receive-message', chatMessage);
+                }
 
                 // Send back to sender
                 socket.emit('message-sent', chatMessage);
 
-                // If tagged
-                if (tag) {
-                    console.log(`📢 Admin ${fromAdminId} tagged @${tag}`);
-                    // Send notification
-                    adminNamespace.to(`admin_${toAdminId}`).emit('tagged', {
-                        from: fromAdminId,
-                        message: `You were tagged in a message: ${message.substring(0, 50)}...`
-                    });
-                }
+                // Process @mentions
+                allMentions.forEach(mention => {
+                    // Find admin by name
+                    const admins = getAllUsers().filter(u => u.isAdmin);
+                    const mentionedAdmin = admins.find(a => 
+                        a.name.toLowerCase().includes(mention.toLowerCase()) ||
+                        a.email.toLowerCase().includes(mention.toLowerCase())
+                    );
+                    
+                    if (mentionedAdmin) {
+                        // Send notification to mentioned admin
+                        adminNamespace.to(`admin_${mentionedAdmin.id}`).emit('mentioned', {
+                            from: fromAdminId,
+                            message: `You were mentioned by ${data.fromAdminName || 'Admin'}: ${message}`,
+                            chatMessage: chatMessage
+                        });
+                        console.log(`📢 Admin ${fromAdminId} mentioned @${mention}`);
+                    }
+                });
 
-                console.log(`💬 Admin message from ${fromAdminId} to ${toAdminId}`);
+                console.log(`💬 Admin message from ${fromAdminId} to ${toAdminId || 'all'}`);
             } catch (error) {
                 console.error('❌ Admin chat error:', error);
+                socket.emit('error', { message: error.message });
+            }
+        });
+
+        // Reply to specific message
+        socket.on('reply-to-message', async (data) => {
+            try {
+                const { messageId, fromAdminId, toAdminId, replyMessage } = data;
+
+                // Get original message
+                const chatHistory = readData('admin-chat');
+                const originalMessage = chatHistory.find(m => m.id === messageId);
+                
+                if (!originalMessage) {
+                    socket.emit('error', { message: 'Original message not found' });
+                    return;
+                }
+
+                const reply = {
+                    id: uuidv4(),
+                    fromAdminId,
+                    toAdminId: originalMessage.fromAdminId,
+                    message: `↳ Reply to: ${originalMessage.message}\n\n${replyMessage}`,
+                    type: 'reply',
+                    replyTo: messageId,
+                    originalMessage: originalMessage.message,
+                    status: 'sent',
+                    read: false,
+                    createdAt: new Date().toISOString()
+                };
+
+                chatHistory.push(reply);
+                writeData('admin-chat', chatHistory);
+
+                // Send to specific admin
+                adminNamespace.to(`admin_${originalMessage.fromAdminId}`).emit('receive-message', reply);
+                
+                // Send back to sender
+                socket.emit('message-sent', reply);
+
+                console.log(`💬 Reply from ${fromAdminId} to ${originalMessage.fromAdminId}`);
+            } catch (error) {
+                console.error('❌ Reply error:', error);
                 socket.emit('error', { message: error.message });
             }
         });
@@ -79,6 +148,7 @@ module.exports = (io) => {
                 }
             } catch (error) {
                 console.error('❌ Edit message error:', error);
+                socket.emit('error', { message: error.message });
             }
         });
 
@@ -107,10 +177,14 @@ module.exports = (io) => {
                 const { adminId, otherAdminId } = data;
                 const chatHistory = readData('admin-chat');
                 
-                const messages = chatHistory.filter(m => 
-                    (m.fromAdminId === adminId && m.toAdminId === otherAdminId) ||
-                    (m.fromAdminId === otherAdminId && m.toAdminId === adminId)
-                );
+                let messages = chatHistory;
+                if (otherAdminId) {
+                    messages = chatHistory.filter(m => 
+                        (m.fromAdminId === adminId && m.toAdminId === otherAdminId) ||
+                        (m.fromAdminId === otherAdminId && m.toAdminId === adminId) ||
+                        (m.toAdminId === 'all')
+                    );
+                }
 
                 socket.emit('chat-history', messages);
             } catch (error) {
@@ -129,7 +203,8 @@ module.exports = (io) => {
                 const chats = admins.map(admin => {
                     const messages = chatHistory.filter(m => 
                         (m.fromAdminId === adminId && m.toAdminId === admin.id) ||
-                        (m.fromAdminId === admin.id && m.toAdminId === adminId)
+                        (m.fromAdminId === admin.id && m.toAdminId === adminId) ||
+                        (m.toAdminId === 'all')
                     );
                     const lastMessage = messages[messages.length - 1];
                     const unreadCount = messages.filter(m => 
@@ -141,7 +216,7 @@ module.exports = (io) => {
                             id: admin.id,
                             name: admin.name,
                             role: admin.role,
-                            isOnline: false // Track online status
+                            isOnline: false
                         },
                         lastMessage: lastMessage || null,
                         unreadCount,

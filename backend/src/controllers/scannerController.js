@@ -6,8 +6,8 @@ exports.submitMeasurement = async (req, res) => {
     try {
         const { 
             length, width, height, 
-            roomType, additionalNotes,
-            images = []
+            roomType, category, additionalNotes,
+            images = [], matchedProducts = []
         } = req.body;
 
         if (!length || !width) {
@@ -33,9 +33,12 @@ exports.submitMeasurement = async (req, res) => {
             width: parseFloat(width),
             height: height ? parseFloat(height) : null,
             roomType: roomType || 'living_room',
+            category: category || 'general',
             additionalNotes: additionalNotes || '',
             images: images,
-            status: 'pending',
+            matchedProducts: matchedProducts || [],
+            hasMatches: matchedProducts && matchedProducts.length > 0,
+            status: matchedProducts && matchedProducts.length > 0 ? 'matched' : 'pending',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
@@ -56,14 +59,19 @@ exports.submitMeasurement = async (req, res) => {
         console.log(`📏 New room scan from ${req.user.name}: ${measurement.length}x${measurement.width}`);
         console.log(`📦 Matching products found: ${matchingProducts.length}`);
 
+        let responseMessage = '';
+        if (matchingProducts.length > 0) {
+            responseMessage = '✅ Found matching products for your room size!';
+        } else {
+            responseMessage = '🔍 No exact matches found. If you didn\'t find what you need, contact us via Customer Care immediately.';
+        }
+
         res.status(201).json({
             success: true,
             measurement,
-            matchingProducts: matchingProducts.slice(0, 10), // Limit to 10
+            matchingProducts: matchingProducts.slice(0, 10),
             hasMatches: matchingProducts.length > 0,
-            message: matchingProducts.length > 0 
-                ? 'Found matching products for your room size!' 
-                : 'No exact matches found. Our team will contact you for custom build.'
+            message: responseMessage
         });
     } catch (error) {
         console.error('❌ Scanner error:', error);
@@ -77,11 +85,15 @@ exports.submitMeasurement = async (req, res) => {
 // Get all measurements (Admin only)
 exports.getMeasurements = async (req, res) => {
     try {
-        const { status } = req.query;
+        const { status, category } = req.query;
         let measurements = readData('scanner-measurements');
 
         if (status) {
             measurements = measurements.filter(m => m.status === status);
+        }
+
+        if (category) {
+            measurements = measurements.filter(m => m.category === category);
         }
 
         res.json({
@@ -166,9 +178,40 @@ exports.getMeasurement = async (req, res) => {
             });
         }
 
+        // Check if user owns this or is admin
+        if (measurement.userId !== req.user.id && !req.user.isAdmin) {
+            return res.status(403).json({
+                success: false,
+                message: 'Access denied'
+            });
+        }
+
         res.json({
             success: true,
             measurement
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// Get available categories
+exports.getCategories = async (req, res) => {
+    try {
+        const categories = [
+            { id: 'bedroom', name: 'Bedroom', icon: 'bed', description: 'Measure your bedroom space' },
+            { id: 'living_room', name: 'Living Room', icon: 'couch', description: 'Measure your living room' },
+            { id: 'dining', name: 'Dining', icon: 'utensils', description: 'Measure your dining area' },
+            { id: 'outdoor', name: 'Outdoor', icon: 'tree', description: 'Measure your outdoor space' },
+            { id: 'office', name: 'Office', icon: 'briefcase', description: 'Measure your office space' },
+            { id: 'kitchen', name: 'Kitchen', icon: 'utensils', description: 'Measure your kitchen' }
+        ];
+        res.json({
+            success: true,
+            categories
         });
     } catch (error) {
         res.status(500).json({

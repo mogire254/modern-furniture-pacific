@@ -7,7 +7,7 @@ const compression = require('compression');
 const helmet = require('helmet');
 require('dotenv').config();
 
-// Import routes - ALL ROUTES THAT EXIST IN YOUR FOLDER
+// Import routes - ALL ROUTES
 const authRoutes = require('./src/routes/auth');
 const adminRoutes = require('./src/routes/admin');
 const productRoutes = require('./src/routes/products');
@@ -28,6 +28,7 @@ const jobRoutes = require('./src/routes/jobs');
 const cartRoutes = require('./src/routes/cart');
 const customerCareRoutes = require('./src/routes/customer-care');
 const uploadRoutes = require('./src/routes/upload');
+const settingsRoutes = require('./src/routes/settings');
 
 const app = express();
 const server = http.createServer(app);
@@ -58,7 +59,7 @@ app.set('io', io);
 require('./src/socket/chat')(io);
 require('./src/socket/adminChat')(io);
 
-// ===== ROUTES - MATCHING YOUR FOLDER STRUCTURE =====
+// ===== ROUTES - ALL REGISTERED =====
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/products', productRoutes);
@@ -79,6 +80,7 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/customer-care', customerCareRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // ===== HEALTH CHECK =====
 app.get('/api/health', (req, res) => {
@@ -86,16 +88,44 @@ app.get('/api/health', (req, res) => {
         status: 'healthy',
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
-        environment: process.env.NODE_ENV || 'development'
+        environment: process.env.NODE_ENV || 'development',
+        routes: {
+            total: 21,
+            list: [
+                '/api/auth',
+                '/api/admin',
+                '/api/products',
+                '/api/categories',
+                '/api/applications',
+                '/api/scanner',
+                '/api/suppliers',
+                '/api/repairs',
+                '/api/reviews',
+                '/api/videos',
+                '/api/chat',
+                '/api/delivery',
+                '/api/payment',
+                '/api/announcements',
+                '/api/stats',
+                '/api/orders',
+                '/api/jobs',
+                '/api/cart',
+                '/api/customer-care',
+                '/api/upload',
+                '/api/settings'
+            ]
+        }
     });
 });
 
-// ===== ROOT ROUTE =====
+// ===== ROOT ROUTE - SHOWS ALL ENDPOINTS =====
 app.get('/', (req, res) => {
     res.json({
         name: 'Modern Furniture Pacific API',
         version: '2.0.0',
         status: 'running',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development',
         endpoints: {
             auth: '/api/auth',
             admin: '/api/admin',
@@ -116,8 +146,10 @@ app.get('/', (req, res) => {
             jobs: '/api/jobs',
             cart: '/api/cart',
             'customer-care': '/api/customer-care',
-            upload: '/api/upload'
-        }
+            upload: '/api/upload',
+            settings: '/api/settings'
+        },
+        documentation: 'https://modern-furniture-api.onrender.com/api/health'
     });
 });
 
@@ -128,7 +160,30 @@ app.use((req, res) => {
         success: false,
         message: 'Route not found',
         path: req.originalUrl,
-        method: req.method
+        method: req.method,
+        availableRoutes: [
+            '/api/auth',
+            '/api/admin',
+            '/api/products',
+            '/api/categories',
+            '/api/applications',
+            '/api/scanner',
+            '/api/suppliers',
+            '/api/repairs',
+            '/api/reviews',
+            '/api/videos',
+            '/api/chat',
+            '/api/delivery',
+            '/api/payment',
+            '/api/announcements',
+            '/api/stats',
+            '/api/orders',
+            '/api/jobs',
+            '/api/cart',
+            '/api/customer-care',
+            '/api/upload',
+            '/api/settings'
+        ]
     });
 });
 
@@ -145,9 +200,12 @@ app.use((err, req, res, next) => {
 // ===== SERVER START =====
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
+    console.log('');
     console.log('🚀 Modern Pacific Furniture API');
     console.log(`📡 Server running on port ${PORT}`);
-    console.log(`🔗 API URL: https://modern-furniture-api.onrender.com/api`);
+    console.log(`🔗 API URL: http://localhost:${PORT}/api`);
+    console.log(`📱 Frontend URL: https://modern-furniture-pacific-ccnz.onrender.com`);
+    console.log('');
     console.log('✅ System ready!');
     console.log('📋 Registered Routes:');
     console.log('   - /api/auth ✅');
@@ -170,6 +228,9 @@ server.listen(PORT, () => {
     console.log('   - /api/cart ✅');
     console.log('   - /api/customer-care ✅');
     console.log('   - /api/upload ✅');
+    console.log('   - /api/settings ✅');
+    console.log('');
+    console.log('💡 All 21 routes registered successfully!');
 });
 
 module.exports = { app, io };

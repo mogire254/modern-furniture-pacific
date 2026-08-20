@@ -13,6 +13,8 @@ router.post('/:id/like', protect, reviewController.likeReview);
 
 // Admin routes
 router.get('/', protect, isAdmin, reviewController.getReviews);
-router.put('/:id/status', protect, isAdmin, reviewController.updateStatus);
+router.patch('/:id/approve', protect, isAdmin, reviewController.approveReview);
+router.patch('/:id/reject', protect, isAdmin, reviewController.rejectReview);
+router.delete('/:id', protect, isAdmin, reviewController.deleteReview);
 
 module.exports = router;

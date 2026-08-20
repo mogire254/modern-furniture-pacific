@@ -1,140 +1,138 @@
-﻿const express = require('express');
+const express = require('express');
 const router = express.Router();
-const { readData, writeData, addItem, findById, updateItem } = require('../utils/fileHandler');
-const { protect } = require('../middleware/auth');
+const { protect, isAdmin } = require('../middleware/auth');
+const { readData, writeData, addItem, updateItem, findById } = require('../utils/fileHandler');
 const { v4: uuidv4 } = require('uuid');
 
-// ===== GET ALL CUSTOMER CARE MESSAGES (Admin) =====
-router.get('/', protect, (req, res) => {
+// Get user's conversations
+router.get('/my', protect, async (req, res) => {
     try {
-        const messages = readData('customer-care');
-        res.json({
-            success: true,
-            messages: messages || []
-        });
+        const conversations = readData('customer-care');
+        const userConversations = conversations.filter(c => c.userId === req.user.id);
+        res.json({ success: true, messages: userConversations || [] });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 
-// ===== SEND CUSTOMER CARE MESSAGE (User) =====
-router.post('/user', (req, res) => {
+// Send message
+router.post('/send', protect, async (req, res) => {
     try {
-        const { name, email, phone, message, subject } = req.body;
-        
-        const newMessage = {
+        const { message } = req.body;
+        if (!message) {
+            return res.status(400).json({ success: false, message: 'Message is required' });
+        }
+
+        const conversation = {
             id: uuidv4(),
-            type: 'customer',
-            name: name || 'Guest',
-            email: email || '',
-            phone: phone || '',
-            subject: subject || 'General Inquiry',
-            message: message || '',
-            status: 'pending', // pending, replied, resolved
-            adminResponse: '',
-            respondedBy: '',
-            respondedAt: null,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            userId: req.user.id,
+            userName: req.user.name,
+            userEmail: req.user.email,
+            message: message,
+            sender: 'user',
+            status: 'open',
+            timestamp: new Date().toISOString(),
+            read: false
         };
-        
-        addItem('customer-care', newMessage);
-        
-        res.status(201).json({
-            success: true,
-            message: newMessage
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-});
 
-// ===== ADMIN REPLY TO CUSTOMER CARE =====
-router.put('/:id/reply', protect, (req, res) => {
-    try {
-        const { response } = req.body;
-        const messages = readData('customer-care');
-        const index = messages.findIndex(m => m.id === req.params.id);
-        
-        if (index === -1) {
-            return res.status(404).json({
-                success: false,
-                message: 'Message not found'
-            });
+        addItem('customer-care', conversation);
+
+        // Notify admins via socket
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('new-customer-message', conversation);
         }
-        
-        messages[index].adminResponse = response;
-        messages[index].status = 'replied';
-        messages[index].respondedBy = req.user.name;
-        messages[index].respondedAt = new Date().toISOString();
-        messages[index].updatedAt = new Date().toISOString();
-        
-        writeData('customer-care', messages);
-        
-        res.json({
-            success: true,
-            message: messages[index]
-        });
+
+        res.status(201).json({ success: true, message: 'Message sent successfully', conversation });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 
-// ===== MARK AS RESOLVED =====
-router.put('/:id/resolve', protect, (req, res) => {
+// Get all conversations (Admin only)
+router.get('/all', protect, isAdmin, async (req, res) => {
     try {
-        const messages = readData('customer-care');
-        const index = messages.findIndex(m => m.id === req.params.id);
-        
-        if (index === -1) {
-            return res.status(404).json({
-                success: false,
-                message: 'Message not found'
-            });
+        const conversations = readData('customer-care');
+        // Group by user
+        const grouped = {};
+        conversations.forEach(c => {
+            if (!grouped[c.userId]) {
+                grouped[c.userId] = {
+                    userId: c.userId,
+                    userName: c.userName,
+                    userEmail: c.userEmail,
+                    messages: [],
+                    status: 'open',
+                    lastMessage: c.timestamp
+                };
+            }
+            grouped[c.userId].messages.push(c);
+            if (c.timestamp > grouped[c.userId].lastMessage) {
+                grouped[c.userId].lastMessage = c.timestamp;
+            }
+        });
+
+        const result = Object.values(grouped);
+        res.json({ success: true, conversations: result });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// Reply to conversation (Admin only)
+router.post('/reply/:userId', protect, isAdmin, async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { message } = req.body;
+        if (!message) {
+            return res.status(400).json({ success: false, message: 'Message is required' });
         }
-        
-        messages[index].status = 'resolved';
-        messages[index].updatedAt = new Date().toISOString();
-        
-        writeData('customer-care', messages);
-        
-        res.json({
-            success: true,
-            message: messages[index]
-        });
+
+        // Get user info
+        const users = readData('users');
+        const admins = readData('admins');
+        const allUsers = [...users, ...admins];
+        const user = allUsers.find(u => u.id === userId);
+
+        const reply = {
+            id: uuidv4(),
+            userId: userId,
+            userName: user ? user.name : 'Customer',
+            userEmail: user ? user.email : 'unknown',
+            message: message,
+            sender: 'admin',
+            status: 'in-progress',
+            timestamp: new Date().toISOString(),
+            read: true
+        };
+
+        addItem('customer-care', reply);
+
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('admin-reply', reply);
+        }
+
+        res.json({ success: true, message: 'Reply sent successfully', reply });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 
-// ===== DELETE CUSTOMER CARE MESSAGE (Admin) =====
-router.delete('/:id', protect, (req, res) => {
+// Close conversation (Admin only)
+router.patch('/close/:userId', protect, isAdmin, async (req, res) => {
     try {
-        const messages = readData('customer-care');
-        const filtered = messages.filter(m => m.id !== req.params.id);
-        writeData('customer-care', filtered);
-        
-        res.json({
-            success: true,
-            message: 'Message deleted'
+        const { userId } = req.params;
+        const conversations = readData('customer-care');
+        const userConversations = conversations.filter(c => c.userId === userId);
+        userConversations.forEach(c => {
+            c.status = 'closed';
+            c.closedAt = new Date().toISOString();
         });
+        writeData('customer-care', conversations);
+        res.json({ success: true, message: 'Conversation closed' });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 

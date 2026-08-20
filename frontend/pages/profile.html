@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8f7f4; }
+        
+        .header {
+            background: #1a2a3a;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .header .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .header .logo img { height: 40px; width: auto; }
+        .header .logo span { color: white; font-weight: 700; font-size: 18px; }
+        .header .user-info { display: flex; align-items: center; gap: 16px; color: white; }
+        .header .user-info img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #c9a94e; }
+        .header .btn { padding: 8px 20px; border: none; border-radius: 50px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+        .header .btn-outline { background: transparent; border: 2px solid rgba(255,255,255,0.3); color: white; }
+        .header .btn-outline:hover { border-color: #c9a94e; color: #c9a94e; }
+        
+        .container { max-width: 800px; margin: 0 auto; padding: 32px 20px; }
+        
+        .page-header { margin-bottom: 32px; }
+        .page-header h1 { font-size: 32px; color: #1a2a3a; }
+        .page-header h1 span { color: #c9a94e; }
+        .page-header p { color: #888; margin-top: 8px; font-size: 16px; }
+        
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 32px;
+        }
+        .profile-avatar {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .profile-avatar img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 16px;
+            border: 4px solid #c9a94e;
+        }
+        .profile-avatar .btn { width: 100%; }
+        
+        .profile-form {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .profile-form h2 { color: #1a2a3a; margin-bottom: 24px; }
+        
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; color: #1a2a3a; margin-bottom: 6px; }
+        .form-group label i { color: #c9a94e; margin-right: 8px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9e7e2;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: #f8f7f4;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #c9a94e;
+            box-shadow: 0 0 0 4px rgba(201,169,78,0.15);
+        }
+        .form-group input:disabled { opacity: 0.6; }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: inherit;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-primary { background: #c9a94e; color: #1a2a3a; }
+        .btn-primary:hover { background: #e8d5a3; transform: translateY(-2px); box-shadow: 0 12px 30px rgba(201,169,78,0.3); }
+        .btn-outline { background: transparent; border: 2px solid #e9e7e2; color: #1a2a3a; }
+        .btn-outline:hover { border-color: #c9a94e; color: #c9a94e; }
+        
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1a2a3a;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            z-index: 2000;
+            max-width: 400px;
+            animation: slideUp 0.3s ease-out;
+            display: none;
+        }
+        .toast.show { display: block; }
+        .toast .close { background: none; border: none; color: rgba(255,255,255,0.6); float: right; cursor: pointer; font-size: 18px; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 768px) {
+            .profile-container { grid-template-columns: 1fr; }
+            .header { padding: 12px 16px; }
+            .header .logo span { font-size: 14px; }
+            .container { padding: 16px; }
+            .profile-form { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="/" class="logo">
+            <img src="../assets/images/logo.png" alt="Logo" />
+            <span>Modern Furniture Pacific</span>
+        </a>
+        <div class="user-info">
+            <span id="userName">User</span>
+            <button class="btn btn-outline" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>My <span>Profile</span></h1>
+            <p>Manage your personal information and preferences.</p>
+        </div>
+
+        <div class="profile-container">
+            <!-- Avatar Section -->
+            <div class="profile-avatar">
+                <img src="../assets/images/avatar-default.png" alt="Profile" id="profileAvatar" />
+                <button class="btn btn-outline" onclick="changePhoto()">
+                    <i class="fas fa-camera"></i> Change Photo
+                </button>
+                <p style="color:#888; font-size:12px; margin-top:8px;">JPG, PNG or GIF. Max 2MB.</p>
+            </div>
+
+            <!-- Profile Form -->
+            <div class="profile-form">
+                <h2><i class="fas fa-user-cog" style="color:#c9a94e;"></i> Personal Information</h2>
+                <form id="profileForm" onsubmit="updateProfile(event)">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" id="profileName" required />
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="profileEmail" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone</label>
+                        <input type="tel" id="profilePhone" placeholder="+254 700 123 456" />
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-map-marker-alt"></i> Address</label>
+                        <input type="text" id="profileAddress" placeholder="Street, City, Country" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <button class="close" onclick="closeToast()">&times;</button>
+        <p id="toastMessage">Notification</p>
+    </div>
+
+    <script>
+        // ============================================
+        // API CONFIGURATION - LIVE
+        // ============================================
+        const API_URL = 'https://modern-furniture-api.onrender.com/api';
+        let currentUser = null;
+
+        // ============================================
+        // CHECK LOGIN
+        // ============================================
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+
+        if (!token || !user) {
+            window.location.href = 'login.html';
+        }
+
+        currentUser = JSON.parse(user);
+        loadProfile();
+
+        function loadProfile() {
+            document.getElementById('userName').textContent = currentUser.name || 'User';
+            document.getElementById('profileName').value = currentUser.name || '';
+            document.getElementById('profileEmail').value = currentUser.email || '';
+            document.getElementById('profilePhone').value = currentUser.phone || '';
+            document.getElementById('profileAddress').value = currentUser.address || '';
+            
+            if (currentUser.profileImage) {
+                document.getElementById('profileAvatar').src = currentUser.profileImage;
+            }
+        }
+
+        // ============================================
+        // UPDATE PROFILE
+        // ============================================
+        async function updateProfile(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('profileName').value;
+            const phone = document.getElementById('profilePhone').value;
+            const address = document.getElementById('profileAddress').value;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/users/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name, phone, address })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    currentUser = data.user;
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+                    document.getElementById('userName').textContent = currentUser.name;
+                    showToast('✅ Profile updated successfully!');
+                } else {
+                    showToast('❌ ' + (data.message || 'Failed to update profile'));
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showToast('❌ Network error. Please try again.');
+            }
+        }
+
+        // ============================================
+        // CHANGE PHOTO
+        // ============================================
+        function changePhoto() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = async function(event) {
+                    try {
+                        const token = localStorage.getItem('token');
+                        const response = await fetch(`${API_URL}/users/profile/photo`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ photo: event.target.result })
+                        });
+                        const data = await response.json();
+
+                        if (data.success) {
+                            currentUser = data.user;
+                            localStorage.setItem('user', JSON.stringify(currentUser));
+                            document.getElementById('profileAvatar').src = data.user.profileImage;
+                            showToast('✅ Photo updated successfully!');
+                        } else {
+                            showToast('❌ Failed to update photo');
+                        }
+                    } catch (error) {
+                        console.error('Error updating photo:', error);
+                        showToast('❌ Failed to update photo');
+                    }
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+
+        // ============================================
+        // TOAST
+        // ============================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            msg.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function closeToast() {
+            document.getElementById('toast').classList.remove('show');
+        }
+
+        // ============================================
+        // LOGOUT
+        // ============================================
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

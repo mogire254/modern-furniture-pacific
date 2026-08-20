@@ -9,44 +9,36 @@
     <link rel="stylesheet" href="../css/style.css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #1a2a3a;
-            --gold: #c9a94e;
-            --gold-light: #e8d5a3;
-            --white: #ffffff;
-            --gray-100: #f8f7f4;
-            --gray-200: #e9e7e2;
-            --gray-600: #888888;
-            --gray-800: #2d2d2d;
-            --radius: 16px;
-            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+        body { font-family: 'Inter', sans-serif; background: #f8f7f4; }
+        
+        .header {
+            background: #1a2a3a;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 12px;
         }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--gray-100);
-            color: var(--gray-800);
-        }
-        .page-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 32px 24px;
-        }
-        .page-header {
-            margin-bottom: 32px;
-        }
-        .page-header h1 {
-            font-size: 32px;
-            color: var(--primary);
-        }
-        .page-header h1 span {
-            color: var(--gold);
-        }
-        .page-header p {
-            color: var(--gray-600);
-            margin-top: 8px;
-            font-size: 16px;
-        }
+        .header .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .header .logo img { height: 40px; width: auto; }
+        .header .logo span { color: white; font-weight: 700; font-size: 18px; }
+        .header .user-info { display: flex; align-items: center; gap: 16px; color: white; }
+        .header .user-info img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #c9a94e; }
+        .header .btn { padding: 8px 20px; border: none; border-radius: 50px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+        .header .btn-outline { background: transparent; border: 2px solid rgba(255,255,255,0.3); color: white; }
+        .header .btn-outline:hover { border-color: #c9a94e; color: #c9a94e; }
+        
+        .container { max-width: 1000px; margin: 0 auto; padding: 32px 20px; }
+        
+        .page-header { margin-bottom: 32px; }
+        .page-header h1 { font-size: 32px; color: #1a2a3a; }
+        .page-header h1 span { color: #c9a94e; }
+        .page-header p { color: #888; margin-top: 8px; font-size: 16px; }
+        
         .checkout-container {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -55,98 +47,72 @@
         .checkout-form {
             background: white;
             padding: 32px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
-        .checkout-form h2 {
-            color: var(--primary);
-            margin-bottom: 24px;
-        }
-        .form-section {
-            margin-bottom: 24px;
-        }
-        .form-section h3 {
-            font-size: 16px;
-            color: var(--primary);
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--gray-100);
-        }
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--primary);
-            margin-bottom: 6px;
-        }
+        .checkout-form h2 { color: #1a2a3a; margin-bottom: 24px; }
+        
+        .form-section { margin-bottom: 24px; }
+        .form-section h3 { font-size: 16px; color: #1a2a3a; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #f8f7f4; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; color: #1a2a3a; margin-bottom: 6px; }
+        .form-group label i { color: #c9a94e; margin-right: 8px; }
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px 16px;
-            border: 2px solid var(--gray-200);
+            border: 2px solid #e9e7e2;
             border-radius: 8px;
             font-size: 14px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             font-family: inherit;
-            background: var(--gray-100);
+            background: #f8f7f4;
         }
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
-            border-color: var(--gold);
+            border-color: #c9a94e;
             box-shadow: 0 0 0 4px rgba(201,169,78,0.15);
         }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        
         .order-summary {
             background: white;
             padding: 24px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             height: fit-content;
             position: sticky;
-            top: 24px;
+            top: 100px;
         }
-        .order-summary h2 {
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
+        .order-summary h2 { color: #1a2a3a; margin-bottom: 20px; }
+        
         .order-item {
             display: flex;
             gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--gray-200);
+            padding: 10px 0;
+            border-bottom: 1px solid #e9e7e2;
             align-items: center;
         }
-        .order-item:last-child {
-            border-bottom: none;
+        .order-item:last-child { border-bottom: none; }
+        .order-item .item-icon {
+            width: 40px;
+            height: 40px;
+            background: #f8f7f4;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
         }
-        .order-item img {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 6px;
-        }
-        .order-item-details {
-            flex: 1;
-        }
-        .order-item-details h4 {
-            font-size: 14px;
-            color: var(--primary);
-        }
-        .order-item-details .price {
-            font-weight: 600;
-            color: var(--gold);
-        }
+        .order-item .item-details { flex: 1; }
+        .order-item .item-details h4 { font-size: 14px; color: #1a2a3a; }
+        .order-item .item-details .price { font-weight: 600; color: #c9a94e; }
+        
         .summary-row {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
-            border-bottom: 1px solid var(--gray-200);
+            border-bottom: 1px solid #e9e7e2;
             font-size: 14px;
         }
         .summary-row.total {
@@ -155,10 +121,8 @@
             font-size: 18px;
             padding-top: 16px;
         }
-        .summary-row.total .amount {
-            color: var(--gold);
-            font-size: 24px;
-        }
+        .summary-row.total .amount { color: #c9a94e; font-size: 24px; }
+        
         .btn {
             display: inline-flex;
             align-items: center;
@@ -169,84 +133,65 @@
             font-weight: 600;
             font-size: 16px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.4s ease;
             font-family: inherit;
-            text-decoration: none;
             width: 100%;
             justify-content: center;
         }
-        .btn-primary {
-            background: var(--gold);
-            color: var(--primary);
-        }
-        .btn-primary:hover {
-            background: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(201,169,78,0.3);
-        }
-        .btn-success {
-            background: #10b981;
-            color: white;
-        }
-        .btn-success:hover {
-            background: #059669;
-        }
-        .notification-toast {
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .toast {
             position: fixed;
             bottom: 24px;
             right: 24px;
-            background: var(--primary);
+            background: #1a2a3a;
             color: white;
             padding: 16px 24px;
             border-radius: 12px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            z-index: 3000;
+            z-index: 2000;
             max-width: 400px;
             animation: slideUp 0.3s ease-out;
             display: none;
         }
-        .notification-toast.show { display: block; }
-        .notification-toast .close {
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.6);
-            float: right;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .toast.show { display: block; }
+        .toast .close { background: none; border: none; color: rgba(255,255,255,0.6); float: right; cursor: pointer; font-size: 18px; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        
         @media (max-width: 768px) {
-            .checkout-container {
-                grid-template-columns: 1fr;
-            }
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            .order-summary {
-                position: static;
-            }
+            .checkout-container { grid-template-columns: 1fr; }
+            .header { padding: 12px 16px; }
+            .header .logo span { font-size: 14px; }
+            .container { padding: 16px; }
+            .checkout-form { padding: 16px; }
+            .form-row { grid-template-columns: 1fr; }
+            .order-summary { position: static; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Notification Toast -->
-    <div id="notificationToast" class="notification-toast">
-        <button class="close" onclick="closeNotification()">&times;</button>
-        <p id="notificationMessage">Notification</p>
-    </div>
+    <!-- Header -->
+    <header class="header">
+        <a href="/" class="logo">
+            <img src="../assets/images/logo.png" alt="Logo" />
+            <span>Modern Furniture Pacific</span>
+        </a>
+        <div class="user-info">
+            <span id="userName">Guest</span>
+            <button class="btn btn-outline" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </header>
 
-    <div class="page-container">
-        <!-- Page Header -->
+    <div class="container">
         <div class="page-header">
             <h1><span>Checkout</span></h1>
             <p>Complete your order and confirm delivery details.</p>
         </div>
 
-        <!-- Checkout Container -->
         <div class="checkout-container">
             <!-- Checkout Form -->
             <div class="checkout-form">
@@ -257,20 +202,20 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>First Name</label>
-                                <input type="text" placeholder="John" required />
+                                <input type="text" id="firstName" placeholder="John" required />
                             </div>
                             <div class="form-group">
                                 <label>Last Name</label>
-                                <input type="text" placeholder="Doe" required />
+                                <input type="text" id="lastName" placeholder="Doe" required />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" placeholder="john@example.com" required />
+                            <label><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" id="email" placeholder="john@example.com" required />
                         </div>
                         <div class="form-group">
-                            <label>Phone</label>
-                            <input type="tel" placeholder="+254 700 123 456" required />
+                            <label><i class="fas fa-phone"></i> Phone</label>
+                            <input type="tel" id="phone" placeholder="+254 700 123 456" required />
                         </div>
                     </div>
 
@@ -278,26 +223,26 @@
                         <h3>Delivery Address</h3>
                         <div class="form-group">
                             <label>Street Address</label>
-                            <input type="text" placeholder="123 Main Street" required />
+                            <input type="text" id="street" placeholder="123 Main Street" required />
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label>City</label>
-                                <input type="text" placeholder="Nairobi" required />
+                                <input type="text" id="city" placeholder="Nairobi" required />
                             </div>
                             <div class="form-group">
                                 <label>State/Region</label>
-                                <input type="text" placeholder="Nairobi" required />
+                                <input type="text" id="state" placeholder="Nairobi" required />
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Postal Code</label>
-                                <input type="text" placeholder="00100" required />
+                                <input type="text" id="postal" placeholder="00100" required />
                             </div>
                             <div class="form-group">
                                 <label>Country</label>
-                                <select required>
+                                <select id="country" required>
                                     <option value="">Select Country</option>
                                     <option value="Kenya">Kenya</option>
                                     <option value="Tanzania">Tanzania</option>
@@ -306,20 +251,19 @@
                                     <option value="Ethiopia">Ethiopia</option>
                                     <option value="South Africa">South Africa</option>
                                     <option value="Nigeria">Nigeria</option>
-                                    <option value="Other">Other</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Delivery Instructions (Optional)</label>
-                            <textarea placeholder="Any special delivery instructions..." rows="2"></textarea>
+                            <textarea id="instructions" placeholder="Any special delivery instructions..." rows="2"></textarea>
                         </div>
                     </div>
 
                     <div class="form-section">
                         <h3>Payment Method</h3>
                         <div class="form-group">
-                            <select required>
+                            <select id="paymentMethod" required>
                                 <option value="">Select Payment Method</option>
                                 <option value="card">Credit / Debit Card</option>
                                 <option value="mpesa">M-Pesa</option>
@@ -329,7 +273,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-success" id="placeOrderBtn">
                         <i class="fas fa-lock"></i> Place Order
                     </button>
                 </form>
@@ -338,82 +282,229 @@
             <!-- Order Summary -->
             <div class="order-summary">
                 <h2>Order Summary</h2>
-                <div class="order-item">
-                    <img src="https://via.placeholder.com/50x50/1a2a3a/c9a94e?text=Sofa" alt="Product" />
-                    <div class="order-item-details">
-                        <h4>Luxury Velvet Sofa</h4>
-                        <span class="price">$899.99</span>
-                        <span style="color: var(--gray-600); font-size: 12px;">× 1</span>
-                    </div>
+                <div id="orderItems">
+                    <p style="color:#888; text-align:center; padding:20px 0;">Loading cart items...</p>
                 </div>
-                <div class="order-item">
-                    <img src="https://via.placeholder.com/50x50/1a2a3a/c9a94e?text=Table" alt="Product" />
-                    <div class="order-item-details">
-                        <h4>Minimalist Dining Table</h4>
-                        <span class="price">$649.99</span>
-                        <span style="color: var(--gray-600); font-size: 12px;">× 1</span>
-                    </div>
-                </div>
-                <div class="order-item">
-                    <img src="https://via.placeholder.com/50x50/1a2a3a/c9a94e?text=Chair" alt="Product" />
-                    <div class="order-item-details">
-                        <h4>Designer Armchair</h4>
-                        <span class="price">$299.99</span>
-                        <span style="color: var(--gray-600); font-size: 12px;">× 2</span>
-                    </div>
-                </div>
-
-                <div style="margin-top: 16px;">
+                <div style="margin-top:16px;">
                     <div class="summary-row">
                         <span>Subtotal</span>
-                        <span>$1,849.97</span>
+                        <span id="subtotalAmount">KSh 0</span>
                     </div>
                     <div class="summary-row">
                         <span>Shipping</span>
-                        <span>Free</span>
+                        <span id="shippingAmount">Free</span>
                     </div>
                     <div class="summary-row">
                         <span>Tax</span>
-                        <span>$184.99</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Discount</span>
-                        <span>-$150.00</span>
+                        <span id="taxAmount">KSh 0</span>
                     </div>
                     <div class="summary-row total">
                         <span>Total</span>
-                        <span class="amount">$1,884.96</span>
+                        <span class="amount" id="totalAmount">KSh 0</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="toast" id="toast">
+        <button class="close" onclick="closeToast()">&times;</button>
+        <p id="toastMessage">Notification</p>
+    </div>
+
     <script>
-        function showNotification(message) {
-            const toast = document.getElementById('notificationToast');
-            const msg = document.getElementById('notificationMessage');
+        // ============================================
+        // API CONFIGURATION - LIVE
+        // ============================================
+        const API_URL = 'https://modern-furniture-api.onrender.com/api';
+        let cartItems = [];
+        let currentUser = null;
+
+        // ============================================
+        // CHECK LOGIN
+        // ============================================
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+
+        if (!token || !user) {
+            window.location.href = 'login.html';
+        }
+
+        currentUser = JSON.parse(user);
+        document.getElementById('userName').textContent = currentUser.name || 'User';
+        document.getElementById('email').value = currentUser.email || '';
+
+        // ============================================
+        // LOAD CART
+        // ============================================
+        async function loadCart() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/cart`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    cartItems = data.items || [];
+                    renderOrderSummary();
+                } else {
+                    showToast('❌ Failed to load cart');
+                }
+            } catch (error) {
+                console.error('Error loading cart:', error);
+                showToast('❌ Failed to load cart');
+            }
+        }
+
+        function renderOrderSummary() {
+            const container = document.getElementById('orderItems');
+            
+            if (!cartItems || cartItems.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:20px; color:#888;">
+                        <i class="fas fa-shopping-cart" style="font-size:32px; color:#ddd;"></i>
+                        <p style="margin-top:8px;">Your cart is empty</p>
+                    </div>
+                `;
+                document.getElementById('placeOrderBtn').disabled = true;
+                return;
+            }
+
+            let html = '';
+            let subtotal = 0;
+
+            cartItems.forEach(item => {
+                const product = item.product || {};
+                const price = product.salePrice || product.price || 0;
+                const total = price * item.quantity;
+                subtotal += total;
+
+                html += `
+                    <div class="order-item">
+                        <div class="item-icon">🪑</div>
+                        <div class="item-details">
+                            <h4>${product.name || 'Product'}</h4>
+                            <span class="price">KSh ${parseInt(price).toLocaleString()}</span>
+                            <span style="color:#888; font-size:12px;"> × ${item.quantity}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            // Update totals
+            const tax = subtotal * 0.1;
+            const total = subtotal + tax;
+            document.getElementById('subtotalAmount').textContent = `KSh ${subtotal.toLocaleString()}`;
+            document.getElementById('taxAmount').textContent = `KSh ${tax.toLocaleString()}`;
+            document.getElementById('totalAmount').textContent = `KSh ${total.toLocaleString()}`;
+        }
+
+        // ============================================
+        // PLACE ORDER
+        // ============================================
+        async function placeOrder(event) {
+            event.preventDefault();
+            
+            if (!cartItems || cartItems.length === 0) {
+                showToast('❌ Your cart is empty');
+                return;
+            }
+
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const street = document.getElementById('street').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const postal = document.getElementById('postal').value;
+            const country = document.getElementById('country').value;
+            const instructions = document.getElementById('instructions').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+
+            const orderData = {
+                firstName,
+                lastName,
+                email,
+                phone,
+                address: { street, city, state, postal, country },
+                instructions,
+                paymentMethod,
+                items: cartItems,
+                total: parseFloat(document.getElementById('totalAmount').textContent.replace('KSh ', '').replace(/,/g, ''))
+            };
+
+            const btn = document.getElementById('placeOrderBtn');
+            const originalText = btn.innerHTML;
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('🎉 Order placed successfully! You will receive a confirmation email.');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Order Placed!';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 3000);
+                } else {
+                    showToast('❌ ' + (data.message || 'Failed to place order'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                console.error('Error placing order:', error);
+                showToast('❌ Network error. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // ============================================
+        // TOAST
+        // ============================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
             msg.textContent = message;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 5000);
+            setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        function closeNotification() {
-            document.getElementById('notificationToast').classList.remove('show');
+        function closeToast() {
+            document.getElementById('toast').classList.remove('show');
         }
 
-        function placeOrder(event) {
-            event.preventDefault();
-            showNotification('🎉 Order placed successfully! You will receive a confirmation email shortly.');
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 3000);
+        // ============================================
+        // LOGOUT
+        // ============================================
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeNotification();
+        // ============================================
+        // LOAD
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCart();
         });
     </script>
-
 </body>
 </html>

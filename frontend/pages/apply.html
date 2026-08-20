@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Apply for Job - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8f7f4; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        
+        .apply-container {
+            background: white;
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+        .apply-container .logo { text-align: center; margin-bottom: 32px; }
+        .apply-container .logo img { height: 60px; width: auto; margin-bottom: 8px; }
+        .apply-container .logo h1 { font-size: 24px; color: #1a2a3a; }
+        .apply-container .logo p { color: #888; font-size: 14px; }
+        
+        .job-info { background: #f8f7f4; padding: 16px; border-radius: 8px; margin-bottom: 24px; border-left: 4px solid #c9a94e; }
+        .job-info h3 { color: #1a2a3a; }
+        .job-info p { color: #666; font-size: 14px; margin: 4px 0; }
+        
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; color: #1a2a3a; margin-bottom: 6px; }
+        .form-group label i { color: #c9a94e; margin-right: 8px; }
+        .form-group label .required { color: #ef4444; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9e7e2;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #f8f7f4;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #c9a94e;
+            box-shadow: 0 0 0 4px rgba(201,169,78,0.15);
+        }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        .form-group .helper { font-size: 12px; color: #888; margin-top: 4px; }
+        .form-group input[type="file"] { padding: 8px; background: white; }
+        
+        .quiz-section { background: #f8f7f4; padding: 16px; border-radius: 8px; margin: 16px 0; }
+        .quiz-section h4 { color: #1a2a3a; margin-bottom: 12px; }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: inherit;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-primary { background: #c9a94e; color: #1a2a3a; }
+        .btn-primary:hover { background: #e8d5a3; transform: translateY(-2px); box-shadow: 0 12px 30px rgba(201,169,78,0.3); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .message-box { margin-top: 16px; padding: 12px 16px; border-radius: 8px; display: none; }
+        .message-box.success { display: block; background: #d1fae5; color: #065f46; }
+        .message-box.error { display: block; background: #fee2e2; color: #991b1b; }
+        
+        .back-link { display: inline-block; margin-top: 20px; color: #c9a94e; text-decoration: none; font-size: 14px; }
+        .back-link:hover { text-decoration: underline; }
+        
+        @media (max-width: 768px) {
+            .apply-container { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="apply-container">
+        <div class="logo">
+            <img src="../assets/images/logo.png" alt="Logo" />
+            <h1>Apply for Position</h1>
+            <p>Submit your application to join our team</p>
+        </div>
+
+        <div id="jobInfo" class="job-info">
+            <h3>Loading job details...</h3>
+            <p>📍 Location TBD</p>
+        </div>
+
+        <form id="applyForm" onsubmit="submitApplication(event)">
+            <input type="hidden" id="jobId" value="" />
+            
+            <!-- Personal Details -->
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Full Name <span class="required">*</span></label>
+                <input type="text" id="applicantName" placeholder="John Doe" required />
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email <span class="required">*</span></label>
+                <input type="email" id="applicantEmail" placeholder="john@example.com" required />
+            </div>
+            <div class="form-group" id="phoneGroup">
+                <label><i class="fas fa-phone"></i> Phone</label>
+                <input type="tel" id="applicantPhone" placeholder="+254 700 123 456" />
+            </div>
+            <div class="form-group" id="locationGroup">
+                <label><i class="fas fa-map-marker-alt"></i> Location</label>
+                <input type="text" id="applicantLocation" placeholder="City, Country" />
+            </div>
+            <div class="form-group" id="experienceGroup">
+                <label><i class="fas fa-graduation-cap"></i> Experience</label>
+                <textarea id="applicantExperience" placeholder="Describe your relevant experience..." rows="3"></textarea>
+            </div>
+            <div class="form-group" id="coverGroup">
+                <label><i class="fas fa-file-alt"></i> Cover Letter</label>
+                <textarea id="applicantCover" placeholder="Why do you want to work with us?" rows="4"></textarea>
+            </div>
+
+            <!-- Document Uploads -->
+            <div class="form-group" id="resumeGroup">
+                <label><i class="fas fa-file-pdf"></i> Resume/CV <span class="required">*</span></label>
+                <input type="file" id="applicantResume" accept=".pdf,.doc,.docx" required />
+                <div class="helper">Upload your resume (PDF, DOC, DOCX)</div>
+            </div>
+            <div class="form-group" id="certGroup">
+                <label><i class="fas fa-graduation-cap"></i> Academic Certificates</label>
+                <input type="file" id="applicantCertificates" accept=".pdf,.jpg,.png" multiple />
+                <div class="helper">Upload your certificates (PDF, JPG, PNG) - multiple files allowed</div>
+            </div>
+            <div class="form-group" id="idGroup">
+                <label><i class="fas fa-id-card"></i> ID/Passport/Driving License</label>
+                <input type="file" id="applicantId" accept=".pdf,.jpg,.png" />
+                <div class="helper">Upload a copy of your ID</div>
+            </div>
+            <div class="form-group" id="portfolioGroup">
+                <label><i class="fas fa-link"></i> Portfolio/Website</label>
+                <input type="url" id="applicantPortfolio" placeholder="https://yourportfolio.com" />
+            </div>
+
+            <!-- Quiz Questions -->
+            <div id="quizContainer" class="quiz-section">
+                <h4><i class="fas fa-question-circle"></i> Quiz Questions</h4>
+                <div id="quizQuestions"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> Submit Application
+            </button>
+            <div id="messageBox" class="message-box"></div>
+        </form>
+
+        <a href="dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+
+    <script>
+        // ============================================
+        // API CONFIGURATION - LIVE
+        // ============================================
+        const API_URL = 'https://modern-furniture-api.onrender.com/api';
+        let currentJob = null;
+
+        // ============================================
+        // GET JOB ID FROM URL
+        // ============================================
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobId = urlParams.get('job');
+
+        if (!jobId) {
+            document.getElementById('jobInfo').innerHTML = `
+                <h3 style="color:#ef4444;">❌ No job selected</h3>
+                <p>Please go back and select a job to apply for.</p>
+            `;
+            document.getElementById('submitBtn').disabled = true;
+        } else {
+            document.getElementById('jobId').value = jobId;
+            loadJobDetails(jobId);
+        }
+
+        // ============================================
+        // LOAD JOB DETAILS
+        // ============================================
+        async function loadJobDetails(id) {
+            try {
+                const response = await fetch(`${API_URL}/applications/${id}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentJob = data.application;
+                    renderJobDetails(currentJob);
+                    renderQuizQuestions(currentJob);
+                    setupFormFields(currentJob);
+                } else {
+                    document.getElementById('jobInfo').innerHTML = `
+                        <h3 style="color:#ef4444;">❌ Job not found</h3>
+                        <p>The job you're applying for may have been closed.</p>
+                    `;
+                    document.getElementById('submitBtn').disabled = true;
+                }
+            } catch (error) {
+                console.error('Error loading job:', error);
+                document.getElementById('jobInfo').innerHTML = `
+                    <h3 style="color:#ef4444;">❌ Failed to load job details</h3>
+                    <p>Please try again later.</p>
+                `;
+            }
+        }
+
+        function renderJobDetails(job) {
+            const container = document.getElementById('jobInfo');
+            container.innerHTML = `
+                <h3>${job.title || 'Job Opening'}</h3>
+                <p>📍 ${job.location || 'Location TBD'} • ${job.type || 'Full-time'}</p>
+                <p style="color:#888; font-size:13px; margin-top:4px;">${job.description || 'No description available.'}</p>
+            `;
+        }
+
+        function renderQuizQuestions(job) {
+            const container = document.getElementById('quizQuestions');
+            const quizSection = document.getElementById('quizContainer');
+            
+            if (!job.quizQuestions || job.quizQuestions.length === 0) {
+                quizSection.style.display = 'none';
+                return;
+            }
+
+            quizSection.style.display = 'block';
+            container.innerHTML = job.quizQuestions.map((q, index) => `
+                <div class="form-group">
+                    <label>${index + 1}. ${q} <span class="required">*</span></label>
+                    <textarea id="quizAnswer${index}" placeholder="Type your answer..." rows="3" required></textarea>
+                </div>
+            `).join('');
+        }
+
+        function setupFormFields(job) {
+            const fields = job.fields || {};
+            
+            // Phone
+            const phoneGroup = document.getElementById('phoneGroup');
+            const phoneInput = document.getElementById('applicantPhone');
+            if (fields.phone && fields.phone.show) {
+                phoneGroup.style.display = 'block';
+                if (fields.phone.required) {
+                    phoneInput.required = true;
+                    phoneGroup.querySelector('label').innerHTML = '<i class="fas fa-phone"></i> Phone <span class="required">*</span>';
+                }
+            } else {
+                phoneGroup.style.display = 'none';
+            }
+
+            // Location
+            const locationGroup = document.getElementById('locationGroup');
+            const locationInput = document.getElementById('applicantLocation');
+            if (fields.location && fields.location.show) {
+                locationGroup.style.display = 'block';
+                if (fields.location.required) {
+                    locationInput.required = true;
+                    locationGroup.querySelector('label').innerHTML = '<i class="fas fa-map-marker-alt"></i> Location <span class="required">*</span>';
+                }
+            } else {
+                locationGroup.style.display = 'none';
+            }
+
+            // Experience
+            const experienceGroup = document.getElementById('experienceGroup');
+            const experienceInput = document.getElementById('applicantExperience');
+            if (fields.experience && fields.experience.show) {
+                experienceGroup.style.display = 'block';
+                if (fields.experience.required) {
+                    experienceInput.required = true;
+                    experienceGroup.querySelector('label').innerHTML = '<i class="fas fa-graduation-cap"></i> Experience <span class="required">*</span>';
+                }
+            } else {
+                experienceGroup.style.display = 'none';
+            }
+
+            // Cover Letter
+            const coverGroup = document.getElementById('coverGroup');
+            const coverInput = document.getElementById('applicantCover');
+            if (fields.cover && fields.cover.show) {
+                coverGroup.style.display = 'block';
+                if (fields.cover.required) {
+                    coverInput.required = true;
+                    coverGroup.querySelector('label').innerHTML = '<i class="fas fa-file-alt"></i> Cover Letter <span class="required">*</span>';
+                }
+            } else {
+                coverGroup.style.display = 'none';
+            }
+
+            // Resume
+            const resumeGroup = document.getElementById('resumeGroup');
+            const resumeInput = document.getElementById('applicantResume');
+            if (fields.resume && fields.resume.show) {
+                resumeGroup.style.display = 'block';
+                if (fields.resume.required) {
+                    resumeInput.required = true;
+                }
+            } else {
+                resumeGroup.style.display = 'none';
+            }
+
+            // Certificates
+            const certGroup = document.getElementById('certGroup');
+            if (fields.certificates && fields.certificates.show) {
+                certGroup.style.display = 'block';
+            } else {
+                certGroup.style.display = 'none';
+            }
+
+            // ID
+            const idGroup = document.getElementById('idGroup');
+            if (fields.idDocs && fields.idDocs.show) {
+                idGroup.style.display = 'block';
+            } else {
+                idGroup.style.display = 'none';
+            }
+
+            // Portfolio
+            const portfolioGroup = document.getElementById('portfolioGroup');
+            if (fields.portfolio && fields.portfolio.show) {
+                portfolioGroup.style.display = 'block';
+            } else {
+                portfolioGroup.style.display = 'none';
+            }
+        }
+
+        // ============================================
+        // SUBMIT APPLICATION
+        // ============================================
+        async function submitApplication(event) {
+            event.preventDefault();
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const jobId = document.getElementById('jobId').value;
+            const name = document.getElementById('applicantName').value;
+            const email = document.getElementById('applicantEmail').value;
+            const phone = document.getElementById('applicantPhone').value;
+            const location = document.getElementById('applicantLocation').value;
+            const experience = document.getElementById('applicantExperience').value;
+            const cover = document.getElementById('applicantCover').value;
+            const portfolio = document.getElementById('applicantPortfolio').value;
+            
+            // Get quiz answers
+            const quizAnswers = [];
+            if (currentJob && currentJob.quizQuestions) {
+                currentJob.quizQuestions.forEach((q, index) => {
+                    const answer = document.getElementById(`quizAnswer${index}`).value;
+                    quizAnswers.push(answer);
+                });
+            }
+
+            // Handle file uploads (convert to base64)
+            const resumeFile = document.getElementById('applicantResume').files[0];
+            const certFiles = document.getElementById('applicantCertificates').files;
+            const idFile = document.getElementById('applicantId').files[0];
+
+            let resumeData = null;
+            let certData = [];
+            let idData = null;
+
+            if (resumeFile) {
+                resumeData = await fileToBase64(resumeFile);
+            }
+
+            for (let i = 0; i < certFiles.length; i++) {
+                const data = await fileToBase64(certFiles[i]);
+                certData.push({ name: certFiles[i].name, data: data });
+            }
+
+            if (idFile) {
+                idData = await fileToBase64(idFile);
+            }
+
+            const applicationData = {
+                jobId,
+                name,
+                email,
+                phone,
+                location,
+                experience,
+                cover,
+                portfolio,
+                quizAnswers,
+                resume: resumeData,
+                certificates: certData,
+                idDocument: idData
+            };
+
+            const msgBox = document.getElementById('messageBox');
+            const submitBtn = document.getElementById('submitBtn');
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+                const response = await fetch(`${API_URL}/applications`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(applicationData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    msgBox.className = 'message-box success';
+                    msgBox.textContent = '✅ Application submitted successfully! We will review your application and get back to you.';
+                    msgBox.style.display = 'block';
+                    document.getElementById('applyForm').reset();
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Submitted';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 3000);
+                } else {
+                    msgBox.className = 'message-box error';
+                    msgBox.textContent = '❌ ' + (data.message || 'Failed to submit application. Please try again.');
+                    msgBox.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Application';
+                }
+            } catch (error) {
+                console.error('Error submitting application:', error);
+                msgBox.className = 'message-box error';
+                msgBox.textContent = '❌ Network error. Please check your connection and try again.';
+                msgBox.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Application';
+            }
+        }
+
+        // ============================================
+        // FILE TO BASE64 HELPER
+        // ============================================
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+    </script>
+</body>
+</html>

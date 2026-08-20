@@ -9,92 +9,77 @@
     <link rel="stylesheet" href="../css/style.css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #1a2a3a;
-            --gold: #c9a94e;
-            --gold-light: #e8d5a3;
-            --white: #ffffff;
-            --gray-100: #f8f7f4;
-            --gray-200: #e9e7e2;
-            --gray-600: #888888;
-            --gray-800: #2d2d2d;
-            --radius: 16px;
-            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+        body { font-family: 'Inter', sans-serif; background: #f8f7f4; }
+        
+        .header {
+            background: #1a2a3a;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 12px;
         }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--gray-100);
-            color: var(--gray-800);
+        .header .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .header .logo img { height: 40px; width: auto; }
+        .header .logo span { color: white; font-weight: 700; font-size: 18px; }
+        .header .user-info { display: flex; align-items: center; gap: 16px; color: white; }
+        .header .user-info img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #c9a94e; }
+        .header .btn { padding: 8px 20px; border: none; border-radius: 50px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+        .header .btn-outline { background: transparent; border: 2px solid rgba(255,255,255,0.3); color: white; }
+        .header .btn-outline:hover { border-color: #c9a94e; color: #c9a94e; }
+        
+        .container { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
+        
+        .page-header { margin-bottom: 32px; }
+        .page-header h1 { font-size: 32px; color: #1a2a3a; }
+        .page-header h1 span { color: #c9a94e; }
+        .page-header p { color: #888; margin-top: 8px; font-size: 16px; }
+        
+        .info-box {
+            background: #f8f7f4;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border-left: 4px solid #c9a94e;
         }
-        .page-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 32px 24px;
-        }
-        .page-header {
-            margin-bottom: 32px;
-        }
-        .page-header h1 {
-            font-size: 32px;
-            color: var(--primary);
-        }
-        .page-header h1 span {
-            color: var(--gold);
-        }
-        .page-header p {
-            color: var(--gray-600);
-            margin-top: 8px;
-            font-size: 16px;
-        }
+        .info-box p { color: #666; font-size: 14px; }
+        .info-box i { color: #c9a94e; margin-right: 8px; }
+        
         .supplier-form {
             background: white;
             padding: 32px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
-        .supplier-form h2 {
-            color: var(--primary);
-            margin-bottom: 24px;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--primary);
-            margin-bottom: 6px;
-        }
-        .form-group label i {
-            color: var(--gold);
-            margin-right: 8px;
-        }
+        .supplier-form h2 { color: #1a2a3a; margin-bottom: 24px; }
+        
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; color: #1a2a3a; margin-bottom: 6px; }
+        .form-group label i { color: #c9a94e; margin-right: 8px; }
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px 16px;
-            border: 2px solid var(--gray-200);
+            border: 2px solid #e9e7e2;
             border-radius: 8px;
             font-size: 14px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             font-family: inherit;
-            background: var(--gray-100);
+            background: #f8f7f4;
         }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
-            border-color: var(--gold);
+            border-color: #c9a94e;
             box-shadow: 0 0 0 4px rgba(201,169,78,0.15);
         }
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group .helper { font-size: 12px; color: #888; margin-top: 4px; }
+        .form-group input[type="file"] { padding: 8px; background: white; }
+        
         .btn {
             display: inline-flex;
             align-items: center;
@@ -105,65 +90,15 @@
             font-weight: 600;
             font-size: 16px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.4s ease;
             font-family: inherit;
             width: 100%;
             justify-content: center;
         }
-        .btn-primary {
-            background: var(--gold);
-            color: var(--primary);
-        }
-        .btn-primary:hover {
-            background: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(201,169,78,0.3);
-        }
-        .btn-success {
-            background: #10b981;
-            color: white;
-        }
-        .btn-success:hover {
-            background: #059669;
-        }
-        .info-box {
-            background: var(--gray-100);
-            padding: 16px 20px;
-            border-radius: 8px;
-            margin-bottom: 24px;
-            border-left: 4px solid var(--gold);
-        }
-        .info-box p {
-            color: var(--gray-600);
-            font-size: 14px;
-        }
-        .info-box i {
-            color: var(--gold);
-            margin-right: 8px;
-        }
-        .notification-toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--primary);
-            color: white;
-            padding: 16px 24px;
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            z-index: 3000;
-            max-width: 400px;
-            animation: slideUp 0.3s ease-out;
-            display: none;
-        }
-        .notification-toast.show { display: block; }
-        .notification-toast .close {
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.6);
-            float: right;
-            cursor: pointer;
-            font-size: 18px;
-        }
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
         .materials-tags {
             display: flex;
             flex-wrap: wrap;
@@ -171,106 +106,123 @@
             margin: 12px 0;
         }
         .materials-tags .tag {
-            background: var(--gray-100);
+            background: #f8f7f4;
             padding: 4px 14px;
             border-radius: 20px;
             font-size: 12px;
-            color: var(--gray-600);
-            border: 1px solid var(--gray-200);
+            color: #666;
+            border: 1px solid #e9e7e2;
         }
-        .materials-tags .tag i {
-            color: var(--gold);
-            margin-right: 4px;
+        .materials-tags .tag i { color: #c9a94e; margin-right: 4px; }
+        
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1a2a3a;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            z-index: 2000;
+            max-width: 400px;
+            animation: slideUp 0.3s ease-out;
+            display: none;
         }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .toast.show { display: block; }
+        .toast .close { background: none; border: none; color: rgba(255,255,255,0.6); float: right; cursor: pointer; font-size: 18px; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        
         @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            .supplier-form {
-                padding: 16px;
-            }
+            .header { padding: 12px 16px; }
+            .header .logo span { font-size: 14px; }
+            .container { padding: 16px; }
+            .supplier-form { padding: 16px; }
+            .form-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Notification Toast -->
-    <div id="notificationToast" class="notification-toast">
-        <button class="close" onclick="closeNotification()">&times;</button>
-        <p id="notificationMessage">Notification</p>
-    </div>
+    <!-- Header -->
+    <header class="header">
+        <a href="/" class="logo">
+            <img src="../assets/images/logo.png" alt="Logo" />
+            <span>Modern Furniture Pacific</span>
+        </a>
+        <div class="user-info">
+            <span id="userName">Guest</span>
+            <button class="btn btn-outline" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </header>
 
-    <div class="page-container">
-        <!-- Page Header -->
+    <div class="container">
         <div class="page-header">
             <h1>Material <span>Suppliers</span></h1>
             <p>Register as a supplier and provide materials for our furniture production.</p>
         </div>
 
-        <!-- Info Box -->
         <div class="info-box">
             <p><i class="fas fa-info-circle"></i> We're always looking for quality material suppliers. Whether you supply timber, fabrics, or any other material needed for furniture production, we'd love to hear from you.</p>
         </div>
 
-        <!-- Supplier Form -->
         <div class="supplier-form">
-            <h2><i class="fas fa-truck" style="color:var(--gold);"></i> Supplier Registration</h2>
+            <h2><i class="fas fa-truck" style="color:#c9a94e;"></i> Supplier Registration</h2>
             <form id="supplierForm" onsubmit="submitSupplier(event)">
                 <div class="form-row">
                     <div class="form-group">
                         <label><i class="fas fa-user"></i> Company/Name</label>
-                        <input type="text" placeholder="Your company or full name" required />
+                        <input type="text" id="supplierName" placeholder="Your company or full name" required />
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-phone"></i> Phone</label>
-                        <input type="tel" placeholder="+254 700 123 456" required />
+                        <input type="tel" id="supplierPhone" placeholder="+254 700 123 456" required />
                     </div>
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" placeholder="supplier@example.com" required />
+                    <input type="email" id="supplierEmail" placeholder="supplier@example.com" required />
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-cube"></i> Material Type</label>
-                    <select required>
+                    <select id="supplierMaterial" required>
                         <option value="">Select material type</option>
-                        <option value="mahogany">Mahogany Timber</option>
-                        <option value="oak">Oak Wood</option>
-                        <option value="walnut">Walnut Wood</option>
-                        <option value="cotton">Cotton Fabric</option>
-                        <option value="leather">Leather</option>
-                        <option value="velvet">Velvet</option>
-                        <option value="metal">Metal</option>
-                        <option value="glass">Glass</option>
-                        <option value="foam">High-density Foam</option>
-                        <option value="other">Other</option>
+                        <option value="Mahogany Timber">Mahogany Timber</option>
+                        <option value="Oak Wood">Oak Wood</option>
+                        <option value="Walnut Wood">Walnut Wood</option>
+                        <option value="Cotton Fabric">Cotton Fabric</option>
+                        <option value="Leather">Leather</option>
+                        <option value="Velvet">Velvet</option>
+                        <option value="Metal">Metal</option>
+                        <option value="Glass">Glass</option>
+                        <option value="High-density Foam">High-density Foam</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-weight-hanging"></i> Quantity Available</label>
-                    <input type="text" placeholder="e.g., 100 units, 50kg, 200m" required />
+                    <input type="text" id="supplierQuantity" placeholder="e.g., 100 units, 50kg, 200m" required />
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-file-alt"></i> Description</label>
-                    <textarea placeholder="Describe the material quality, specifications, and any other details..." required></textarea>
+                    <textarea id="supplierDescription" placeholder="Describe the material quality, specifications, and any other details..." required></textarea>
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-image"></i> Sample Image</label>
-                    <input type="file" accept="image/*" />
+                    <input type="file" id="supplierImage" accept="image/*" />
+                    <div class="helper">Upload a sample image of your material (optional)</div>
                 </div>
-                <button type="submit" class="btn btn-success">
+                <button type="submit" class="btn btn-success" id="submitBtn">
                     <i class="fas fa-paper-plane"></i> Submit Supplier Request
                 </button>
+                <div id="supplierMessage" style="margin-top:12px; display:none;"></div>
             </form>
 
             <!-- Materials Needed -->
-            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--gray-200);">
-                <h3 style="color: var(--primary); font-size: 16px; margin-bottom: 8px;">
-                    <i class="fas fa-list" style="color:var(--gold);"></i> Materials We're Currently Sourcing
+            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e9e7e2;">
+                <h3 style="color: #1a2a3a; font-size: 16px; margin-bottom: 8px;">
+                    <i class="fas fa-list" style="color:#c9a94e;"></i> Materials We're Currently Sourcing
                 </h3>
                 <div class="materials-tags">
                     <span class="tag"><i class="fas fa-tree"></i> Mahogany Timber</span>
@@ -287,29 +239,158 @@
         </div>
     </div>
 
+    <div class="toast" id="toast">
+        <button class="close" onclick="closeToast()">&times;</button>
+        <p id="toastMessage">Notification</p>
+    </div>
+
     <script>
-        function showNotification(message) {
-            const toast = document.getElementById('notificationToast');
-            const msg = document.getElementById('notificationMessage');
+        // ============================================
+        // API CONFIGURATION - LIVE
+        // ============================================
+        const API_URL = 'https://modern-furniture-api.onrender.com/api';
+
+        // ============================================
+        // CHECK LOGIN
+        // ============================================
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+
+        if (user) {
+            const currentUser = JSON.parse(user);
+            document.getElementById('userName').textContent = currentUser.name || 'User';
+        } else {
+            document.getElementById('userName').textContent = 'Guest';
+        }
+
+        // ============================================
+        // ===== FIXED: SUBMIT SUPPLIER =====
+        // Uses /api/suppliers/submit
+        // ============================================
+        async function submitSupplier(event) {
+            event.preventDefault();
+
+            if (!token) {
+                showToast('⚠️ Please login to submit supplier request');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const name = document.getElementById('supplierName').value;
+            const phone = document.getElementById('supplierPhone').value;
+            const email = document.getElementById('supplierEmail').value;
+            const material = document.getElementById('supplierMaterial').value;
+            const quantity = document.getElementById('supplierQuantity').value;
+            const description = document.getElementById('supplierDescription').value;
+            const imageFile = document.getElementById('supplierImage').files[0];
+            const msgBox = document.getElementById('supplierMessage');
+
+            let imageData = null;
+            if (imageFile) {
+                try {
+                    imageData = await fileToBase64(imageFile);
+                } catch (error) {
+                    console.error('Error reading file:', error);
+                    showToast('❌ Failed to read image file');
+                    return;
+                }
+            }
+
+            const supplierData = {
+                companyName: name,
+                phone: phone,
+                email: email,
+                materialType: material,
+                quantity: quantity,
+                description: description,
+                image: imageData
+            };
+
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.innerHTML;
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                msgBox.style.display = 'none';
+
+                // FIXED: Correct endpoint - /api/suppliers/submit
+                const response = await fetch(`${API_URL}/suppliers/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(supplierData)
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('✅ Supplier request submitted! We will review your application.');
+                    msgBox.style.display = 'block';
+                    msgBox.className = 'message success';
+                    msgBox.textContent = '✅ ' + (data.message || 'Submitted successfully!');
+                    document.getElementById('supplierForm').reset();
+                    btn.innerHTML = '<i class="fas fa-check"></i> Submitted!';
+                    
+                    setTimeout(() => {
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    }, 3000);
+                } else {
+                    showToast('❌ ' + (data.message || 'Failed to submit supplier request'));
+                    msgBox.style.display = 'block';
+                    msgBox.className = 'message error';
+                    msgBox.textContent = '❌ ' + (data.message || 'Submission failed');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                console.error('Error submitting supplier:', error);
+                showToast('❌ Network error. Please try again.');
+                msgBox.style.display = 'block';
+                msgBox.className = 'message error';
+                msgBox.textContent = '❌ Network error. Please try again.';
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // ============================================
+        // FILE TO BASE64 HELPER
+        // ============================================
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // ============================================
+        // TOAST
+        // ============================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
             msg.textContent = message;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 5000);
+            setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        function closeNotification() {
-            document.getElementById('notificationToast').classList.remove('show');
+        function closeToast() {
+            document.getElementById('toast').classList.remove('show');
         }
 
-        function submitSupplier(event) {
-            event.preventDefault();
-            showNotification('✅ Supplier request submitted! We will review your application.');
-            event.target.reset();
+        // ============================================
+        // LOGOUT
+        // ============================================
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
         }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeNotification();
-        });
     </script>
-
 </body>
 </html>

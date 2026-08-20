@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="../css/style.css" />
     <style>
-        /* ===== VIDEO BACKGROUND ===== */
         .video-background {
             position: fixed;
             top: 0;
@@ -32,7 +31,6 @@
             background: rgba(26, 42, 58, 0.6);
         }
 
-        /* ===== SIGNUP PAGE ===== */
         .signup-page {
             min-height: 100vh;
             display: flex;
@@ -46,41 +44,93 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             padding: 48px;
-            border-radius: var(--radius);
+            border-radius: 16px;
             max-width: 440px;
             width: 100%;
-            box-shadow: var(--shadow);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
         }
         .signup-container .logo {
             text-align: center;
             margin-bottom: 32px;
         }
         .signup-container .logo img {
-            height: 50px;
+            height: 60px;
             width: auto;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         .signup-container .logo h1 {
             font-size: 24px;
-            color: var(--primary);
-            margin-top: 8px;
+            color: #1a2a3a;
         }
         .signup-container .logo p {
-            color: var(--gray-600);
+            color: #888;
             font-size: 14px;
         }
-        .signup-container .form-footer {
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a2a3a;
+            margin-bottom: 6px;
+        }
+        .form-group label i {
+            color: #c9a94e;
+            margin-right: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e9e7e2;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.4s ease;
+            font-family: inherit;
+            background: #f8f7f4;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #c9a94e;
+            box-shadow: 0 0 0 4px rgba(201,169,78,0.15);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: inherit;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-primary {
+            background: #c9a94e;
+            color: #1a2a3a;
+        }
+        .btn-primary:hover {
+            background: #e8d5a3;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201,169,78,0.3);
+        }
+        .form-footer {
             text-align: center;
             margin-top: 20px;
             font-size: 14px;
-            color: var(--gray-600);
+            color: #888;
         }
-        .signup-container .form-footer a {
-            color: var(--gold);
+        .form-footer a {
+            color: #c9a94e;
             font-weight: 600;
             text-decoration: none;
         }
-        .signup-container .form-footer a:hover {
+        .form-footer a:hover {
             text-decoration: underline;
         }
         .message {
@@ -108,66 +158,22 @@
             text-decoration: none;
             font-size: 14px;
             margin-bottom: 20px;
-            transition: var(--transition);
+            transition: all 0.4s ease;
             position: relative;
             z-index: 2;
         }
         .back-home:hover {
-            color: var(--gold);
+            color: #c9a94e;
         }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 28px;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: inherit;
-            text-decoration: none;
-            width: 100%;
-            justify-content: center;
+        .password-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
         }
-        .btn-primary {
-            background: var(--gold);
-            color: var(--primary);
-        }
-        .btn-primary:hover {
-            background: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(201, 169, 78, 0.3);
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--primary);
-            margin-bottom: 6px;
-        }
-        .form-group label i {
-            color: var(--gold);
-            margin-right: 8px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid var(--gray-200);
-            border-radius: 12px;
-            font-size: 15px;
-            transition: var(--transition);
-            font-family: inherit;
-            background: var(--gray-100);
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 4px rgba(201, 169, 78, 0.15);
+        @media (max-width: 768px) {
+            .signup-container {
+                padding: 24px;
+            }
         }
     </style>
 </head>
@@ -182,9 +188,7 @@
 
     <div class="signup-page">
         <div class="signup-container">
-            <a href="../index.html" class="back-home">
-                <i class="fas fa-arrow-left"></i> Back to Home
-            </a>
+            <a href="../index.html" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
 
             <div class="logo">
                 <img src="../assets/images/logo.png" alt="Modern Furniture Pacific" />
@@ -202,8 +206,13 @@
                     <input type="email" id="signupEmail" placeholder="john@example.com" required />
                 </div>
                 <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Phone (Optional)</label>
+                    <input type="tel" id="signupPhone" placeholder="+254 700 123 456" />
+                </div>
+                <div class="form-group">
                     <label><i class="fas fa-lock"></i> Password</label>
                     <input type="password" id="signupPassword" placeholder="Min 8 characters" required minlength="8" />
+                    <div class="password-hint">Must be at least 8 characters</div>
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-check-circle"></i> Confirm Password</label>
@@ -222,56 +231,70 @@
 
     <script>
         // ============================================
-        // UPDATED TO LIVE URL
+        // API CONFIGURATION - LIVE
         // ============================================
         const API_URL = 'https://modern-furniture-api.onrender.com/api';
 
+        // ============================================
+        // HANDLE SIGNUP
+        // ============================================
         async function handleSignup(event) {
             event.preventDefault();
             
             const name = document.getElementById('signupName').value;
             const email = document.getElementById('signupEmail').value;
+            const phone = document.getElementById('signupPhone').value;
             const password = document.getElementById('signupPassword').value;
             const confirm = document.getElementById('signupConfirm').value;
+            const msg = document.getElementById('signupMessage');
             
             if (password !== confirm) {
-                const msg = document.getElementById('signupMessage');
-                msg.textContent = 'Passwords do not match!';
+                msg.textContent = '❌ Passwords do not match!';
                 msg.className = 'message error';
                 msg.style.display = 'block';
                 return;
             }
             
+            if (password.length < 8) {
+                msg.textContent = '❌ Password must be at least 8 characters!';
+                msg.className = 'message error';
+                msg.style.display = 'block';
+                return;
+            }
+            
+            msg.textContent = '⏳ Creating account...';
+            msg.className = 'message';
+            msg.style.display = 'block';
+            msg.style.background = '#dbeafe';
+            msg.style.color = '#1e40af';
+            
             try {
                 const response = await fetch(`${API_URL}/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, password })
+                    body: JSON.stringify({ name, email, phone, password })
                 });
                 
                 const data = await response.json();
                 
                 if (data.success) {
-                    const msg = document.getElementById('signupMessage');
-                    msg.textContent = '✅ Account created! Please login.';
+                    msg.textContent = '✅ Account created successfully! Redirecting to login...';
                     msg.className = 'message success';
                     msg.style.display = 'block';
                     
                     setTimeout(() => {
                         window.location.href = 'login.html';
-                    }, 1500);
+                    }, 2000);
                 } else {
-                    const msg = document.getElementById('signupMessage');
-                    msg.textContent = data.message || 'Registration failed';
+                    msg.textContent = '❌ ' + (data.message || 'Registration failed. Please try again.');
                     msg.className = 'message error';
                     msg.style.display = 'block';
                 }
             } catch (error) {
-                const msg = document.getElementById('signupMessage');
-                msg.textContent = 'Network error. Is the backend running?';
+                console.error('Signup error:', error);
+                msg.textContent = '❌ Network error. Please check your connection.';
                 msg.className = 'message error';
                 msg.style.display = 'block';
-                console.error('Signup error:', error);
             }
         }
     </script>

@@ -9,54 +9,46 @@
     <link rel="stylesheet" href="../css/style.css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #1a2a3a;
-            --gold: #c9a94e;
-            --gold-light: #e8d5a3;
-            --white: #ffffff;
-            --gray-100: #f8f7f4;
-            --gray-200: #e9e7e2;
-            --gray-600: #888888;
-            --gray-800: #2d2d2d;
-            --radius: 16px;
-            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+        body { font-family: 'Inter', sans-serif; background: #f8f7f4; }
+        
+        .header {
+            background: #1a2a3a;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 12px;
         }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--gray-100);
-            color: var(--gray-800);
-        }
-        .page-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 32px 24px;
-        }
-        .page-header {
-            margin-bottom: 32px;
-        }
-        .page-header h1 {
-            font-size: 32px;
-            color: var(--primary);
-        }
-        .page-header h1 span {
-            color: var(--gold);
-        }
-        .page-header p {
-            color: var(--gray-600);
-            margin-top: 8px;
-            font-size: 16px;
-        }
+        .header .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .header .logo img { height: 40px; width: auto; }
+        .header .logo span { color: white; font-weight: 700; font-size: 18px; }
+        .header .user-info { display: flex; align-items: center; gap: 16px; color: white; }
+        .header .user-info img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #c9a94e; }
+        .header .btn { padding: 8px 20px; border: none; border-radius: 50px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+        .header .btn-outline { background: transparent; border: 2px solid rgba(255,255,255,0.3); color: white; }
+        .header .btn-outline:hover { border-color: #c9a94e; color: #c9a94e; }
+        
+        .container { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
+        
+        .page-header { margin-bottom: 32px; }
+        .page-header h1 { font-size: 32px; color: #1a2a3a; }
+        .page-header h1 span { color: #c9a94e; }
+        .page-header p { color: #888; margin-top: 8px; font-size: 16px; }
+        
         .scanner-container {
             background: white;
-            border-radius: var(--radius);
+            border-radius: 16px;
             padding: 32px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
         .camera-preview {
             width: 100%;
             height: 300px;
-            background: var(--gray-200);
+            background: #f8f7f4;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -67,11 +59,11 @@
         }
         .camera-preview .placeholder {
             text-align: center;
-            color: var(--gray-600);
+            color: #888;
         }
         .camera-preview .placeholder i {
             font-size: 48px;
-            color: var(--gray-400);
+            color: #ddd;
             display: block;
             margin-bottom: 12px;
         }
@@ -91,14 +83,12 @@
             justify-content: center;
             flex-wrap: wrap;
         }
-        .camera-preview .overlay-measurements .measure span {
-            font-size: 14px;
-        }
         .camera-preview .overlay-measurements .measure .value {
-            color: var(--gold);
+            color: #c9a94e;
             font-weight: 700;
             font-size: 18px;
         }
+        
         .scanner-controls {
             display: flex;
             gap: 12px;
@@ -115,164 +105,116 @@
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.4s ease;
             font-family: inherit;
             text-decoration: none;
         }
-        .btn-primary {
-            background: var(--gold);
-            color: var(--primary);
-        }
-        .btn-primary:hover {
-            background: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(201,169,78,0.3);
-        }
-        .btn-success {
-            background: #10b981;
-            color: white;
-        }
-        .btn-success:hover {
-            background: #059669;
-        }
-        .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--gray-200);
-        }
-        .btn-outline:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-        .btn-lg {
-            padding: 14px 36px;
-            font-size: 16px;
-        }
+        .btn-primary { background: #c9a94e; color: #1a2a3a; }
+        .btn-primary:hover { background: #e8d5a3; transform: translateY(-2px); box-shadow: 0 12px 30px rgba(201,169,78,0.3); }
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-outline { background: transparent; border: 2px solid #e9e7e2; color: #1a2a3a; }
+        .btn-outline:hover { border-color: #c9a94e; color: #c9a94e; }
+        .btn-lg { padding: 14px 36px; font-size: 16px; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
         .measurement-results {
             margin-top: 24px;
             background: white;
             padding: 24px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             display: none;
         }
-        .measurement-results.show {
-            display: block;
-        }
-        .measurement-results h3 {
-            color: var(--primary);
-            margin-bottom: 16px;
-        }
+        .measurement-results.show { display: block; }
+        .measurement-results h3 { color: #1a2a3a; margin-bottom: 16px; }
         .measurement-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 16px;
         }
         .measurement-item {
-            background: var(--gray-100);
+            background: #f8f7f4;
             padding: 16px;
             border-radius: 8px;
             text-align: center;
         }
-        .measurement-item .label {
-            font-size: 12px;
-            color: var(--gray-600);
-        }
-        .measurement-item .value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        .measurement-item .unit {
-            font-size: 14px;
-            color: var(--gray-600);
-        }
+        .measurement-item .label { font-size: 12px; color: #888; }
+        .measurement-item .value { font-size: 24px; font-weight: 700; color: #1a2a3a; }
+        .measurement-item .unit { font-size: 14px; color: #888; }
         .measurement-actions {
             display: flex;
             gap: 12px;
             margin-top: 16px;
             flex-wrap: wrap;
         }
-        .notification-toast {
+        
+        .toast {
             position: fixed;
             bottom: 24px;
             right: 24px;
-            background: var(--primary);
+            background: #1a2a3a;
             color: white;
             padding: 16px 24px;
             border-radius: 12px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            z-index: 3000;
+            z-index: 2000;
             max-width: 400px;
             animation: slideUp 0.3s ease-out;
             display: none;
         }
-        .notification-toast.show { display: block; }
-        .notification-toast .close {
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.6);
-            float: right;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        .scanning {
-            animation: pulse 1s infinite;
-        }
+        .toast.show { display: block; }
+        .toast .close { background: none; border: none; color: rgba(255,255,255,0.6); float: right; cursor: pointer; font-size: 18px; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .scanning { animation: pulse 1s infinite; }
+        
         @media (max-width: 768px) {
-            .camera-preview {
-                height: 200px;
-            }
-            .measurement-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .scanner-controls {
-                flex-direction: column;
-            }
-            .scanner-controls .btn {
-                width: 100%;
-                justify-content: center;
-            }
+            .header { padding: 12px 16px; }
+            .header .logo span { font-size: 14px; }
+            .container { padding: 16px; }
+            .scanner-container { padding: 16px; }
+            .camera-preview { height: 200px; }
+            .measurement-grid { grid-template-columns: 1fr 1fr; }
+            .scanner-controls { flex-direction: column; }
+            .scanner-controls .btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Notification Toast -->
-    <div id="notificationToast" class="notification-toast">
-        <button class="close" onclick="closeNotification()">&times;</button>
-        <p id="notificationMessage">Notification</p>
-    </div>
+    <!-- Header -->
+    <header class="header">
+        <a href="/" class="logo">
+            <img src="../assets/images/logo.png" alt="Logo" />
+            <span>Modern Furniture Pacific</span>
+        </a>
+        <div class="user-info">
+            <span id="userName">Guest</span>
+            <button class="btn btn-outline" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </header>
 
-    <div class="page-container">
-        <!-- Page Header -->
+    <div class="container">
         <div class="page-header">
             <h1>Room <span>Scanner</span></h1>
             <p>Scan your room with your camera to get exact measurements. No carpenter needed!</p>
         </div>
 
-        <!-- Scanner Container -->
         <div class="scanner-container">
             <!-- Camera Preview -->
             <div class="camera-preview" id="cameraPreview">
                 <div class="placeholder" id="placeholderContent">
                     <i class="fas fa-video"></i>
                     <p>Click "Start Scanning" to access your camera</p>
-                    <p style="font-size: 12px; margin-top: 4px;">We'll measure your room dimensions instantly</p>
+                    <p style="font-size: 12px; margin-top: 4px; color:#888;">We'll measure your room dimensions instantly</p>
                 </div>
                 <div class="overlay-measurements" id="overlayMeasurements">
                     <div class="measure">
-                        <span>📏 Width: <span class="value" id="scanWidth">4.2</span>m</span>
-                        <span>📏 Length: <span class="value" id="scanLength">5.8</span>m</span>
-                        <span>📏 Height: <span class="value" id="scanHeight">2.7</span>m</span>
+                        <span>📏 Width: <span class="value" id="scanWidth">0.0</span>m</span>
+                        <span>📏 Length: <span class="value" id="scanLength">0.0</span>m</span>
+                        <span>📏 Height: <span class="value" id="scanHeight">0.0</span>m</span>
                     </div>
                 </div>
             </div>
@@ -294,19 +236,19 @@
             <div class="measurement-grid">
                 <div class="measurement-item">
                     <div class="label">Width</div>
-                    <div class="value">4.2 <span class="unit">m</span></div>
+                    <div class="value" id="resultWidth">0.0 <span class="unit">m</span></div>
                 </div>
                 <div class="measurement-item">
                     <div class="label">Length</div>
-                    <div class="value">5.8 <span class="unit">m</span></div>
+                    <div class="value" id="resultLength">0.0 <span class="unit">m</span></div>
                 </div>
                 <div class="measurement-item">
                     <div class="label">Height</div>
-                    <div class="value">2.7 <span class="unit">m</span></div>
+                    <div class="value" id="resultHeight">0.0 <span class="unit">m</span></div>
                 </div>
-                <div class="measurement-item" style="background: var(--gold-light);">
+                <div class="measurement-item" style="background: #e8d5a3;">
                     <div class="label">Area</div>
-                    <div class="value" style="color: var(--gold);">24.4 <span class="unit">m²</span></div>
+                    <div class="value" style="color: #c9a94e;" id="resultArea">0.0 <span class="unit">m²</span></div>
                 </div>
             </div>
             <div class="measurement-actions">
@@ -320,21 +262,35 @@
         </div>
     </div>
 
+    <div class="toast" id="toast">
+        <button class="close" onclick="closeToast()">&times;</button>
+        <p id="toastMessage">Notification</p>
+    </div>
+
     <script>
+        // ============================================
+        // API CONFIGURATION - LIVE
+        // ============================================
+        const API_URL = 'https://modern-furniture-api.onrender.com/api';
         let isScanning = false;
+        let scanData = null;
 
-        function showNotification(message) {
-            const toast = document.getElementById('notificationToast');
-            const msg = document.getElementById('notificationMessage');
-            msg.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 4000);
+        // ============================================
+        // CHECK LOGIN
+        // ============================================
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+
+        if (user) {
+            const currentUser = JSON.parse(user);
+            document.getElementById('userName').textContent = currentUser.name || 'User';
+        } else {
+            document.getElementById('userName').textContent = 'Guest';
         }
 
-        function closeNotification() {
-            document.getElementById('notificationToast').classList.remove('show');
-        }
-
+        // ============================================
+        // START SCANNER
+        // ============================================
         function startScanner() {
             if (isScanning) return;
             isScanning = true;
@@ -346,26 +302,47 @@
 
             // Show scanning state
             placeholder.innerHTML = `
-                <i class="fas fa-spinner fa-spin" style="font-size:48px;color:var(--gold);"></i>
+                <i class="fas fa-spinner fa-spin" style="font-size:48px;color:#c9a94e;"></i>
                 <p style="margin-top:12px;">📷 Accessing camera...</p>
-                <p style="font-size:12px;color:var(--gray-600);">Please allow camera access when prompted</p>
+                <p style="font-size:12px;color:#888;">Please allow camera access when prompted</p>
             `;
             scanBtn.disabled = true;
             scanBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scanning...';
 
             // Simulate scanning process
             setTimeout(() => {
-                // Show measurements
+                // Generate realistic measurements
+                const width = (Math.random() * 3 + 2).toFixed(1);
+                const length = (Math.random() * 4 + 3).toFixed(1);
+                const height = (Math.random() * 1.5 + 2).toFixed(1);
+                const area = (parseFloat(width) * parseFloat(length)).toFixed(2);
+
+                // Store scan data
+                scanData = { width, length, height, area };
+
+                // Show measurements in overlay
+                document.getElementById('scanWidth').textContent = width;
+                document.getElementById('scanLength').textContent = length;
+                document.getElementById('scanHeight').textContent = height;
                 overlay.style.display = 'block';
+
                 placeholder.innerHTML = `
                     <i class="fas fa-check-circle" style="font-size:48px;color:#10b981;"></i>
                     <p style="margin-top:12px;color:#10b981;font-weight:600;">✅ Room scanned successfully!</p>
-                    <p style="font-size:13px;color:var(--gray-600);">Measurements captured below</p>
+                    <p style="font-size:13px;color:#888;">Measurements captured below</p>
                 `;
 
                 // Show results
+                document.getElementById('resultWidth').innerHTML = `${width} <span class="unit">m</span>`;
+                document.getElementById('resultLength').innerHTML = `${length} <span class="unit">m</span>`;
+                document.getElementById('resultHeight').innerHTML = `${height} <span class="unit">m</span>`;
+                document.getElementById('resultArea').innerHTML = `${area} <span class="unit">m²</span>`;
                 document.getElementById('measurementResults').classList.add('show');
-                showNotification('📏 Room measurements captured successfully!');
+
+                showToast('📏 Room measurements captured successfully!');
+
+                // Save to API
+                saveScan(width, length, height, area);
 
                 isScanning = false;
                 scanBtn.disabled = false;
@@ -373,6 +350,35 @@
             }, 2500);
         }
 
+        // ============================================
+        // SAVE SCAN TO API
+        // ============================================
+        async function saveScan(width, length, height, area) {
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${API_URL}/scanner`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        dimensions: { width, length, height, area }
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    console.log('✅ Scan saved to database');
+                }
+            } catch (error) {
+                console.error('Error saving scan:', error);
+            }
+        }
+
+        // ============================================
+        // RESET SCANNER
+        // ============================================
         function resetScanner() {
             const preview = document.getElementById('cameraPreview');
             const placeholder = document.getElementById('placeholderContent');
@@ -380,31 +386,68 @@
             const scanBtn = document.getElementById('scanBtn');
 
             placeholder.innerHTML = `
-                <i class="fas fa-video" style="font-size:48px;color:var(--gray-400);"></i>
+                <i class="fas fa-video" style="font-size:48px;color:#ddd;"></i>
                 <p>Click "Start Scanning" to access your camera</p>
-                <p style="font-size:12px;margin-top:4px;color:var(--gray-600);">We'll measure your room dimensions instantly</p>
+                <p style="font-size:12px;margin-top:4px;color:#888;">We'll measure your room dimensions instantly</p>
             `;
             overlay.style.display = 'none';
             document.getElementById('measurementResults').classList.remove('show');
             scanBtn.innerHTML = '<i class="fas fa-play"></i> Start Scanning';
+            scanBtn.disabled = false;
             isScanning = false;
+            scanData = null;
         }
 
+        // ============================================
+        // FIND MATCHING PRODUCTS
+        // ============================================
         function findMatchingProducts() {
-            showNotification('🛋️ Finding products that fit your room measurements...');
+            if (!scanData) {
+                showToast('⚠️ Please scan your room first');
+                return;
+            }
+
+            showToast('🛋️ Finding products that fit your room measurements...');
+            
+            // Save the scan data to localStorage for products page
+            localStorage.setItem('lastRoomScan', JSON.stringify(scanData));
+            
             setTimeout(() => {
-                showNotification('✅ Found 8 products that match your room size!');
+                showToast('✅ Found products that match your room size!');
+                window.location.href = `products.html?room=${scanData.width}x${scanData.length}`;
             }, 2000);
         }
 
+        // ============================================
+        // CLOSE RESULTS
+        // ============================================
         function closeResults() {
             document.getElementById('measurementResults').classList.remove('show');
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeNotification();
-        });
-    </script>
+        // ============================================
+        // TOAST
+        // ============================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            msg.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
 
+        function closeToast() {
+            document.getElementById('toast').classList.remove('show');
+        }
+
+        // ============================================
+        // LOGOUT
+        // ============================================
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+    </script>
 </body>
 </html>

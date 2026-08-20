@@ -227,7 +227,12 @@
         .modal-content .close-modal { float: right; font-size: 24px; cursor: pointer; color: #888; background: none; border: none; transition: all 0.3s ease; }
         .modal-content .close-modal:hover { color: #ef4444; transform: rotate(90deg); }
         
-        .status-badge { padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .status-badge {
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
         .status-badge.pending { background: #fef3c7; color: #92400e; }
         .status-badge.approved { background: #d1fae5; color: #065f46; }
         .status-badge.rejected { background: #fee2e2; color: #991b1b; }
@@ -243,6 +248,11 @@
         .status-badge.contacted { background: #dbeafe; color: #1e40af; }
         .status-badge.sent { background: #10b981; color: white; }
         .status-badge.published { background: #c9a94e; color: #1a2a3a; }
+        .status-badge.paid { background: #d1fae5; color: #065f46; }
+        .status-badge.failed { background: #fee2e2; color: #991b1b; }
+        .status-badge.dispatched { background: #dbeafe; color: #1e40af; }
+        .status-badge.arrived { background: #fef3c7; color: #92400e; }
+        .status-badge.delivered { background: #d1fae5; color: #065f46; }
         
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
@@ -259,7 +269,6 @@
         .product-card .product-image { background: #1a2a3a; height: 160px; display: flex; align-items: center; justify-content: center; color: white; }
         .product-card .product-body { padding: 16px; }
         
-        /* Video Card Styles */
         .video-card { background: #f8f7f4; border-radius: 12px; overflow: hidden; border: 1px solid #e9e7e2; transition: all 0.3s ease; }
         .video-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
         .video-card .video-preview { height: 180px; display: flex; align-items: center; justify-content: center; background: #1a2a3a; color: white; position: relative; overflow: hidden; }
@@ -275,6 +284,88 @@
         .video-card .video-body .video-note { color: #666; font-size: 13px; margin-bottom: 8px; }
         .video-card .video-body .video-meta { display: flex; gap: 12px; font-size: 12px; color: #888; flex-wrap: wrap; }
         .video-card .video-body .video-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        
+        .contact-info-card {
+            background: #f8f7f4;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #c9a94e;
+        }
+        .contact-info-card .label {
+            font-weight: 600;
+            color: #1a2a3a;
+            min-width: 120px;
+            display: inline-block;
+        }
+        
+        .file-tag {
+            display: inline-block;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid #e9e7e2;
+            margin: 2px 4px 2px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-tag:hover { border-color: #c9a94e; background: #fef9f0; }
+        .file-tag i { margin-right: 4px; }
+        .file-tag .doc-icon { color: #3b82f6; }
+        .file-tag .id-icon { color: #10b981; }
+        .file-tag .cert-icon { color: #8b5cf6; }
+        
+        /* Delivery & Payment Styles */
+        .delivery-card, .payment-card {
+            background: #f8f7f4;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #c9a94e;
+            transition: all 0.3s ease;
+        }
+        .delivery-card:hover, .payment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .delivery-timeline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+        }
+        .delivery-timeline .step {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #888;
+        }
+        .delivery-timeline .step.active {
+            color: #c9a94e;
+            font-weight: 600;
+        }
+        .delivery-timeline .step.completed {
+            color: #10b981;
+            font-weight: 600;
+        }
+        .delivery-timeline .step-line {
+            width: 30px;
+            height: 2px;
+            background: #e9e7e2;
+        }
+        .delivery-timeline .step-line.completed {
+            background: #10b981;
+        }
+        .delivery-timeline .step-line.active {
+            background: #c9a94e;
+        }
         
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -316,7 +407,7 @@
                     <img src="../../assets/images/logo.png" alt="Logo" />
                     <span>Branch Panel</span>
                 </div>
-                <span class="role-badge" id="branchBadge">🏪 Ruiru</span>
+                <span class="role-badge" id="branchBadge">🏪 Branch</span>
                 <button class="close-sidebar" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
             </div>
             <nav class="admin-nav">
@@ -328,6 +419,9 @@
                 <a onclick="showSection('reviews')"><i class="fas fa-star"></i> Reviews</a>
                 <a onclick="showSection('videos')"><i class="fas fa-video"></i> Videos</a>
                 <a onclick="showSection('customerCare')"><i class="fas fa-headset"></i> Customer Care <span class="badge" id="careBadge">0</span></a>
+                <!-- NEW: Delivery & Payment Sections -->
+                <a onclick="showSection('delivery')"><i class="fas fa-truck"></i> Delivery <span class="badge" id="deliveryBadge">0</span></a>
+                <a onclick="showSection('payment')"><i class="fas fa-credit-card"></i> Payments <span class="badge" id="paymentBadge">0</span></a>
                 <a href="admin-chat.html"><i class="fas fa-comments"></i> Admin Chat <span class="badge">0</span></a>
                 <a onclick="showSection('profile')"><i class="fas fa-user"></i> Profile</a>
                 <a class="logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -339,7 +433,7 @@
 
             <header class="admin-topbar">
                 <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-                <span class="branch-name" id="branchName">🏪 Ruiru Branch</span>
+                <span class="branch-name" id="branchName">🏪 Branch</span>
                 <div class="user-info">
                     <img src="../../assets/images/avatar-default.png" alt="Admin" />
                     <span id="adminName">Branch Manager</span>
@@ -354,32 +448,35 @@
                     <p style="color:#888; margin-bottom:24px;">Manage your branch operations</p>
                     
                     <div class="stats-grid">
-                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-couch"></i></div><div class="stat-info"><h3 id="productCount">15</h3><p>Products</p></div></div>
-                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-shopping-bag"></i></div><div class="stat-info"><h3>12</h3><p>Orders</p></div></div>
-                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-boxes"></i></div><div class="stat-info"><h3 id="lowStockCount">8</h3><p>Low Stock</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-couch"></i></div><div class="stat-info"><h3 id="productCount">0</h3><p>Products</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-shopping-bag"></i></div><div class="stat-info"><h3 id="orderCount">0</h3><p>Orders</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-boxes"></i></div><div class="stat-info"><h3 id="lowStockCount">0</h3><p>Low Stock</p></div></div>
                         <div class="stat-card"><div class="stat-icon"><i class="fas fa-headset"></i></div><div class="stat-info"><h3 id="careCount">0</h3><p>Open Tickets</p></div></div>
+                        <!-- NEW: Delivery & Payment Stats -->
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-truck" style="background:#3b82f6;"></i></div><div class="stat-info"><h3 id="pendingDeliveries">0</h3><p>Pending Deliveries</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-credit-card" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="pendingPayments">0</h3><p>Pending Payments</p></div></div>
                     </div>
 
                     <div class="section">
                         <h2><i class="fas fa-box"></i> Low Stock Alert</h2>
-                        <div style="background:#fef3c7; padding:12px; border-radius:8px; margin-bottom:8px;">
-                            <span style="color:#92400e;">⚠️ Mahogany Bed Frame - Only <strong>2</strong> left</span>
+                        <div id="lowStockAlert">
+                            <div class="empty-state">
+                                <i class="fas fa-boxes"></i>
+                                <p>No low stock items.</p>
+                            </div>
                         </div>
-                        <div style="background:#fef3c7; padding:12px; border-radius:8px;">
-                            <span style="color:#92400e;">⚠️ Dining Table - Only <strong>3</strong> left</span>
-                        </div>
-                        <button class="btn btn-primary" style="margin-top:12px;"><i class="fas fa-edit"></i> Update Stock</button>
+                        <button class="btn btn-primary" style="margin-top:12px;" onclick="showSection('products')"><i class="fas fa-edit"></i> Update Stock</button>
                     </div>
 
                     <div class="section">
                         <h2><i class="fas fa-tools"></i> Recent Repair Requests</h2>
-                        <div style="background:#f8f7f4; padding:12px; border-radius:8px; margin-bottom:8px;">
-                            <strong>Chair Repair</strong> - John Doe <span style="color:#f59e0b;">(Pending)</span>
+                        <div id="recentRepairs">
+                            <div class="empty-state">
+                                <i class="fas fa-tools"></i>
+                                <p>No recent repair requests.</p>
+                            </div>
                         </div>
-                        <div style="background:#f8f7f4; padding:12px; border-radius:8px;">
-                            <strong>Bed Frame Fix</strong> - Jane Smith <span style="color:#10b981;">(In Progress)</span>
-                        </div>
-                        <button class="btn btn-primary" style="margin-top:12px;">View All Repairs</button>
+                        <button class="btn btn-primary" style="margin-top:12px;" onclick="showSection('repairs')">View All Repairs</button>
                     </div>
 
                     <a href="../../index.html" class="back-link" style="color:#c9a94e; text-decoration:none;">
@@ -413,6 +510,8 @@
                                     <option value="Tables">Tables</option>
                                     <option value="Chairs">Chairs</option>
                                     <option value="Cabinets">Cabinets</option>
+                                    <option value="Dressing Tables">Dressing Tables</option>
+                                    <option value="Wardrobes">Wardrobes</option>
                                 </select>
                             </div>
                             <div style="min-width:130px;">
@@ -528,7 +627,7 @@
                     <div class="section" id="reviewsList"></div>
                 </section>
 
-                <!-- ===== VIDEOS SECTION - FULL FEATURES ===== -->
+                <!-- Videos -->
                 <section id="videosSection" style="display:none;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
                         <div>
@@ -541,14 +640,12 @@
                         </div>
                     </div>
 
-                    <!-- Video Stats -->
                     <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
                         <div class="stat-card"><div class="stat-icon"><i class="fas fa-video"></i></div><div class="stat-info"><h3 id="totalVideos">0</h3><p>Total Media</p></div></div>
                         <div class="stat-card"><div class="stat-icon"><i class="fas fa-eye" style="background:#3b82f6;"></i></div><div class="stat-info"><h3 id="totalViews">0</h3><p>Total Views</p></div></div>
                         <div class="stat-card"><div class="stat-icon"><i class="fas fa-paper-plane" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="sentCount">0</h3><p>Sent to Clients</p></div></div>
                     </div>
 
-                    <!-- Video Grid -->
                     <div class="section" id="videoContainer" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:20px;"></div>
                 </section>
 
@@ -621,6 +718,7 @@
                     </div>
                 </div>
 
+                <!-- Customer Care -->
                 <section id="customerCareSection" style="display:none;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
                         <div>
@@ -669,11 +767,11 @@
                         <form onsubmit="updateProfile(event)">
                             <div class="form-group">
                                 <label><i class="fas fa-user"></i> Full Name</label>
-                                <input type="text" id="profileName" value="Branch Manager" required />
+                                <input type="text" id="profileName" required />
                             </div>
                             <div class="form-group">
                                 <label><i class="fas fa-envelope"></i> Email</label>
-                                <input type="email" id="profileEmail" value="branch@modernfurniturepacific.com" disabled />
+                                <input type="email" id="profileEmail" disabled />
                             </div>
                             <div class="form-group">
                                 <label><i class="fas fa-phone"></i> Phone</label>
@@ -684,13 +782,186 @@
                     </div>
                 </section>
 
+                <!-- About Us Section -->
+                <section id="aboutSection" style="display:none;">
+                    <h1 style="font-size:28px; color:#1a2a3a; margin-bottom:24px;">About Us</h1>
+                    <p style="color:#888; margin-bottom:24px;">Update company information</p>
+                    <div class="section">
+                        <form onsubmit="saveAboutUs(event)">
+                            <div class="form-group"><label><i class="fas fa-align-left"></i> Company Description</label><textarea id="aboutDescription" rows="5" placeholder="Describe your company...">Modern Furniture Pacific Ltd is a premier furniture company dedicated to providing high-quality, stylish, and durable furniture solutions. With showrooms across Kenya, we offer a wide range of products including beds, sofas, tables, and custom furniture.</textarea></div>
+                            <div class="form-group"><label><i class="fas fa-bullseye"></i> Mission</label><textarea id="aboutMission" rows="3" placeholder="Our mission...">To provide exceptional furniture that combines quality, style, and affordability while ensuring customer satisfaction.</textarea></div>
+                            <div class="form-group"><label><i class="fas fa-eye"></i> Vision</label><textarea id="aboutVision" rows="3" placeholder="Our vision...">To be the leading furniture provider in East Africa, known for innovation, quality, and customer service.</textarea></div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                            <div id="aboutMessage" style="margin-top:12px;"></div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Contact Section -->
+                <section id="contactSection" style="display:none;">
+                    <h1 style="font-size:28px; color:#1a2a3a; margin-bottom:24px;">Contact Information</h1>
+                    <p style="color:#888; margin-bottom:24px;">Update company contact details</p>
+                    <div class="section">
+                        <form onsubmit="saveContactInfo(event)">
+                            <div class="grid-2">
+                                <div class="form-group"><label><i class="fas fa-phone"></i> WhatsApp Number</label><input type="text" id="contactWhatsApp" value="+254 716 335 555" /></div>
+                                <div class="form-group"><label><i class="fas fa-envelope"></i> Email</label><input type="email" id="contactEmail" value="info@modernfurniturepacific.com" /></div>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Location</label><input type="text" id="contactLocation" value="Ruiru, Behind Spur Mall" /></div>
+                                <div class="form-group"><label><i class="fas fa-phone"></i> HQ Phone</label><input type="text" id="contactPhone" value="+254 748 486829" /></div>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group"><label><i class="fas fa-clock"></i> Opening Hours (Mon-Sat)</label><input type="text" id="contactHoursWeek" value="9:00AM - 10:00PM" /></div>
+                                <div class="form-group"><label><i class="fas fa-clock"></i> Opening Hours (Sun)</label><input type="text" id="contactHoursSun" value="10:00AM - 6:00PM" /></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Contact Info</button>
+                            <div id="contactMessage" style="margin-top:12px;"></div>
+                        </form>
+                    </div>
+                    <div class="section">
+                        <h2>Preview</h2>
+                        <div style="background:#f8f7f4; padding:20px; border-radius:12px;">
+                            <div class="contact-info-card"><span class="label">📱 WhatsApp:</span> <span id="previewWhatsApp">+254 716 335 555</span></div>
+                            <div class="contact-info-card"><span class="label">📧 Email:</span> <span id="previewEmail">info@modernfurniturepacific.com</span></div>
+                            <div class="contact-info-card"><span class="label">📍 Location:</span> <span id="previewLocation">Ruiru, Behind Spur Mall</span></div>
+                            <div class="contact-info-card"><span class="label">📞 HQ Phone:</span> <span id="previewPhone">+254 748 486829</span></div>
+                            <div class="contact-info-card"><span class="label">🕐 Mon-Sat:</span> <span id="previewHoursWeek">9:00AM - 10:00PM</span></div>
+                            <div class="contact-info-card"><span class="label">🕐 Sun:</span> <span id="previewHoursSun">10:00AM - 6:00PM</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================ -->
+                <!-- ===== NEW: DELIVERY MANAGEMENT SECTION ===== -->
+                <!-- ============================================================ -->
+                <section id="deliverySection" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h1 style="font-size:28px; color:#1a2a3a;"><i class="fas fa-truck" style="color:#c9a94e;"></i> Delivery Management</h1>
+                            <p style="color:#888;">Track and manage deliveries for your branch</p>
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button class="btn btn-success" onclick="showAddDelivery()"><i class="fas fa-plus"></i> Add Delivery</button>
+                            <button class="btn btn-info" onclick="refreshDeliveries()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Stats -->
+                    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock" style="background:#f59e0b;"></i></div><div class="stat-info"><h3 id="deliveryPending">0</h3><p>Pending</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-spinner" style="background:#3b82f6;"></i></div><div class="stat-info"><h3 id="deliveryProcessing">0</h3><p>Processing</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-truck" style="background:#8b5cf6;"></i></div><div class="stat-info"><h3 id="deliveryDispatched">0</h3><p>Dispatched</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-flag-checkered" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="deliveryDelivered">0</h3><p>Delivered</p></div></div>
+                    </div>
+
+                    <!-- Delivery List -->
+                    <div class="section">
+                        <h2><i class="fas fa-list"></i> Branch Deliveries</h2>
+                        <div id="deliveriesList">
+                            <div class="empty-state">
+                                <i class="fas fa-truck"></i>
+                                <h3>No Deliveries</h3>
+                                <p>No deliveries have been created for your branch.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ===== DELIVERY MODAL ===== -->
+                <div class="modal" id="deliveryModal">
+                    <div class="modal-content" style="max-width:700px;">
+                        <button class="close-modal" onclick="closeDeliveryModal()">&times;</button>
+                        <h2><i class="fas fa-truck"></i> <span id="deliveryModalTitle">Add New Delivery</span></h2>
+                        <form onsubmit="saveDelivery(event)" id="deliveryForm">
+                            <input type="hidden" id="deliveryId" />
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Customer Name</label>
+                                    <input type="text" id="deliveryCustomer" placeholder="John Doe" required />
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Customer Phone</label>
+                                    <input type="tel" id="deliveryPhone" placeholder="+254 700 123 456" required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-map-marker-alt"></i> Delivery Address</label>
+                                <input type="text" id="deliveryAddress" placeholder="Street, City, Country" required />
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label><i class="fas fa-store"></i> Branch</label>
+                                    <select id="deliveryBranch" required>
+                                        <option value="" id="branchOptionDelivery">Your Branch</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-box"></i> Items</label>
+                                    <input type="text" id="deliveryItems" placeholder="List items being delivered" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-info-circle"></i> Status</label>
+                                <select id="deliveryStatus">
+                                    <option value="pending">Pending</option>
+                                    <option value="processing">Processing</option>
+                                    <option value="dispatched">Dispatched</option>
+                                    <option value="arrived">Arrived</option>
+                                    <option value="delivered">Delivered</option>
+                                </select>
+                            </div>
+                            <div style="display:flex; gap:12px; margin-top:16px;">
+                                <button type="submit" class="btn btn-primary" style="flex:1; justify-content:center;"><i class="fas fa-save"></i> Save Delivery</button>
+                                <button type="button" class="btn btn-danger" onclick="closeDeliveryModal()">Cancel</button>
+                            </div>
+                            <div id="deliveryMessage" style="margin-top:12px;"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- ===== NEW: PAYMENT MANAGEMENT SECTION ===== -->
+                <!-- ============================================================ -->
+                <section id="paymentSection" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h1 style="font-size:28px; color:#1a2a3a;"><i class="fas fa-credit-card" style="color:#c9a94e;"></i> Payment Management</h1>
+                            <p style="color:#888;">Track and manage payments for your branch</p>
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button class="btn btn-info" onclick="refreshPayments()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                    </div>
+
+                    <!-- Payment Stats -->
+                    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock" style="background:#f59e0b;"></i></div><div class="stat-info"><h3 id="paymentPending">0</h3><p>Pending</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="paymentPaid">0</h3><p>Paid</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-times-circle" style="background:#ef4444;"></i></div><div class="stat-info"><h3 id="paymentFailed">0</h3><p>Failed</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-money-bill-wave" style="background:#c9a94e;"></i></div><div class="stat-info"><h3 id="paymentTotal">0</h3><p>Total Revenue (KES)</p></div></div>
+                    </div>
+
+                    <!-- Payment List -->
+                    <div class="section">
+                        <h2><i class="fas fa-list"></i> Branch Payments</h2>
+                        <div id="paymentsList">
+                            <div class="empty-state">
+                                <i class="fas fa-credit-card"></i>
+                                <h3>No Payments</h3>
+                                <p>No payments have been recorded for your branch.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             </div>
         </main>
     </div>
 
     <script>
         // ============================================
-        // UPDATED TO LIVE URL
+        // API CONFIGURATION - LIVE
         // ============================================
         const API_URL = 'https://modern-furniture-api.onrender.com/api';
         let currentUser = null;
@@ -702,15 +973,42 @@
         let videoFileData = null;
         let videoFileName = null;
         let editingVideoId = null;
+        let allSuppliers = [];
+        let allRepairs = [];
+        let allReviews = [];
+        let allScannerData = [];
+        
+        // ===== NEW: Delivery & Payment Variables =====
+        let allDeliveries = [];
+        let allPayments = [];
+        let editingDeliveryId = null;
 
-        // ===== TOGGLE SIDEBAR =====
+        // ============================================
+        // GET AUTH TOKEN
+        // ============================================
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        function getHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            };
+        }
+
+        // ============================================
+        // TOGGLE SIDEBAR
+        // ============================================
         function toggleSidebar() {
             document.getElementById('adminSidebar').classList.toggle('active');
         }
 
-        // ===== SHOW SECTION =====
+        // ============================================
+        // SHOW SECTION
+        // ============================================
         function showSection(section) {
-            const sections = ['dashboard', 'products', 'scanner', 'suppliers', 'repairs', 'reviews', 'videos', 'customerCare', 'profile'];
+            const sections = ['dashboard', 'products', 'scanner', 'suppliers', 'repairs', 'reviews', 'videos', 'customerCare', 'profile', 'about', 'contact', 'delivery', 'payment'];
             sections.forEach(s => {
                 const el = document.getElementById(s + 'Section');
                 if (el) el.style.display = 'none';
@@ -727,12 +1025,17 @@
                 }
             });
             
+            if (section === 'delivery') loadDeliveries();
+            if (section === 'payment') loadPayments();
+            
             if (window.innerWidth <= 768) {
                 document.getElementById('adminSidebar').classList.remove('active');
             }
         }
 
-        // ===== TOAST =====
+        // ============================================
+        // TOAST
+        // ============================================
         function showToast(message) {
             const toast = document.getElementById('toast');
             const msg = document.getElementById('toastMessage');
@@ -745,7 +1048,9 @@
             document.getElementById('toast').classList.remove('show');
         }
 
-        // ===== LOGOUT =====
+        // ============================================
+        // LOGOUT
+        // ============================================
         function handleLogout() {
             if (confirm('Are you sure you want to logout?')) {
                 localStorage.removeItem('token');
@@ -754,7 +1059,9 @@
             }
         }
 
-        // ===== UPDATE PROFILE =====
+        // ============================================
+        // UPDATE PROFILE
+        // ============================================
         function updateProfile(event) {
             event.preventDefault();
             const name = document.getElementById('profileName').value;
@@ -769,18 +1076,84 @@
             }
         }
 
-        // ===== PRODUCT MANAGEMENT =====
+        // ============================================
+        // LOAD DASHBOARD STATS
+        // ============================================
+        async function loadDashboardStats() {
+            try {
+                const token = getToken();
+                
+                // Load products count
+                const productsRes = await fetch(`${API_URL}/products`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const productsData = await productsRes.json();
+                if (productsData.success) {
+                    const branch = currentUser ? currentUser.branch : 'all';
+                    const branchProducts = productsData.products?.filter(p => p.branch === branch || p.branch === 'all') || [];
+                    document.getElementById('productCount').textContent = branchProducts.length;
+                    document.getElementById('lowStockCount').textContent = branchProducts.filter(p => p.stock <= 5).length;
+                }
+                
+                // Load support tickets count
+                const supportRes = await fetch(`${API_URL}/support`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const supportData = await supportRes.json();
+                if (supportData.success) {
+                    const branch = currentUser ? currentUser.branch : 'all';
+                    const branchTickets = supportData.conversations?.filter(c => c.branch === branch || c.branch === 'all') || [];
+                    const openTickets = branchTickets.filter(c => c.status !== 'closed') || [];
+                    document.getElementById('careCount').textContent = openTickets.length;
+                    document.getElementById('careBadge').textContent = openTickets.length;
+                }
+                
+                // Load deliveries count
+                const deliveryRes = await fetch(`${API_URL}/deliveries`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const deliveryData = await deliveryRes.json();
+                if (deliveryData.success) {
+                    const branch = currentUser ? currentUser.branch : 'all';
+                    const branchDeliveries = deliveryData.deliveries?.filter(d => d.branch === branch || d.branch === 'all') || [];
+                    const pending = branchDeliveries.filter(d => d.status === 'pending' || d.status === 'processing') || [];
+                    document.getElementById('pendingDeliveries').textContent = pending.length;
+                    document.getElementById('deliveryBadge').textContent = pending.length;
+                }
+                
+                // Load payments count
+                const paymentRes = await fetch(`${API_URL}/payments`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const paymentData = await paymentRes.json();
+                if (paymentData.success) {
+                    const branch = currentUser ? currentUser.branch : 'all';
+                    const branchPayments = paymentData.payments?.filter(p => p.branch === branch || p.branch === 'all') || [];
+                    const pending = branchPayments.filter(p => p.status === 'pending') || [];
+                    document.getElementById('pendingPayments').textContent = pending.length;
+                    document.getElementById('paymentBadge').textContent = pending.length;
+                }
+                
+                loadRecentRepairs();
+                
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        function loadRecentRepairs() {
+            // Will be populated from repairs data
+        }
+
+        // ============================================
+        // PRODUCT MANAGEMENT
+        // ============================================
         async function loadProducts() {
             try {
-                const token = localStorage.getItem('token');
+                const token = getToken();
                 const response = await fetch(`${API_URL}/products`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();
                 if (data.success) {
-                    allProducts = data.products || [];
+                    // Filter products by branch
+                    const branch = currentUser ? currentUser.branch : 'all';
+                    allProducts = (data.products || []).filter(p => p.branch === branch || p.branch === 'all');
                     renderProducts(allProducts);
                     document.getElementById('productCount').textContent = allProducts.length;
+                    updateLowStockAlert(allProducts);
                 }
             } catch (error) {
                 console.error('Error loading products:', error);
@@ -831,6 +1204,25 @@
             }).join('');
         }
 
+        function updateLowStockAlert(products) {
+            const container = document.getElementById('lowStockAlert');
+            const lowStock = products.filter(p => p.stock <= 5 && p.stock > 0);
+            
+            if (lowStock.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-boxes"></i><p>All products have sufficient stock.</p></div>`;
+                document.getElementById('lowStockCount').textContent = '0';
+                return;
+            }
+            
+            document.getElementById('lowStockCount').textContent = lowStock.length;
+            container.innerHTML = lowStock.map(p => `
+                <div style="background:#fef3c7; padding:12px; border-radius:8px; margin-bottom:8px;">
+                    <span style="color:#92400e;">⚠️ <strong>${p.name}</strong> - Only <strong>${p.stock}</strong> left</span>
+                    <button class="btn btn-primary btn-sm" style="margin-left:12px;" onclick="editProduct('${p.id}')">Update Stock</button>
+                </div>
+            `).join('');
+        }
+
         function filterProducts() {
             const search = document.getElementById('productSearch').value.toLowerCase();
             const category = document.getElementById('productCategoryFilter').value;
@@ -865,7 +1257,7 @@
 
         async function editProduct(id) {
             try {
-                const token = localStorage.getItem('token');
+                const token = getToken();
                 const response = await fetch(`${API_URL}/products/${id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -963,7 +1355,7 @@
             const productData = { name, category, price, salePrice, stock, status, description, branch, features, images };
             
             try {
-                const token = localStorage.getItem('token');
+                const token = getToken();
                 const url = id ? `${API_URL}/products/${id}` : `${API_URL}/products`;
                 const method = id ? 'PUT' : 'POST';
                 const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(productData) });
@@ -991,145 +1383,457 @@
             const nextIndex = (currentIndex + 1) % statuses.length;
             const newStatus = statuses[nextIndex];
             try {
-                const token = localStorage.getItem('token');
+                const token = getToken();
                 const response = await fetch(`${API_URL}/products/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ status: newStatus }) });
                 const data = await response.json();
                 if (data.success) { loadProducts(); showToast(`✅ Status changed to ${newStatus}`); }
             } catch (error) { showToast('❌ Failed to update status'); }
         }
 
-        // ===== SCANNER FUNCTIONS =====
-        function loadScannerData() {
-            const container = document.getElementById('scannerDataList');
-            const scans = [
-                { id: 's1', userName: 'John Doe', userEmail: 'john@example.com', dimensions: { width: 4.5, length: 6.0, height: 3.0 }, status: 'pending', createdAt: new Date().toISOString() },
-                { id: 's2', userName: 'Jane Smith', userEmail: 'jane@example.com', dimensions: { width: 3.0, length: 5.0, height: 2.8 }, status: 'matched', createdAt: new Date(Date.now() - 86400000).toISOString() }
-            ];
-            container.innerHTML = scans.map(s => `
-                <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid #c9a94e;">
-                    <div><strong>${s.userName || 'Guest'}</strong> <span style="color:#888;font-size:12px;">${s.userEmail || ''}</span></div>
-                    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:8px 0;">
-                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;"><span style="color:#888;font-size:11px;">Width</span><div style="font-weight:600;">${s.dimensions?.width || 0}m</div></div>
-                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;"><span style="color:#888;font-size:11px;">Length</span><div style="font-weight:600;">${s.dimensions?.length || 0}m</div></div>
-                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;"><span style="color:#888;font-size:11px;">Height</span><div style="font-weight:600;">${s.dimensions?.height || 0}m</div></div>
-                        <div style="background:white; padding:8px; border-radius:8px; text-align:center; border:2px solid #c9a94e;"><span style="color:#888;font-size:11px;">Area</span><div style="font-weight:700;color:#c9a94e;">${((s.dimensions?.width || 0) * (s.dimensions?.length || 0)).toFixed(2)}m²</div></div>
-                    </div>
-                    <span class="status-badge ${s.status === 'matched' ? 'approved' : s.status === 'contacted' ? 'active' : 'pending'}">${s.status || 'pending'}</span>
-                    <button class="btn btn-primary btn-sm" onclick="showToast('📏 View scan ${s.id}')">View</button>
-                    <button class="btn btn-success btn-sm" onclick="showToast('📧 Contact ${s.userName}')">Contact</button>
-                </div>
-            `).join('');
-            showToast('📷 Scanner data loaded!');
+        // ============================================
+        // SCANNER FUNCTIONS
+        // ============================================
+        async function loadScannerData() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/scanner`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allScannerData = data.scans || [];
+                    renderScannerData(allScannerData);
+                }
+            } catch (error) {
+                console.error('Error loading scanner data:', error);
+                showToast('❌ Failed to load scanner data');
+            }
         }
 
-        // ===== SUPPLIER FUNCTIONS =====
-        function loadSuppliers() {
+        function renderScannerData(scans) {
+            const container = document.getElementById('scannerDataList');
+            if (!scans || scans.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-camera" style="font-size:48px; color:#ddd;"></i>
+                    <p style="margin-top:12px;">No scanner submissions yet.</p>
+                </div>`;
+                return;
+            }
+            
+            // Filter by branch if needed
+            const branch = currentUser ? currentUser.branch : 'all';
+            const branchScans = scans.filter(s => s.branch === branch || s.branch === 'all');
+            
+            if (branchScans.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-camera" style="font-size:48px; color:#ddd;"></i>
+                    <p style="margin-top:12px;">No scanner submissions for your branch.</p>
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = branchScans.map(s => `
+                <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${s.status === 'matched' ? '#10b981' : '#c9a94e'};">
+                    <div><strong>${s.userName || 'Guest'}</strong> <span style="color:#888;font-size:12px;">${s.userEmail || ''}</span></div>
+                    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:8px 0;">
+                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;">
+                            <span style="color:#888;font-size:11px;">Width</span>
+                            <div style="font-weight:600;">${s.dimensions?.width || 0}m</div>
+                        </div>
+                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;">
+                            <span style="color:#888;font-size:11px;">Length</span>
+                            <div style="font-weight:600;">${s.dimensions?.length || 0}m</div>
+                        </div>
+                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;">
+                            <span style="color:#888;font-size:11px;">Height</span>
+                            <div style="font-weight:600;">${s.dimensions?.height || 0}m</div>
+                        </div>
+                        <div style="background:white; padding:8px; border-radius:8px; text-align:center; border:2px solid #c9a94e;">
+                            <span style="color:#888;font-size:11px;">Area</span>
+                            <div style="font-weight:700;color:#c9a94e;">${((s.dimensions?.width || 0) * (s.dimensions?.length || 0)).toFixed(2)}m²</div>
+                        </div>
+                    </div>
+                    <span class="status-badge ${s.status === 'matched' ? 'approved' : 'pending'}">${s.status || 'pending'}</span>
+                    <button class="btn btn-primary btn-sm" onclick="viewScanDetails('${s.id}')">View</button>
+                    <button class="btn btn-success btn-sm" onclick="contactScanUser('${s.id}')">Contact</button>
+                </div>
+            `).join('');
+        }
+
+        function viewScanDetails(id) {
+            const scan = allScannerData.find(s => s.id === id);
+            if (!scan) return;
+            showToast(`📏 Scan: ${scan.userName} - ${scan.dimensions?.width}x${scan.dimensions?.length}m`);
+        }
+
+        function contactScanUser(id) {
+            const scan = allScannerData.find(s => s.id === id);
+            if (!scan) return;
+            showToast(`📧 Contact ${scan.userName} at ${scan.userEmail}`);
+        }
+
+        // ============================================
+        // SUPPLIER FUNCTIONS
+        // ============================================
+        async function loadSuppliers() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/suppliers`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allSuppliers = data.suppliers || [];
+                    renderSuppliers(allSuppliers);
+                }
+            } catch (error) {
+                console.error('Error loading suppliers:', error);
+                showToast('❌ Failed to load suppliers');
+            }
+        }
+
+        function renderSuppliers(suppliers) {
             const container = document.getElementById('suppliersList');
-            const suppliers = [
-                { id: 'sp1', companyName: 'WoodWorks Ltd', name: 'Peter Wood', email: 'peter@woodworks.com', phone: '+254 712 345 678', status: 'pending', createdAt: new Date().toISOString() },
-                { id: 'sp2', companyName: 'Metal Masters', name: 'James Steel', email: 'james@metalmasters.com', phone: '+254 722 345 678', status: 'approved', createdAt: new Date(Date.now() - 86400000).toISOString() }
-            ];
-            container.innerHTML = suppliers.map(s => `
+            if (!suppliers || suppliers.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-truck" style="font-size:48px; color:#ddd;"></i>
+                    <p style="margin-top:12px;">No suppliers registered yet.</p>
+                </div>`;
+                return;
+            }
+            
+            const branch = currentUser ? currentUser.branch : 'all';
+            const branchSuppliers = suppliers.filter(s => s.branch === branch || s.branch === 'all');
+            
+            if (branchSuppliers.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-truck" style="font-size:48px; color:#ddd;"></i>
+                    <p style="margin-top:12px;">No suppliers for your branch.</p>
+                </div>`;
+                return;
+            }
+            
+            container.innerHTML = branchSuppliers.map(s => `
                 <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${s.status === 'approved' ? '#10b981' : '#f59e0b'};">
                     <div><strong>${s.companyName || s.name || 'Supplier'}</strong></div>
                     <div style="color:#666;font-size:13px;">${s.email || ''} | ${s.phone || ''}</div>
                     <span class="status-badge ${s.status === 'approved' ? 'approved' : 'pending'}">${s.status || 'pending'}</span>
                     ${s.status !== 'approved' ? `<button class="btn btn-success btn-sm" onclick="approveSupplier('${s.id}')">Approve</button>` : ''}
-                    <button class="btn btn-info btn-sm" onclick="showToast('📄 View supplier ${s.id}')">View</button>
+                    <button class="btn btn-info btn-sm" onclick="viewSupplierDetails('${s.id}')">View</button>
                 </div>
             `).join('');
-            showToast('🚚 Suppliers loaded!');
         }
 
-        function approveSupplier(id) {
-            showToast('✅ Supplier approved!');
-            loadSuppliers();
+        async function approveSupplier(id) {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/suppliers/${id}/approve`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadSuppliers();
+                    showToast('✅ Supplier approved!');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error approving supplier:', error);
+                showToast('❌ Failed to approve supplier');
+            }
         }
 
-        // ===== REPAIR FUNCTIONS =====
-        function loadRepairs() {
+        function viewSupplierDetails(id) {
+            const supplier = allSuppliers.find(s => s.id === id);
+            if (!supplier) return;
+            showToast(`📄 ${supplier.companyName || supplier.name}`);
+        }
+
+        // ============================================
+        // REPAIR FUNCTIONS
+        // ============================================
+        async function loadRepairs() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/repairs`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allRepairs = data.repairs || [];
+                    renderRepairs(allRepairs);
+                    updateRepairStats();
+                    updateRecentRepairs(allRepairs);
+                }
+            } catch (error) {
+                console.error('Error loading repairs:', error);
+                showToast('❌ Failed to load repairs');
+            }
+        }
+
+        function renderRepairs(repairs) {
             const container = document.getElementById('repairsList');
-            const repairs = [
-                { id: 'rp1', userName: 'John Doe', userEmail: 'john@example.com', issue: 'Broken leg on sofa', description: 'The front left leg of the sofa is completely broken', status: 'pending', createdAt: new Date().toISOString() },
-                { id: 'rp2', userName: 'Jane Smith', userEmail: 'jane@example.com', issue: 'Cracked bed frame', description: 'The headboard has a visible crack', status: 'in-progress', createdAt: new Date(Date.now() - 86400000).toISOString() },
-                { id: 'rp3', userName: 'Michael Ochieng', userEmail: 'michael@example.com', issue: 'Wobbly dining table', description: 'The table wobbles when you lean on it', status: 'completed', createdAt: new Date(Date.now() - 172800000).toISOString() }
-            ];
-            container.innerHTML = repairs.map(r => `
+            if (!repairs || repairs.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-tools" style="font-size:48px; color:#ddd;"></i>
+                    <p style="margin-top:12px;">No repair requests yet.</p>
+                </div>`;
+                return;
+            }
+            
+            const branch = currentUser ? currentUser.branch : 'all';
+            const branchRepairs = repairs.filter(r => r.branch === branch || r.branch === 'all');
+
+            if (branchRepairs.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-tools" style="font-size:48px; color:#ddd;"></i>
+                    <p style="margin-top:12px;">No repair requests for your branch.</p>
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = branchRepairs.map(r => `
                 <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${r.status === 'completed' ? '#10b981' : r.status === 'in-progress' ? '#3b82f6' : '#f59e0b'};">
                     <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
                         <div><strong>${r.userName || 'Guest'}</strong> <span style="color:#888; font-size:12px; margin-left:8px;">${r.userEmail || ''}</span></div>
-                        <span style="color:#888; font-size:12px;">${new Date(r.createdAt).toLocaleDateString()}</span>
+                        <span style="color:#888; font-size:12px;">${r.createdAt ? new Date(r.createdAt).toLocaleDateString() : 'N/A'}</span>
                     </div>
-                    <div style="margin:8px 0;"><strong>Issue:</strong> ${r.issue} ${r.description ? `<p style="color:#666; font-size:13px; margin-top:4px;">${r.description}</p>` : ''}</div>
+                    <div style="margin:8px 0;"><strong>Issue:</strong> ${r.issue}</div>
+                    ${r.description ? `<p style="color:#666; font-size:13px;">${r.description}</p>` : ''}
                     <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-                        <span class="status-badge ${r.status === 'completed' ? 'approved' : r.status === 'in-progress' ? 'active' : 'pending'}">${r.status}</span>
+                        <span class="status-badge ${r.status === 'completed' ? 'approved' : r.status === 'in-progress' ? 'active' : 'pending'}">${r.status || 'pending'}</span>
                         ${r.status !== 'completed' ? `
                             <button class="btn btn-warning btn-sm" onclick="updateRepairStatus('${r.id}', 'in-progress')">Start</button>
                             <button class="btn btn-success btn-sm" onclick="updateRepairStatus('${r.id}', 'completed')">Complete</button>
                         ` : ''}
-                        <button class="btn btn-primary btn-sm" onclick="showToast('📞 Contact ${r.userName}')"><i class="fas fa-phone"></i> Contact</button>
+                        <button class="btn btn-primary btn-sm" onclick="contactRepairUser('${r.id}')"><i class="fas fa-phone"></i> Contact</button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function updateRepairStats() {
+            const branch = currentUser ? currentUser.branch : 'all';
+            const branchRepairs = allRepairs.filter(r => r.branch === branch || r.branch === 'all');
             
-            document.getElementById('pendingRepairs').textContent = repairs.filter(r => r.status === 'pending' || !r.status).length;
-            document.getElementById('inProgressRepairs').textContent = repairs.filter(r => r.status === 'in-progress').length;
-            document.getElementById('completedRepairs').textContent = repairs.filter(r => r.status === 'completed').length;
-            showToast('🔧 Repairs loaded!');
+            document.getElementById('pendingRepairs').textContent = branchRepairs.filter(r => r.status === 'pending' || !r.status).length;
+            document.getElementById('inProgressRepairs').textContent = branchRepairs.filter(r => r.status === 'in-progress').length;
+            document.getElementById('completedRepairs').textContent = branchRepairs.filter(r => r.status === 'completed').length;
         }
 
-        function updateRepairStatus(id, status) {
-            showToast(`✅ Repair status updated to ${status}`);
-            loadRepairs();
+        function updateRecentRepairs(repairs) {
+            const container = document.getElementById('recentRepairs');
+            const branch = currentUser ? currentUser.branch : 'all';
+            const branchRepairs = repairs.filter(r => r.branch === branch || r.branch === 'all');
+            const recent = branchRepairs.slice(0, 3);
+            
+            if (recent.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-tools"></i><p>No recent repair requests.</p></div>`;
+                return;
+            }
+
+            container.innerHTML = recent.map(r => `
+                <div style="background:#f8f7f4; padding:12px; border-radius:8px; margin-bottom:8px; border-left:4px solid ${r.status === 'completed' ? '#10b981' : '#f59e0b'};">
+                    <strong>${r.issue}</strong> - ${r.userName || 'Guest'}
+                    <span class="status-badge ${r.status === 'completed' ? 'approved' : 'pending'}" style="margin-left:8px;">${r.status || 'pending'}</span>
+                </div>
+            `).join('');
         }
 
-        // ===== REVIEW FUNCTIONS =====
-        function loadReviews() {
+        async function updateRepairStatus(id, status) {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/repairs/${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ status })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadRepairs();
+                    showToast(`✅ Repair status updated to ${status}`);
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error updating repair:', error);
+                showToast('❌ Failed to update repair status');
+            }
+        }
+
+        function contactRepairUser(id) {
+            const repair = allRepairs.find(r => r.id === id);
+            if (!repair) return;
+            showToast(`📞 Contact ${repair.userName} at ${repair.userEmail || repair.phone || 'N/A'}`);
+        }
+
+        // ============================================
+        // REVIEW FUNCTIONS
+        // ============================================
+        async function loadReviews() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/reviews`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allReviews = data.reviews || [];
+                    renderReviews(allReviews);
+                }
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                showToast('❌ Failed to load reviews');
+            }
+        }
+
+        function renderReviews(reviews) {
             const container = document.getElementById('reviewsList');
-            const sampleReviews = [
-                { id: 'r1', name: 'John Doe', rating: 5, comment: 'Amazing quality! The sofa is exactly what we wanted.', branch: 'Ruiru', date: '2 days ago', status: 'pending' },
-                { id: 'r2', name: 'Jane Smith', rating: 4, comment: 'Great service! The delivery was prompt.', branch: 'Nyeri', date: '5 days ago', status: 'approved' },
-                { id: 'r3', name: 'Michael Ochieng', rating: 3, comment: 'The bed frame had some scratches on delivery.', branch: 'Nakuru', date: '1 week ago', status: 'rejected' }
-            ];
-            container.innerHTML = sampleReviews.map(r => `
+            if (!reviews || reviews.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-star" style="font-size:48px; color:#ddd;"></i>
+                    <p style="margin-top:12px;">No reviews yet.</p>
+                </div>`;
+                return;
+            }
+            
+            // Filter by branch
+            const branch = currentUser ? currentUser.branch : 'all';
+            const branchReviews = reviews.filter(r => r.branch === branch || r.branch === 'all');
+
+            if (branchReviews.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-star" style="font-size:48px; color:#ddd;"></i>
+                    <p style="margin-top:12px;">No reviews for your branch.</p>
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = branchReviews.map(r => `
                 <div class="review-item">
                     <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
-                        <div><strong>${r.name}</strong> <span style="color:#f59e0b;">${'⭐'.repeat(r.rating)}</span> <span style="color:#888; font-size:12px; margin-left:8px;">${r.branch}</span></div>
-                        <span style="color:#888; font-size:12px;">${r.date}</span>
+                        <div><strong>${r.name}</strong> <span style="color:#f59e0b;">${'⭐'.repeat(r.rating)}</span> <span style="color:#888; font-size:12px; margin-left:8px;">${r.branch || ''}</span></div>
+                        <span style="color:#888; font-size:12px;">${r.createdAt ? new Date(r.createdAt).toLocaleDateString() : 'N/A'}</span>
                     </div>
                     <p style="color:#666; margin:8px 0;">"${r.comment}"</p>
                     <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-                        <span class="review-status status-badge ${r.status === 'approved' ? 'approved' : r.status === 'rejected' ? 'rejected' : 'pending'}">${r.status}</span>
-                        ${r.status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="approveReview('${r.id}')">Approve</button><button class="btn btn-danger btn-sm" onclick="rejectReview('${r.id}')">Reject</button>` : ''}
+                        <span class="review-status status-badge ${r.status === 'approved' ? 'approved' : r.status === 'rejected' ? 'rejected' : 'pending'}">${r.status || 'pending'}</span>
+                        ${r.status === 'pending' ? `
+                            <button class="btn btn-success btn-sm" onclick="approveReview('${r.id}')">Approve</button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectReview('${r.id}')">Reject</button>
+                        ` : ''}
                         <button class="btn btn-danger btn-sm" onclick="deleteReview('${r.id}')">Delete</button>
                     </div>
                 </div>
             `).join('');
-            showToast('📋 Reviews loaded!');
         }
 
-        function approveReview(id) { showToast('✅ Review approved!'); loadReviews(); }
-        function rejectReview(id) { showToast('❌ Review rejected'); loadReviews(); }
-        function deleteReview(id) { if (!confirm('⚠️ Delete this review?')) return; showToast('🗑️ Review deleted'); loadReviews(); }
+        async function approveReview(id) {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/reviews/${id}/approve`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadReviews();
+                    showToast('✅ Review approved!');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error approving review:', error);
+                showToast('❌ Failed to approve review');
+            }
+        }
 
-        // ===== CUSTOMER CARE FUNCTIONS =====
-        function loadCustomerCare() {
-            const conversations = [
-                { id: 'c1', userName: 'John Doe', userEmail: 'john@example.com', subject: 'Delivery Inquiry', status: 'open', messages: [{ sender: 'user', message: 'When will my order arrive?', timestamp: new Date().toISOString() }], createdAt: new Date().toISOString() },
-                { id: 'c2', userName: 'Jane Smith', userEmail: 'jane@example.com', subject: 'Product Question', status: 'in-progress', messages: [{ sender: 'user', message: 'Is the sofa available in blue?', timestamp: new Date().toISOString() }], createdAt: new Date(Date.now() - 86400000).toISOString() }
-            ];
-            allCareConversations = conversations;
-            renderCustomerCare(conversations);
-            updateCareStats();
+        async function rejectReview(id) {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/reviews/${id}/reject`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadReviews();
+                    showToast('❌ Review rejected');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error rejecting review:', error);
+                showToast('❌ Failed to reject review');
+            }
+        }
+
+        async function deleteReview(id) {
+            if (!confirm('⚠️ Delete this review?')) return;
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/reviews/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadReviews();
+                    showToast('🗑️ Review deleted!');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error deleting review:', error);
+                showToast('❌ Failed to delete review');
+            }
+        }
+
+        // ============================================
+        // CUSTOMER CARE FUNCTIONS
+        // ============================================
+        async function loadCustomerCare() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/support`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allCareConversations = data.conversations || [];
+                    renderCustomerCare(allCareConversations);
+                    updateCareStats();
+                }
+            } catch (error) {
+                console.error('Error loading customer care:', error);
+                showToast('❌ Failed to load customer care');
+            }
         }
 
         function renderCustomerCare(conversations) {
             const container = document.getElementById('careContainer');
             if (!conversations || conversations.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:60px 20px; color:#888;"><i class="fas fa-headset" style="font-size:48px; color:#ddd; margin-bottom:16px;"></i><h3>No Conversations</h3></div>`;
+                container.innerHTML = `<div style="text-align:center; padding:60px 20px; color:#888;">
+                    <i class="fas fa-headset" style="font-size:48px; color:#ddd; margin-bottom:16px;"></i>
+                    <h3>No Conversations</h3>
+                </div>`;
                 return;
             }
-            container.innerHTML = conversations.map(conv => {
+            
+            // Filter by branch if needed
+            const branch = currentUser ? currentUser.branch : 'all';
+            const branchConversations = conversations.filter(c => c.branch === branch || c.branch === 'all');
+
+            if (branchConversations.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:60px 20px; color:#888;">
+                    <i class="fas fa-headset" style="font-size:48px; color:#ddd; margin-bottom:16px;"></i>
+                    <h3>No Conversations for your branch</h3>
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = branchConversations.map(conv => {
                 const statusColors = { 'open': 'open', 'in-progress': 'in-progress', 'closed': 'closed' };
                 const statusClass = statusColors[conv.status] || 'open';
                 return `<div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${conv.status === 'closed' ? '#10b981' : conv.status === 'in-progress' ? '#3b82f6' : '#f59e0b'};">
@@ -1145,21 +1849,26 @@
         }
 
         function updateCareStats() {
-            document.getElementById('totalCare').textContent = allCareConversations.length;
-            document.getElementById('openCare').textContent = allCareConversations.filter(c => c.status !== 'closed').length;
-            document.getElementById('closedCare').textContent = allCareConversations.filter(c => c.status === 'closed').length;
-            document.getElementById('careBadge').textContent = allCareConversations.filter(c => c.status !== 'closed').length;
-            document.getElementById('careCount').textContent = allCareConversations.filter(c => c.status !== 'closed').length;
+            const branch = currentUser ? currentUser.branch : 'all';
+            const branchConversations = allCareConversations.filter(c => c.branch === branch || c.branch === 'all');
+            
+            document.getElementById('totalCare').textContent = branchConversations.length;
+            document.getElementById('openCare').textContent = branchConversations.filter(c => c.status !== 'closed').length;
+            document.getElementById('closedCare').textContent = branchConversations.filter(c => c.status === 'closed').length;
+            document.getElementById('careBadge').textContent = branchConversations.filter(c => c.status !== 'closed').length;
+            document.getElementById('careCount').textContent = branchConversations.filter(c => c.status !== 'closed').length;
         }
 
         function openCareConversation(id) {
             const conv = allCareConversations.find(c => c.id === id);
             if (!conv) return;
+            
             document.getElementById('careConvId').value = id;
             document.getElementById('careSubject').textContent = conv.subject || 'Conversation';
             document.getElementById('careUserName').textContent = conv.userName || 'Guest';
             document.getElementById('careStatus').textContent = conv.status;
             document.getElementById('careStatus').className = `status-badge ${conv.status === 'closed' ? 'closed' : conv.status === 'in-progress' ? 'in-progress' : 'open'}`;
+            
             const messagesContainer = document.getElementById('careMessages');
             if (conv.messages && conv.messages.length > 0) {
                 messagesContainer.innerHTML = conv.messages.map(msg => `
@@ -1172,6 +1881,7 @@
             } else {
                 messagesContainer.innerHTML = '<p style="color:#888; text-align:center;">No messages yet.</p>';
             }
+            
             document.getElementById('careModal').classList.add('active');
         }
 
@@ -1207,10 +1917,8 @@
         }
 
         // ============================================
-        // ===== VIDEO MANAGEMENT - FULL FEATURES =====
+        // VIDEO MANAGEMENT
         // ============================================
-
-        // Load videos
         function loadVideos() {
             const saved = localStorage.getItem('branchVideos');
             if (saved) {
@@ -1220,42 +1928,13 @@
                     allVideos = [];
                 }
             } else {
-                allVideos = [
-                    { 
-                        id: 'v1', 
-                        title: 'Welcome to Our Branch', 
-                        note: 'Explore our premium furniture collection at Ruiru branch', 
-                        type: 'video', 
-                        fileType: 'video',
-                        branch: 'ruiru', 
-                        views: 24, 
-                        sentToClients: true,
-                        sentAt: new Date().toISOString(),
-                        uploadedBy: 'Branch Manager',
-                        uploadedAt: new Date().toISOString(),
-                        fileName: 'welcome.mp4'
-                    },
-                    { 
-                        id: 'v2', 
-                        title: 'Easter Sale 2026', 
-                        note: 'Upgrade this Easter with special discounts on beds and sofas!', 
-                        type: 'image', 
-                        fileType: 'image',
-                        branch: 'ruiru', 
-                        views: 56, 
-                        sentToClients: false,
-                        uploadedBy: 'Branch Manager',
-                        uploadedAt: new Date().toISOString(),
-                        fileName: 'easter-sale.jpg'
-                    }
-                ];
+                allVideos = [];
                 localStorage.setItem('branchVideos', JSON.stringify(allVideos));
             }
             renderVideos();
             updateVideoStats();
         }
 
-        // Render videos
         function renderVideos() {
             const container = document.getElementById('videoContainer');
             if (!container) return;
@@ -1271,7 +1950,22 @@
                 return;
             }
             
-            container.innerHTML = allVideos.map(v => {
+            // Filter by branch
+            const branch = currentUser ? currentUser.branch : 'all';
+            const branchVideos = allVideos.filter(v => v.branch === branch || v.branch === 'all');
+
+            if (branchVideos.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:#888;">
+                        <i class="fas fa-video" style="font-size:48px; color:#ddd; margin-bottom:16px;"></i>
+                        <h3>No Media for Your Branch</h3>
+                        <p style="margin-top:8px;">Upload media for your branch.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = branchVideos.map(v => {
                 const isVideo = v.fileType === 'video' || v.type === 'video';
                 const isSent = v.sentToClients === true;
                 const branchName = v.branch === 'all' ? '🌍 All Branches' : v.branch.charAt(0).toUpperCase() + v.branch.slice(1);
@@ -1304,7 +1998,6 @@
             }).join('');
         }
 
-        // Update video stats
         function updateVideoStats() {
             const totalEl = document.getElementById('totalVideos');
             const viewsEl = document.getElementById('totalViews');
@@ -1315,7 +2008,6 @@
             if (sentEl) sentEl.textContent = allVideos.filter(v => v.sentToClients === true).length;
         }
 
-        // Show upload video modal
         function showUploadVideo() {
             document.getElementById('videoTitle').value = '';
             document.getElementById('videoNote').value = '';
@@ -1353,7 +2045,6 @@
             document.getElementById('videoFileInput').value = '';
         }
 
-        // Upload media
         function uploadMedia(event) {
             event.preventDefault();
             const title = document.getElementById('videoTitle').value;
@@ -1378,7 +2069,7 @@
                 type: isVideo ? 'video' : 'image',
                 views: 0,
                 sentToClients: false,
-                uploadedBy: currentUser ? currentUser.name : 'Branch Manager',
+                uploadedBy: currentUser ? currentUser.name : 'Branch Admin',
                 uploadedAt: new Date().toISOString()
             };
             
@@ -1400,7 +2091,6 @@
             setTimeout(() => closeVideoUpload(), 1500);
         }
 
-        // Send to clients
         function sendToClients(id) {
             const video = allVideos.find(v => v.id === id);
             if (!video) return;
@@ -1412,7 +2102,6 @@
             
             localStorage.setItem('branchVideos', JSON.stringify(allVideos));
             
-            // Also update client videos
             updateClientVideos();
             
             renderVideos();
@@ -1420,13 +2109,11 @@
             showToast(`✅ "${video.title}" sent to clients!`);
         }
 
-        // Update client videos
         function updateClientVideos() {
             const clientVideos = allVideos.filter(v => v.sentToClients === true);
             localStorage.setItem('clientVideos', JSON.stringify(clientVideos));
         }
 
-        // Open edit video modal
         function openEditVideo(id) {
             const video = allVideos.find(v => v.id === id);
             if (!video) return;
@@ -1443,7 +2130,6 @@
             document.getElementById('videoEditModal').classList.remove('active');
         }
 
-        // Save video edit
         function saveVideoEdit(event) {
             event.preventDefault();
             const id = document.getElementById('editVideoId').value;
@@ -1459,7 +2145,6 @@
             
             localStorage.setItem('branchVideos', JSON.stringify(allVideos));
             
-            // Update client videos if already sent
             if (video.sentToClients) {
                 updateClientVideos();
             }
@@ -1470,7 +2155,6 @@
             showToast('✅ Video updated successfully!');
         }
 
-        // Delete video
         function deleteVideo(id) {
             if (!confirm('⚠️ Delete this media? It will also be removed from client accounts.')) return;
             
@@ -1480,7 +2164,6 @@
             allVideos = allVideos.filter(v => v.id !== id);
             localStorage.setItem('branchVideos', JSON.stringify(allVideos));
             
-            // Also update client videos
             updateClientVideos();
             
             renderVideos();
@@ -1488,7 +2171,469 @@
             showToast('🗑️ Media deleted from admin and client accounts!');
         }
 
-        // ===== DOM READY =====
+        // ============================================
+        // ABOUT US
+        // ============================================
+        function saveAboutUs(event) {
+            event.preventDefault();
+            const data = {
+                description: document.getElementById('aboutDescription').value,
+                mission: document.getElementById('aboutMission').value,
+                vision: document.getElementById('aboutVision').value
+            };
+            
+            localStorage.setItem('aboutUs', JSON.stringify(data));
+            document.getElementById('aboutMessage').innerHTML = '<span style="color:#10b981;">✅ About Us updated!</span>';
+            setTimeout(() => document.getElementById('aboutMessage').innerHTML = '', 3000);
+            showToast('✅ About Us updated!');
+        }
+
+        function loadAboutUs() {
+            const saved = localStorage.getItem('aboutUs');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.description) document.getElementById('aboutDescription').value = data.description;
+                    if (data.mission) document.getElementById('aboutMission').value = data.mission;
+                    if (data.vision) document.getElementById('aboutVision').value = data.vision;
+                } catch(e) {}
+            }
+        }
+
+        // ============================================
+        // CONTACT INFO
+        // ============================================
+        function saveContactInfo(event) {
+            event.preventDefault();
+            const data = {
+                whatsapp: document.getElementById('contactWhatsApp').value,
+                email: document.getElementById('contactEmail').value,
+                location: document.getElementById('contactLocation').value,
+                phone: document.getElementById('contactPhone').value,
+                hoursWeek: document.getElementById('contactHoursWeek').value,
+                hoursSun: document.getElementById('contactHoursSun').value
+            };
+            
+            localStorage.setItem('contactInfo', JSON.stringify(data));
+            
+            document.getElementById('previewWhatsApp').textContent = data.whatsapp;
+            document.getElementById('previewEmail').textContent = data.email;
+            document.getElementById('previewLocation').textContent = data.location;
+            document.getElementById('previewPhone').textContent = data.phone;
+            document.getElementById('previewHoursWeek').textContent = data.hoursWeek;
+            document.getElementById('previewHoursSun').textContent = data.hoursSun;
+            
+            document.getElementById('contactMessage').innerHTML = '<span style="color:#10b981;">✅ Contact info updated!</span>';
+            setTimeout(() => document.getElementById('contactMessage').innerHTML = '', 3000);
+            showToast('✅ Contact info updated!');
+        }
+
+        function loadContactInfo() {
+            const saved = localStorage.getItem('contactInfo');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    document.getElementById('contactWhatsApp').value = data.whatsapp || '';
+                    document.getElementById('contactEmail').value = data.email || '';
+                    document.getElementById('contactLocation').value = data.location || '';
+                    document.getElementById('contactPhone').value = data.phone || '';
+                    document.getElementById('contactHoursWeek').value = data.hoursWeek || '';
+                    document.getElementById('contactHoursSun').value = data.hoursSun || '';
+                    document.getElementById('previewWhatsApp').textContent = data.whatsapp || '';
+                    document.getElementById('previewEmail').textContent = data.email || '';
+                    document.getElementById('previewLocation').textContent = data.location || '';
+                    document.getElementById('previewPhone').textContent = data.phone || '';
+                    document.getElementById('previewHoursWeek').textContent = data.hoursWeek || '';
+                    document.getElementById('previewHoursSun').textContent = data.hoursSun || '';
+                } catch(e) {}
+            }
+        }
+
+        // ============================================
+        // ===== NEW: DELIVERY MANAGEMENT =====
+        // ============================================
+        async function loadDeliveries() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/deliveries`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const branch = currentUser ? currentUser.branch : 'all';
+                    allDeliveries = (data.deliveries || []).filter(d => d.branch === branch || d.branch === 'all');
+                    renderDeliveries(allDeliveries);
+                    updateDeliveryStats(allDeliveries);
+                }
+            } catch (error) {
+                console.error('Error loading deliveries:', error);
+                showToast('❌ Failed to load deliveries');
+            }
+        }
+
+        function renderDeliveries(deliveries) {
+            const container = document.getElementById('deliveriesList');
+            if (!deliveries || deliveries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-truck"></i>
+                        <h3>No Deliveries</h3>
+                        <p>No deliveries have been created for your branch.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = deliveries.map(d => {
+                const statusMap = {
+                    'pending': 'pending',
+                    'processing': 'in-progress',
+                    'dispatched': 'active',
+                    'arrived': 'active',
+                    'delivered': 'approved'
+                };
+                const statusClass = statusMap[d.status] || 'pending';
+                const statusLabel = d.status.charAt(0).toUpperCase() + d.status.slice(1);
+                
+                return `
+                    <div class="delivery-card">
+                        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center;">
+                            <div>
+                                <strong>${d.customer || 'Customer'}</strong>
+                                <span style="color:#888; font-size:12px; margin-left:8px;">${d.phone || ''}</span>
+                            </div>
+                            <span class="status-badge ${statusClass}">${statusLabel}</span>
+                        </div>
+                        <p style="color:#666; font-size:13px; margin:4px 0;">📍 ${d.address || 'No address'}</p>
+                        <p style="color:#888; font-size:12px;">🏪 ${d.branch || 'Your Branch'} ${d.assignee ? `• 👤 ${d.assignee}` : ''}</p>
+                        ${d.items ? `<p style="color:#666; font-size:12px; margin:4px 0;">📦 ${d.items}</p>` : ''}
+                        
+                        <div class="delivery-timeline">
+                            ${['pending', 'processing', 'dispatched', 'arrived', 'delivered'].map((step, idx) => {
+                                const steps = ['pending', 'processing', 'dispatched', 'arrived', 'delivered'];
+                                const currentIdx = steps.indexOf(d.status);
+                                const isCompleted = idx < currentIdx;
+                                const isActive = idx === currentIdx;
+                                const stepLabels = ['Pending', 'Processing', 'Dispatched', 'Arrived', 'Delivered'];
+                                const stepIcons = ['🕐', '⚙️', '🚚', '📍', '✅'];
+                                return `
+                                    <div class="step ${isCompleted ? 'completed' : isActive ? 'active' : ''}">
+                                        ${stepIcons[idx]} ${stepLabels[idx]}
+                                    </div>
+                                    ${idx < 4 ? `<div class="step-line ${isCompleted ? 'completed' : isActive ? 'active' : ''}"></div>` : ''}
+                                `;
+                            }).join('')}
+                        </div>
+                        
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+                            <button class="btn btn-primary btn-sm" onclick="editDelivery('${d.id}')"><i class="fas fa-edit"></i> Edit</button>
+                            <select onchange="updateDeliveryStatus('${d.id}', this.value)" style="padding:4px 8px; border:2px solid #e9e7e2; border-radius:8px; font-size:12px; font-family:inherit;">
+                                <option value="">Update Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="dispatched">Dispatched</option>
+                                <option value="arrived">Arrived</option>
+                                <option value="delivered">Delivered</option>
+                            </select>
+                            <button class="btn btn-danger btn-sm" onclick="deleteDelivery('${d.id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateDeliveryStats(deliveries) {
+            document.getElementById('deliveryPending').textContent = deliveries.filter(d => d.status === 'pending').length;
+            document.getElementById('deliveryProcessing').textContent = deliveries.filter(d => d.status === 'processing').length;
+            document.getElementById('deliveryDispatched').textContent = deliveries.filter(d => d.status === 'dispatched' || d.status === 'arrived').length;
+            document.getElementById('deliveryDelivered').textContent = deliveries.filter(d => d.status === 'delivered').length;
+            document.getElementById('deliveryBadge').textContent = deliveries.filter(d => d.status === 'pending' || d.status === 'processing').length;
+        }
+
+        function showAddDelivery() {
+            editingDeliveryId = null;
+            document.getElementById('deliveryModalTitle').textContent = 'Add New Delivery';
+            document.getElementById('deliveryForm').reset();
+            document.getElementById('deliveryId').value = '';
+            document.getElementById('deliveryMessage').innerHTML = '';
+            
+            const branchSelect = document.getElementById('deliveryBranch');
+            if (currentUser && currentUser.branch) {
+                const branchMap = { ruiru: 'Ruiru', nyeri: 'Nyeri', nakuru: 'Nakuru' };
+                const branchName = branchMap[currentUser.branch] || currentUser.branch;
+                branchSelect.innerHTML = `<option value="${currentUser.branch}">${branchName}</option>`;
+            }
+            
+            document.getElementById('deliveryModal').classList.add('active');
+        }
+
+        function closeDeliveryModal() {
+            document.getElementById('deliveryModal').classList.remove('active');
+        }
+
+        async function editDelivery(id) {
+            const delivery = allDeliveries.find(d => d.id === id);
+            if (!delivery) {
+                showToast('❌ Delivery not found');
+                return;
+            }
+            
+            editingDeliveryId = id;
+            document.getElementById('deliveryModalTitle').textContent = 'Edit Delivery';
+            document.getElementById('deliveryId').value = id;
+            document.getElementById('deliveryCustomer').value = delivery.customer || '';
+            document.getElementById('deliveryPhone').value = delivery.phone || '';
+            document.getElementById('deliveryAddress').value = delivery.address || '';
+            document.getElementById('deliveryBranch').value = delivery.branch || (currentUser ? currentUser.branch : 'all');
+            document.getElementById('deliveryItems').value = delivery.items || '';
+            document.getElementById('deliveryStatus').value = delivery.status || 'pending';
+            document.getElementById('deliveryMessage').innerHTML = '';
+            
+            document.getElementById('deliveryModal').classList.add('active');
+        }
+
+        async function saveDelivery(event) {
+            event.preventDefault();
+            const id = document.getElementById('deliveryId').value;
+            const customer = document.getElementById('deliveryCustomer').value;
+            const phone = document.getElementById('deliveryPhone').value;
+            const address = document.getElementById('deliveryAddress').value;
+            const branch = document.getElementById('deliveryBranch').value;
+            const items = document.getElementById('deliveryItems').value;
+            const status = document.getElementById('deliveryStatus').value;
+
+            const deliveryData = { customer, phone, address, branch, items, status };
+            const msg = document.getElementById('deliveryMessage');
+
+            try {
+                const token = getToken();
+                const url = id ? `${API_URL}/deliveries/${id}` : `${API_URL}/deliveries`;
+                const method = id ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method,
+                    headers: getHeaders(),
+                    body: JSON.stringify(deliveryData)
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    closeDeliveryModal();
+                    loadDeliveries();
+                    loadDashboardStats();
+                    showToast(id ? '✅ Delivery updated!' : '✅ Delivery created!');
+                } else {
+                    msg.innerHTML = `<span style="color:#ef4444;">❌ ${data.message}</span>`;
+                }
+            } catch (error) {
+                console.error('Error saving delivery:', error);
+                msg.innerHTML = '<span style="color:#ef4444;">❌ Failed to save delivery</span>';
+            }
+        }
+
+        async function updateDeliveryStatus(id, status) {
+            if (!status) return;
+            if (!confirm(`Update delivery status to ${status}?`)) return;
+
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/deliveries/${id}/status`, {
+                    method: 'PATCH',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ status })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    loadDeliveries();
+                    loadDashboardStats();
+                    showToast(`✅ Delivery status updated to ${status}`);
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error updating delivery:', error);
+                showToast('❌ Failed to update delivery status');
+            }
+        }
+
+        async function deleteDelivery(id) {
+            if (!confirm('⚠️ Delete this delivery?')) return;
+
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/deliveries/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    loadDeliveries();
+                    loadDashboardStats();
+                    showToast('🗑️ Delivery deleted!');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error deleting delivery:', error);
+                showToast('❌ Failed to delete delivery');
+            }
+        }
+
+        function refreshDeliveries() {
+            loadDeliveries();
+            showToast('🔄 Deliveries refreshed!');
+        }
+
+        // ============================================
+        // ===== NEW: PAYMENT MANAGEMENT =====
+        // ============================================
+        async function loadPayments() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/payments`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const branch = currentUser ? currentUser.branch : 'all';
+                    allPayments = (data.payments || []).filter(p => p.branch === branch || p.branch === 'all');
+                    renderPayments(allPayments);
+                    updatePaymentStats(allPayments);
+                }
+            } catch (error) {
+                console.error('Error loading payments:', error);
+                showToast('❌ Failed to load payments');
+            }
+        }
+
+        function renderPayments(payments) {
+            const container = document.getElementById('paymentsList');
+            if (!payments || payments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-credit-card"></i>
+                        <h3>No Payments</h3>
+                        <p>No payments have been recorded for your branch.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = payments.map(p => {
+                const statusMap = {
+                    'pending': 'pending',
+                    'paid': 'approved',
+                    'failed': 'rejected',
+                    'refunded': 'closed'
+                };
+                const statusClass = statusMap[p.status] || 'pending';
+                
+                return `
+                    <div class="payment-card">
+                        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center;">
+                            <div>
+                                <strong>${p.customer || 'Customer'}</strong>
+                                <span style="color:#888; font-size:12px; margin-left:8px;">${p.phone || ''}</span>
+                            </div>
+                            <span class="status-badge ${statusClass}">${p.status || 'pending'}</span>
+                        </div>
+                        <div style="display:flex; gap:16px; flex-wrap:wrap; margin:8px 0;">
+                            <span style="font-weight:700; color:#1a2a3a;">KSh ${(p.amount || 0).toLocaleString()}</span>
+                            <span style="color:#888; font-size:13px;">${p.method || 'M-Pesa'}</span>
+                            <span style="color:#888; font-size:13px;">📅 ${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : 'N/A'}</span>
+                        </div>
+                        ${p.transactionId ? `<p style="color:#888; font-size:12px;">🔑 Transaction: ${p.transactionId}</p>` : ''}
+                        ${p.orderId ? `<p style="color:#888; font-size:12px;">📦 Order: ${p.orderId}</p>` : ''}
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+                            ${p.status === 'pending' ? `
+                                <button class="btn btn-success btn-sm" onclick="updatePaymentStatus('${p.id}', 'paid')"><i class="fas fa-check"></i> Mark Paid</button>
+                                <button class="btn btn-danger btn-sm" onclick="updatePaymentStatus('${p.id}', 'failed')"><i class="fas fa-times"></i> Mark Failed</button>
+                            ` : ''}
+                            ${p.status === 'paid' ? `<button class="btn btn-warning btn-sm" onclick="updatePaymentStatus('${p.id}', 'refunded')"><i class="fas fa-undo"></i> Refund</button>` : ''}
+                            <button class="btn btn-info btn-sm" onclick="viewPaymentDetails('${p.id}')"><i class="fas fa-eye"></i> View</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updatePaymentStats(payments) {
+            document.getElementById('paymentPending').textContent = payments.filter(p => p.status === 'pending').length;
+            document.getElementById('paymentPaid').textContent = payments.filter(p => p.status === 'paid').length;
+            document.getElementById('paymentFailed').textContent = payments.filter(p => p.status === 'failed').length;
+            const total = payments.filter(p => p.status === 'paid').reduce((sum, p) => sum + (p.amount || 0), 0);
+            document.getElementById('paymentTotal').textContent = total.toLocaleString();
+            document.getElementById('paymentBadge').textContent = payments.filter(p => p.status === 'pending').length;
+        }
+
+        async function updatePaymentStatus(id, status) {
+            if (!confirm(`Update payment status to ${status}?`)) return;
+
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/payments/${id}/status`, {
+                    method: 'PATCH',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ status })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    loadPayments();
+                    loadDashboardStats();
+                    showToast(`✅ Payment status updated to ${status}`);
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error updating payment:', error);
+                showToast('❌ Failed to update payment status');
+            }
+        }
+
+        function viewPaymentDetails(id) {
+            const payment = allPayments.find(p => p.id === id);
+            if (!payment) {
+                showToast('❌ Payment not found');
+                return;
+            }
+            
+            const details = `
+                <div style="background:#f8f7f4; padding:16px; border-radius:12px;">
+                    <p><strong>Customer:</strong> ${payment.customer || 'N/A'}</p>
+                    <p><strong>Phone:</strong> ${payment.phone || 'N/A'}</p>
+                    <p><strong>Amount:</strong> KSh ${(payment.amount || 0).toLocaleString()}</p>
+                    <p><strong>Method:</strong> ${payment.method || 'M-Pesa'}</p>
+                    <p><strong>Status:</strong> ${payment.status || 'pending'}</p>
+                    ${payment.transactionId ? `<p><strong>Transaction:</strong> ${payment.transactionId}</p>` : ''}
+                    ${payment.orderId ? `<p><strong>Order:</strong> ${payment.orderId}</p>` : ''}
+                    <p><strong>Date:</strong> ${payment.createdAt ? new Date(payment.createdAt).toLocaleString() : 'N/A'}</p>
+                    ${payment.notes ? `<p><strong>Notes:</strong> ${payment.notes}</p>` : ''}
+                </div>
+            `;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+            modal.innerHTML = `
+                <div style="background:white;border-radius:16px;padding:32px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;">
+                    <h2 style="margin-bottom:16px;"><i class="fas fa-credit-card" style="color:#c9a94e;"></i> Payment Details</h2>
+                    ${details}
+                    <button class="btn btn-primary" onclick="this.closest('div[style]').remove()" style="margin-top:16px;width:100%;justify-content:center;">Close</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function refreshPayments() {
+            loadPayments();
+            showToast('🔄 Payments refreshed!');
+        }
+
+        // ============================================
+        // DOM READY
+        // ============================================
         document.addEventListener('DOMContentLoaded', () => {
             const user = localStorage.getItem('user');
             if (!user) { window.location.href = 'admin-login.html'; return; }
@@ -1505,7 +2650,7 @@
             
             document.getElementById('branchBadge').textContent = `🏪 ${branchName}`;
             document.getElementById('branchName').textContent = `🏪 ${branchName} Branch`;
-            document.getElementById('adminName').textContent = currentUser.name;
+            document.getElementById('adminName').textContent = currentUser.name || 'Branch Manager';
             document.getElementById('profileName').value = currentUser.name || 'Branch Manager';
             document.getElementById('profileEmail').value = currentUser.email || '';
             document.getElementById('profilePhone').value = currentUser.phone || '';
@@ -1513,22 +2658,30 @@
             loadProducts();
             loadCustomerCare();
             loadVideos();
+            loadSuppliers();
+            loadRepairs();
+            loadReviews();
+            loadScannerData();
+            loadContactInfo();
+            loadAboutUs();
+            loadDeliveries();
+            loadPayments();
+            loadDashboardStats();
         });
 
-        // ===== CLOSE SIDEBAR ON RESIZE =====
         window.addEventListener('resize', () => {
             if (window.innerWidth > 768) {
                 document.getElementById('adminSidebar').classList.remove('active');
             }
         });
 
-        // ===== CLOSE MODAL ON ESCAPE =====
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeProductModal();
                 closeCareModal();
                 closeVideoUpload();
                 closeVideoEditModal();
+                closeDeliveryModal();
             }
         });
         
@@ -1543,6 +2696,9 @@
         });
         document.getElementById('videoEditModal').addEventListener('click', function(e) {
             if (e.target === this) closeVideoEditModal();
+        });
+        document.getElementById('deliveryModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDeliveryModal();
         });
     </script>
 </body>

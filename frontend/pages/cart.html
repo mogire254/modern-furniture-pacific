@@ -9,44 +9,36 @@
     <link rel="stylesheet" href="../css/style.css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #1a2a3a;
-            --gold: #c9a94e;
-            --gold-light: #e8d5a3;
-            --white: #ffffff;
-            --gray-100: #f8f7f4;
-            --gray-200: #e9e7e2;
-            --gray-600: #888888;
-            --gray-800: #2d2d2d;
-            --radius: 16px;
-            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+        body { font-family: 'Inter', sans-serif; background: #f8f7f4; }
+        
+        .header {
+            background: #1a2a3a;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 12px;
         }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--gray-100);
-            color: var(--gray-800);
-        }
-        .page-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 32px 24px;
-        }
-        .page-header {
-            margin-bottom: 32px;
-        }
-        .page-header h1 {
-            font-size: 32px;
-            color: var(--primary);
-        }
-        .page-header h1 span {
-            color: var(--gold);
-        }
-        .page-header p {
-            color: var(--gray-600);
-            margin-top: 8px;
-            font-size: 16px;
-        }
+        .header .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .header .logo img { height: 40px; width: auto; }
+        .header .logo span { color: white; font-weight: 700; font-size: 18px; }
+        .header .user-info { display: flex; align-items: center; gap: 16px; color: white; }
+        .header .user-info img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #c9a94e; }
+        .header .btn { padding: 8px 20px; border: none; border-radius: 50px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+        .header .btn-outline { background: transparent; border: 2px solid rgba(255,255,255,0.3); color: white; }
+        .header .btn-outline:hover { border-color: #c9a94e; color: #c9a94e; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 32px 20px; }
+        
+        .page-header { margin-bottom: 32px; }
+        .page-header h1 { font-size: 32px; color: #1a2a3a; }
+        .page-header h1 span { color: #c9a94e; }
+        .page-header p { color: #888; margin-top: 8px; font-size: 16px; }
+        
         .cart-container {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -54,91 +46,55 @@
         }
         .cart-items {
             background: white;
-            border-radius: var(--radius);
+            border-radius: 16px;
             padding: 24px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
-        .cart-items h2 {
-            margin-bottom: 20px;
-            color: var(--primary);
-        }
+        .cart-items h2 { margin-bottom: 20px; color: #1a2a3a; }
+        
         .cart-item {
             display: flex;
             gap: 20px;
             padding: 16px 0;
-            border-bottom: 1px solid var(--gray-200);
+            border-bottom: 1px solid #e9e7e2;
             align-items: center;
         }
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-        .cart-item img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item .item-image {
+            width: 80px;
+            height: 80px;
+            background: #f8f7f4;
             border-radius: 8px;
-        }
-        .cart-item-details {
-            flex: 1;
-        }
-        .cart-item-details h4 {
-            font-size: 16px;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-        .cart-item-details .price {
-            color: var(--gold);
-            font-weight: 700;
-            font-size: 18px;
-        }
-        .cart-item-details .old-price {
-            text-decoration: line-through;
-            color: var(--gray-600);
-            font-size: 14px;
-            margin-left: 8px;
-        }
-        .cart-item-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: center;
+            font-size: 32px;
+            color: #c9a94e;
         }
-        .cart-item-actions input {
-            width: 60px;
-            padding: 6px 10px;
-            border: 2px solid var(--gray-200);
-            border-radius: 8px;
-            text-align: center;
-            font-size: 14px;
-        }
-        .cart-item-actions button {
-            background: none;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            font-size: 18px;
-            transition: var(--transition);
-        }
-        .cart-item-actions button:hover {
-            color: #dc2626;
-        }
+        .cart-item .item-details { flex: 1; }
+        .cart-item .item-details h4 { font-size: 16px; color: #1a2a3a; margin-bottom: 4px; }
+        .cart-item .item-details .price { font-weight: 700; color: #c9a94e; font-size: 18px; }
+        .cart-item .item-details .old-price { text-decoration: line-through; color: #888; font-size: 14px; margin-left: 8px; }
+        .cart-item .item-actions { display: flex; align-items: center; gap: 12px; }
+        .cart-item .item-actions input { width: 60px; padding: 6px 10px; border: 2px solid #e9e7e2; border-radius: 8px; text-align: center; font-size: 14px; }
+        .cart-item .item-actions .remove-btn { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 18px; transition: all 0.3s ease; }
+        .cart-item .item-actions .remove-btn:hover { color: #dc2626; }
+        
         .cart-summary {
             background: white;
-            border-radius: var(--radius);
+            border-radius: 16px;
             padding: 24px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             height: fit-content;
             position: sticky;
-            top: 24px;
+            top: 100px;
         }
-        .cart-summary h2 {
-            margin-bottom: 20px;
-            color: var(--primary);
-        }
+        .cart-summary h2 { margin-bottom: 20px; color: #1a2a3a; }
         .summary-row {
             display: flex;
             justify-content: space-between;
             padding: 12px 0;
-            border-bottom: 1px solid var(--gray-200);
+            border-bottom: 1px solid #e9e7e2;
             font-size: 14px;
         }
         .summary-row.total {
@@ -147,10 +103,8 @@
             font-size: 18px;
             padding-top: 16px;
         }
-        .summary-row.total .amount {
-            color: var(--gold);
-            font-size: 24px;
-        }
+        .summary-row.total .amount { color: #c9a94e; font-size: 24px; }
+        
         .btn {
             display: inline-flex;
             align-items: center;
@@ -161,188 +115,109 @@
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.4s ease;
             font-family: inherit;
-            text-decoration: none;
             width: 100%;
             justify-content: center;
             margin-top: 12px;
         }
-        .btn-primary {
-            background: var(--gold);
-            color: var(--primary);
-        }
-        .btn-primary:hover {
-            background: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(201,169,78,0.3);
-        }
-        .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--gray-200);
-        }
-        .btn-outline:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-        .btn-success {
-            background: #10b981;
-            color: white;
-        }
-        .btn-success:hover {
-            background: #059669;
-        }
+        .btn-primary { background: #c9a94e; color: #1a2a3a; }
+        .btn-primary:hover { background: #e8d5a3; transform: translateY(-2px); box-shadow: 0 12px 30px rgba(201,169,78,0.3); }
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-outline { background: transparent; border: 2px solid #e9e7e2; color: #1a2a3a; }
+        .btn-outline:hover { border-color: #c9a94e; color: #c9a94e; }
+        
         .empty-cart {
             text-align: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
+            color: #888;
         }
-        .empty-cart i {
-            font-size: 64px;
-            color: var(--gray-200);
-            margin-bottom: 16px;
-        }
-        .empty-cart h3 {
-            color: var(--gray-600);
-            margin-bottom: 8px;
-        }
-        .empty-cart p {
-            color: var(--gray-600);
-            margin-bottom: 20px;
-        }
-        .notification-toast {
+        .empty-cart i { font-size: 64px; color: #ddd; margin-bottom: 16px; }
+        .empty-cart h3 { color: #666; margin-bottom: 8px; }
+        
+        .toast {
             position: fixed;
             bottom: 24px;
             right: 24px;
-            background: var(--primary);
+            background: #1a2a3a;
             color: white;
             padding: 16px 24px;
             border-radius: 12px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            z-index: 3000;
+            z-index: 2000;
             max-width: 400px;
             animation: slideUp 0.3s ease-out;
             display: none;
         }
-        .notification-toast.show { display: block; }
-        .notification-toast .close {
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.6);
-            float: right;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .toast.show { display: block; }
+        .toast .close { background: none; border: none; color: rgba(255,255,255,0.6); float: right; cursor: pointer; font-size: 18px; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        
         @media (max-width: 768px) {
-            .cart-container {
-                grid-template-columns: 1fr;
-            }
-            .cart-item {
-                flex-wrap: wrap;
-            }
-            .cart-item img {
-                width: 80px;
-                height: 80px;
-            }
-            .cart-item-actions {
-                width: 100%;
-                justify-content: flex-start;
-            }
+            .cart-container { grid-template-columns: 1fr; }
+            .header { padding: 12px 16px; }
+            .header .logo span { font-size: 14px; }
+            .container { padding: 16px; }
+            .cart-item { flex-wrap: wrap; }
+            .cart-item .item-image { width: 60px; height: 60px; font-size: 24px; }
+            .cart-item .item-actions { width: 100%; justify-content: flex-start; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Notification Toast -->
-    <div id="notificationToast" class="notification-toast">
-        <button class="close" onclick="closeNotification()">&times;</button>
-        <p id="notificationMessage">Notification</p>
-    </div>
+    <!-- Header -->
+    <header class="header">
+        <a href="/" class="logo">
+            <img src="../assets/images/logo.png" alt="Logo" />
+            <span>Modern Furniture Pacific</span>
+        </a>
+        <div class="user-info">
+            <span id="userName">Guest</span>
+            <button class="btn btn-outline" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </header>
 
-    <div class="page-container">
-        <!-- Page Header -->
+    <div class="container">
         <div class="page-header">
             <h1>Shopping <span>Cart</span></h1>
             <p>Review your items and proceed to checkout.</p>
         </div>
 
-        <!-- Cart Container -->
         <div class="cart-container">
-            <!-- Cart Items -->
             <div class="cart-items">
-                <h2>Your Items (3)</h2>
-                
+                <h2>Your Items (<span id="itemCount">0</span>)</h2>
                 <div id="cartItems">
-                    <!-- Item 1 -->
-                    <div class="cart-item">
-                        <img src="https://via.placeholder.com/100x100/1a2a3a/c9a94e?text=Sofa" alt="Luxury Velvet Sofa" />
-                        <div class="cart-item-details">
-                            <h4>Luxury Velvet Sofa</h4>
-                            <p class="price">$899.99 <span class="old-price">$1,099.99</span></p>
-                            <p style="color: var(--gray-600); font-size: 13px;">Color: Charcoal · In Stock</p>
-                        </div>
-                        <div class="cart-item-actions">
-                            <input type="number" value="1" min="1" max="10" />
-                            <button onclick="removeItem()"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Item 2 -->
-                    <div class="cart-item">
-                        <img src="https://via.placeholder.com/100x100/1a2a3a/c9a94e?text=Table" alt="Minimalist Dining Table" />
-                        <div class="cart-item-details">
-                            <h4>Minimalist Dining Table</h4>
-                            <p class="price">$649.99</p>
-                            <p style="color: var(--gray-600); font-size: 13px;">Color: Natural Oak · In Stock</p>
-                        </div>
-                        <div class="cart-item-actions">
-                            <input type="number" value="1" min="1" max="10" />
-                            <button onclick="removeItem()"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Item 3 -->
-                    <div class="cart-item">
-                        <img src="https://via.placeholder.com/100x100/1a2a3a/c9a94e?text=Chair" alt="Designer Armchair" />
-                        <div class="cart-item-details">
-                            <h4>Designer Armchair</h4>
-                            <p class="price">$299.99 <span class="old-price">$399.99</span></p>
-                            <p style="color: var(--gray-600); font-size: 13px;">Color: Teal · In Stock</p>
-                        </div>
-                        <div class="cart-item-actions">
-                            <input type="number" value="2" min="1" max="10" />
-                            <button onclick="removeItem()"><i class="fas fa-trash-alt"></i></button>
-                        </div>
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Your cart is empty</h3>
+                        <p>Browse our products and add items to your cart.</p>
+                        <button class="btn btn-primary" onclick="window.location.href='products.html'" style="width:auto; margin-top:16px;">
+                            <i class="fas fa-arrow-left"></i> Start Shopping
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Cart Summary -->
             <div class="cart-summary">
                 <h2>Order Summary</h2>
                 <div class="summary-row">
-                    <span>Subtotal (3 items)</span>
-                    <span>$1,849.97</span>
+                    <span>Subtotal (<span id="subtotalItems">0</span> items)</span>
+                    <span id="subtotalAmount">KSh 0</span>
                 </div>
                 <div class="summary-row">
                     <span>Shipping</span>
-                    <span>Free</span>
+                    <span id="shippingAmount">Free</span>
                 </div>
                 <div class="summary-row">
                     <span>Tax</span>
-                    <span>$184.99</span>
-                </div>
-                <div class="summary-row">
-                    <span>Discount</span>
-                    <span>-$150.00</span>
+                    <span id="taxAmount">KSh 0</span>
                 </div>
                 <div class="summary-row total">
                     <span>Total</span>
-                    <span class="amount">$1,884.96</span>
+                    <span class="amount" id="totalAmount">KSh 0</span>
                 </div>
                 <button class="btn btn-success" onclick="checkout()">
                     <i class="fas fa-lock"></i> Proceed to Checkout
@@ -354,34 +229,246 @@
         </div>
     </div>
 
+    <div class="toast" id="toast">
+        <button class="close" onclick="closeToast()">&times;</button>
+        <p id="toastMessage">Notification</p>
+    </div>
+
     <script>
-        function showNotification(message) {
-            const toast = document.getElementById('notificationToast');
-            const msg = document.getElementById('notificationMessage');
-            msg.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 4000);
+        // ============================================
+        // API CONFIGURATION - LIVE
+        // ============================================
+        const API_URL = 'https://modern-furniture-api.onrender.com/api';
+        let cartItems = [];
+        let currentUser = null;
+
+        // ============================================
+        // CHECK LOGIN
+        // ============================================
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+
+        if (!token || !user) {
+            window.location.href = 'login.html';
         }
 
-        function closeNotification() {
-            document.getElementById('notificationToast').classList.remove('show');
-        }
+        currentUser = JSON.parse(user);
+        document.getElementById('userName').textContent = currentUser.name || 'User';
 
-        function removeItem() {
-            showNotification('🗑️ Item removed from cart');
-        }
-
-        function checkout() {
-            const location = prompt('📍 Enter your delivery location:');
-            if (location) {
-                showNotification(`🎉 Order placed! Delivery to: ${location}`);
+        // ============================================
+        // LOAD CART
+        // ============================================
+        async function loadCart() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/cart`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    cartItems = data.items || [];
+                    renderCart();
+                } else {
+                    showToast('❌ Failed to load cart');
+                }
+            } catch (error) {
+                console.error('Error loading cart:', error);
+                showToast('❌ Failed to load cart');
             }
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeNotification();
+        function renderCart() {
+            const container = document.getElementById('cartItems');
+            
+            if (!cartItems || cartItems.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Your cart is empty</h3>
+                        <p>Browse our products and add items to your cart.</p>
+                        <button class="btn btn-primary" onclick="window.location.href='products.html'" style="width:auto; margin-top:16px;">
+                            <i class="fas fa-arrow-left"></i> Start Shopping
+                        </button>
+                    </div>
+                `;
+                document.getElementById('itemCount').textContent = '0';
+                document.getElementById('subtotalItems').textContent = '0';
+                document.getElementById('subtotalAmount').textContent = 'KSh 0';
+                document.getElementById('totalAmount').textContent = 'KSh 0';
+                return;
+            }
+
+            let html = '';
+            let subtotal = 0;
+
+            cartItems.forEach((item, index) => {
+                const product = item.product || {};
+                const price = product.salePrice || product.price || 0;
+                const total = price * item.quantity;
+                subtotal += total;
+                const hasVideo = product.images && product.images.some(img => 
+                    img.match(/\.(mp4|webm|mov|avi|mkv)$/i) || img.match(/^data:video\//)
+                );
+                const mediaIcon = hasVideo ? '🎬' : '🪑';
+
+                html += `
+                    <div class="cart-item">
+                        <div class="item-image">${mediaIcon}</div>
+                        <div class="item-details">
+                            <h4>${product.name || 'Product'}</h4>
+                            <div>
+                                <span class="price">KSh ${parseInt(price).toLocaleString()}</span>
+                                ${product.price && product.salePrice ? `<span class="old-price">KSh ${parseInt(product.price).toLocaleString()}</span>` : ''}
+                            </div>
+                            <p style="color:#888; font-size:12px;">${product.category || ''}</p>
+                        </div>
+                        <div class="item-actions">
+                            <input type="number" value="${item.quantity}" min="1" max="10" onchange="updateQuantity('${item.id}', this.value)" />
+                            <button class="remove-btn" onclick="removeItem('${item.id}')"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            
+            // Update summary
+            document.getElementById('itemCount').textContent = cartItems.length;
+            document.getElementById('subtotalItems').textContent = cartItems.length;
+            document.getElementById('subtotalAmount').textContent = `KSh ${subtotal.toLocaleString()}`;
+            
+            const tax = subtotal * 0.1;
+            const total = subtotal + tax;
+            document.getElementById('taxAmount').textContent = `KSh ${tax.toLocaleString()}`;
+            document.getElementById('totalAmount').textContent = `KSh ${total.toLocaleString()}`;
+        }
+
+        // ============================================
+        // UPDATE QUANTITY
+        // ============================================
+        async function updateQuantity(itemId, quantity) {
+            quantity = parseInt(quantity);
+            if (quantity < 1) return;
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/cart/${itemId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ quantity })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadCart();
+                } else {
+                    showToast('❌ Failed to update quantity');
+                }
+            } catch (error) {
+                console.error('Error updating quantity:', error);
+                showToast('❌ Failed to update quantity');
+            }
+        }
+
+        // ============================================
+        // REMOVE ITEM
+        // ============================================
+        async function removeItem(itemId) {
+            if (!confirm('Remove this item from cart?')) return;
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/cart/${itemId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadCart();
+                    showToast('🗑️ Item removed from cart');
+                } else {
+                    showToast('❌ Failed to remove item');
+                }
+            } catch (error) {
+                console.error('Error removing item:', error);
+                showToast('❌ Failed to remove item');
+            }
+        }
+
+        // ============================================
+        // CHECKOUT
+        // ============================================
+        async function checkout() {
+            if (!cartItems || cartItems.length === 0) {
+                showToast('❌ Your cart is empty');
+                return;
+            }
+
+            const location = prompt('📍 Enter your delivery location:');
+            if (!location) return;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        items: cartItems,
+                        deliveryLocation: location
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast(`🎉 Order placed! Delivery to: ${location}`);
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                } else {
+                    showToast('❌ Failed to place order');
+                }
+            } catch (error) {
+                console.error('Error placing order:', error);
+                showToast('❌ Failed to place order');
+            }
+        }
+
+        // ============================================
+        // TOAST
+        // ============================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            msg.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function closeToast() {
+            document.getElementById('toast').classList.remove('show');
+        }
+
+        // ============================================
+        // LOGOUT
+        // ============================================
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        // ============================================
+        // LOAD
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCart();
         });
     </script>
-
 </body>
 </html>

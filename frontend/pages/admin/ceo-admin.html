@@ -189,6 +189,8 @@
         .btn-outline { background: transparent; border: 2px solid #c9a94e; color: #c9a94e; }
         .btn-outline:hover { background: #c9a94e; color: #1a2a3a; }
         .btn-lg { padding: 14px 32px; font-size: 16px; }
+        .btn-info { background: #3b82f6; color: white; }
+        .btn-info:hover { background: #2563eb; }
         
         .form-group { margin-bottom: 16px; }
         .form-group label {
@@ -305,6 +307,11 @@
         .status-badge.matched { background: #d1fae5; color: #065f46; }
         .status-badge.contacted { background: #dbeafe; color: #1e40af; }
         .status-badge.sent { background: #d1fae5; color: #065f46; }
+        .status-badge.paid { background: #d1fae5; color: #065f46; }
+        .status-badge.failed { background: #fee2e2; color: #991b1b; }
+        .status-badge.dispatched { background: #dbeafe; color: #1e40af; }
+        .status-badge.arrived { background: #fef3c7; color: #92400e; }
+        .status-badge.delivered { background: #d1fae5; color: #065f46; }
         
         .modal {
             display: none;
@@ -421,7 +428,6 @@
             display: inline-block;
         }
         
-        /* Video Cards */
         .video-card {
             background: #f8f7f4;
             border-radius: 12px;
@@ -470,6 +476,61 @@
             color: #888;
             flex-wrap: wrap;
         }
+        
+        /* Delivery & Payment Styles */
+        .delivery-card, .payment-card {
+            background: #f8f7f4;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #c9a94e;
+            transition: all 0.3s ease;
+        }
+        .delivery-card:hover, .payment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .delivery-timeline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+        }
+        .delivery-timeline .step {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #888;
+        }
+        .delivery-timeline .step.active {
+            color: #c9a94e;
+            font-weight: 600;
+        }
+        .delivery-timeline .step.completed {
+            color: #10b981;
+            font-weight: 600;
+        }
+        .delivery-timeline .step-line {
+            width: 30px;
+            height: 2px;
+            background: #e9e7e2;
+        }
+        .delivery-timeline .step-line.completed {
+            background: #10b981;
+        }
+        .delivery-timeline .step-line.active {
+            background: #c9a94e;
+        }
+        
+        .empty-state { text-align: center; padding: 40px; color: #888; }
+        .empty-state i { font-size: 48px; color: #ddd; margin-bottom: 16px; }
+        .empty-state h3 { color: #666; margin-bottom: 8px; }
         
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(40px); }
@@ -533,6 +594,9 @@
                 <a onclick="showSection('reviews')"><i class="fas fa-star"></i> Reviews</a>
                 <a onclick="showSection('videos')"><i class="fas fa-video"></i> Videos</a>
                 <a onclick="showSection('customerCare')"><i class="fas fa-headset"></i> Customer Care <span class="badge" id="careBadge">0</span></a>
+                <!-- NEW: Delivery & Payment Sections -->
+                <a onclick="showSection('delivery')"><i class="fas fa-truck"></i> Delivery <span class="badge" id="deliveryBadge">0</span></a>
+                <a onclick="showSection('payment')"><i class="fas fa-credit-card"></i> Payments <span class="badge" id="paymentBadge">0</span></a>
                 <a href="admin-chat.html"><i class="fas fa-comments"></i> Admin Chat <span class="badge">0</span></a>
                 <a onclick="showSection('reports')"><i class="fas fa-chart-bar"></i> Reports</a>
                 <a onclick="showSection('profile')"><i class="fas fa-user"></i> Profile</a>
@@ -563,7 +627,7 @@
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-icon"><i class="fas fa-users"></i></div>
-                            <div class="stat-info"><h3 id="totalCustomers">500+</h3><p>Customers</p></div>
+                            <div class="stat-info"><h3 id="totalCustomers">0</h3><p>Customers</p></div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon"><i class="fas fa-couch"></i></div>
@@ -571,11 +635,20 @@
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
-                            <div class="stat-info"><h3 id="openJobs">2</h3><p>Open Jobs</p></div>
+                            <div class="stat-info"><h3 id="openJobs">0</h3><p>Open Jobs</p></div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon"><i class="fas fa-headset"></i></div>
                             <div class="stat-info"><h3 id="careCount">0</h3><p>Open Tickets</p></div>
+                        </div>
+                        <!-- NEW: Delivery & Payment Stats -->
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-truck" style="background:#3b82f6;"></i></div>
+                            <div class="stat-info"><h3 id="pendingDeliveries">0</h3><p>Pending Deliveries</p></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-credit-card" style="background:#10b981;"></i></div>
+                            <div class="stat-info"><h3 id="pendingPayments">0</h3><p>Pending Payments</p></div>
                         </div>
                     </div>
 
@@ -583,13 +656,12 @@
                         <h2><i class="fas fa-bullhorn"></i> Quick Actions</h2>
                         <button class="btn btn-primary" onclick="showSection('announcements')"><i class="fas fa-bullhorn"></i> Post Announcement</button>
                         <button class="btn btn-success" style="margin-left:12px;" onclick="showSection('applications')"><i class="fas fa-briefcase"></i> Manage Applications</button>
+                        <button class="btn btn-info" style="margin-left:12px;" onclick="showSection('delivery')"><i class="fas fa-truck"></i> Manage Deliveries</button>
                     </div>
 
                     <div class="section">
                         <h2><i class="fas fa-bell"></i> Recent Activity</h2>
-                        <p style="padding:4px 0;"><i class="fas fa-shopping-bag" style="color:#c9a94e; width:20px;"></i> New orders today: 3</p>
-                        <p style="padding:4px 0;"><i class="fas fa-user-plus" style="color:#c9a94e; width:20px;"></i> New applicants: 5</p>
-                        <p style="padding:4px 0;"><i class="fas fa-boxes" style="color:#c9a94e; width:20px;"></i> Products in stock: 45</p>
+                        <div id="recentActivity"></div>
                     </div>
 
                     <a href="../../index.html" class="back-link" style="color:#c9a94e; text-decoration:none;">
@@ -628,18 +700,7 @@
 
                     <div class="section">
                         <h2><i class="fas fa-list"></i> Recent Announcements</h2>
-                        <div id="announcementsList">
-                            <div class="announcement">
-                                <h4>New Positions Open!</h4>
-                                <p>We are hiring Senior Furniture Designer and Renovation Specialist. Apply now!</p>
-                                <span class="date">Posted: August 10, 2026</span>
-                            </div>
-                            <div class="announcement">
-                                <h4>Easter Promotion</h4>
-                                <p>Upgrade this Easter with our special discounts on beds and dressing tables.</p>
-                                <span class="date">Posted: August 1, 2026</span>
-                            </div>
-                        </div>
+                        <div id="announcementsList"></div>
                     </div>
                 </section>
 
@@ -733,7 +794,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Documents Upload Section -->
                             <h4 style="margin:16px 0 12px;"><i class="fas fa-file-upload"></i> Document Uploads</h4>
                             <p style="color:#888; font-size:13px; margin-bottom:12px;">Allow applicants to upload their documents</p>
                             
@@ -770,7 +830,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Quiz Section -->
                             <h4 style="margin:16px 0 12px;"><i class="fas fa-question-circle"></i> Quiz Questions (Optional)</h4>
                             <p style="color:#888; font-size:13px; margin-bottom:12px;">Optional questions for applicants to answer</p>
                             
@@ -796,50 +855,11 @@
 
                     <div class="section">
                         <h2><i class="fas fa-briefcase"></i> Active Job Postings</h2>
-                        <div id="activeJobs">
-                            <div class="application-card">
-                                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-                                    <h3>Senior Furniture Designer</h3>
-                                    <span class="status-open">● Open</span>
-                                </div>
-                                <p style="color:#666; font-size:14px;">📍 Nairobi, Kenya | Full-time</p>
-                                <p style="font-size:13px; color:#888; margin:4px 0;">Deadline: December 31, 2026</p>
-                                <div style="margin:8px 0;">
-                                    <span class="field-tag required">Resume Required</span>
-                                    <span class="field-tag required">Certificates Required</span>
-                                    <span class="field-tag optional">ID Optional</span>
-                                    <span class="field-tag optional">Quiz: 3 questions</span>
-                                </div>
-                                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                                    <span class="app-count">📄 8 applicants</span>
-                                    <button class="btn btn-primary btn-sm" onclick="viewApplicants('Senior Furniture Designer')">View Applicants</button>
-                                    <button class="btn btn-warning btn-sm" onclick="toggleJobStatus(this)">Close Applications</button>
-                                </div>
-                            </div>
-
-                            <div class="application-card">
-                                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-                                    <h3>Renovation Specialist</h3>
-                                    <span class="status-open">● Open</span>
-                                </div>
-                                <p style="color:#666; font-size:14px;">📍 Kisumu, Kenya | Contract</p>
-                                <p style="font-size:13px; color:#888; margin:4px 0;">Deadline: November 15, 2026</p>
-                                <div style="margin:8px 0;">
-                                    <span class="field-tag required">Resume Required</span>
-                                    <span class="field-tag required">Experience Required</span>
-                                    <span class="field-tag optional">Quiz: 2 questions</span>
-                                </div>
-                                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                                    <span class="app-count">📄 4 applicants</span>
-                                    <button class="btn btn-primary btn-sm" onclick="viewApplicants('Renovation Specialist')">View Applicants</button>
-                                    <button class="btn btn-warning btn-sm" onclick="toggleJobStatus(this)">Close Applications</button>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="activeJobs"></div>
                     </div>
 
                     <div class="section" id="applicantsSection" style="display:none;">
-                        <h2><i class="fas fa-users"></i> Applicants for: <span id="jobTitleDisplay">Senior Furniture Designer</span></h2>
+                        <h2><i class="fas fa-users"></i> Applicants for: <span id="jobTitleDisplay">Job</span></h2>
                         <button class="btn btn-outline btn-sm" onclick="document.getElementById('applicantsSection').style.display='none'">← Back to Jobs</button>
                         <div id="applicantsList" style="margin-top:16px;"></div>
                     </div>
@@ -859,14 +879,12 @@
                     </div>
 
                     <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
-                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-store"></i></div><div class="stat-info"><h3 id="totalBranches">3</h3><p>Total Branches</p></div></div>
-                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-couch" style="background:#3b82f6;"></i></div><div class="stat-info"><h3 id="totalBranchProducts">45</h3><p>Total Products</p></div></div>
-                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-shopping-bag" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="totalBranchOrders">128</h3><p>Total Orders</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-store"></i></div><div class="stat-info"><h3 id="totalBranches">0</h3><p>Total Branches</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-couch" style="background:#3b82f6;"></i></div><div class="stat-info"><h3 id="totalBranchProducts">0</h3><p>Total Products</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-shopping-bag" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="totalBranchOrders">0</h3><p>Total Orders</p></div></div>
                     </div>
 
-                    <div class="grid-3" id="branchesContainer">
-                        <!-- Branches loaded dynamically -->
-                    </div>
+                    <div class="grid-3" id="branchesContainer"></div>
                 </section>
 
                 <!-- Generate Report Modal -->
@@ -888,7 +906,6 @@
                             <div class="form-group">
                                 <label><i class="fas fa-align-left"></i> Report Description</label>
                                 <textarea id="reportDescription" placeholder="e.g., Show me sales report for Ruiru branch for the last month. Include top selling products and revenue." rows="4" required></textarea>
-                                <div class="helper">Describe exactly what you want to see in the report</div>
                             </div>
                             <div class="form-group">
                                 <label><i class="fas fa-users"></i> Share With</label>
@@ -898,7 +915,6 @@
                                     <option value="branch_admin">Branch Admins</option>
                                     <option value="specific">Specific Admin</option>
                                 </select>
-                                <div class="helper">Share the generated report with specific admins</div>
                             </div>
                             <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;"><i class="fas fa-file-alt"></i> Generate Report</button>
                             <div id="reportMessage" style="margin-top:12px;"></div>
@@ -1046,7 +1062,7 @@
                     <div class="section" id="reviewsList"></div>
                 </section>
 
-                <!-- ===== VIDEOS - With Upload, Notes, Send to Users, Edit/Delete ===== -->
+                <!-- ===== VIDEOS ===== -->
                 <section id="videosSection" style="display:none;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
                         <div>
@@ -1081,7 +1097,6 @@
                             <div class="form-group">
                                 <label><i class="fas fa-align-left"></i> Note for Users</label>
                                 <textarea id="videoNote" placeholder="Add a note or description for users..." rows="3"></textarea>
-                                <div class="helper">This note will be shown to users when they view this media</div>
                             </div>
                             <div class="form-group">
                                 <label><i class="fas fa-upload"></i> Upload File</label>
@@ -1105,7 +1120,6 @@
                                     <option value="nyeri">Nyeri</option>
                                     <option value="nakuru">Nakuru</option>
                                 </select>
-                                <div class="helper">Select which branch this media is for</div>
                             </div>
                             <div style="display:flex; gap:12px; margin-top:16px;">
                                 <button type="submit" class="btn btn-primary" style="flex:1; justify-content:center;"><i class="fas fa-cloud-upload-alt"></i> Upload & Send</button>
@@ -1199,24 +1213,168 @@
                     </div>
                 </section>
 
+                <!-- ============================================================ -->
+                <!-- ===== NEW: DELIVERY MANAGEMENT SECTION ===== -->
+                <!-- ============================================================ -->
+                <section id="deliverySection" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h1 style="font-size:28px; color:#1a2a3a;"><i class="fas fa-truck" style="color:#c9a94e;"></i> Delivery Management</h1>
+                            <p style="color:#888;">Track and manage all deliveries</p>
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button class="btn btn-success" onclick="showAddDelivery()"><i class="fas fa-plus"></i> Add Delivery</button>
+                            <button class="btn btn-info" onclick="refreshDeliveries()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Stats -->
+                    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock" style="background:#f59e0b;"></i></div><div class="stat-info"><h3 id="deliveryPending">0</h3><p>Pending</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-spinner" style="background:#3b82f6;"></i></div><div class="stat-info"><h3 id="deliveryProcessing">0</h3><p>Processing</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-truck" style="background:#8b5cf6;"></i></div><div class="stat-info"><h3 id="deliveryDispatched">0</h3><p>Dispatched</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-flag-checkered" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="deliveryDelivered">0</h3><p>Delivered</p></div></div>
+                    </div>
+
+                    <!-- Delivery List -->
+                    <div class="section">
+                        <h2><i class="fas fa-list"></i> All Deliveries</h2>
+                        <div id="deliveriesList">
+                            <div class="empty-state">
+                                <i class="fas fa-truck"></i>
+                                <h3>No Deliveries</h3>
+                                <p>No deliveries have been created yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ===== DELIVERY MODAL ===== -->
+                <div class="modal" id="deliveryModal">
+                    <div class="modal-content" style="max-width:700px;">
+                        <button class="close-modal" onclick="closeDeliveryModal()">&times;</button>
+                        <h2><i class="fas fa-truck"></i> <span id="deliveryModalTitle">Add New Delivery</span></h2>
+                        <form onsubmit="saveDelivery(event)" id="deliveryForm">
+                            <input type="hidden" id="deliveryId" />
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Customer Name</label>
+                                    <input type="text" id="deliveryCustomer" placeholder="John Doe" required />
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Customer Phone</label>
+                                    <input type="tel" id="deliveryPhone" placeholder="+254 700 123 456" required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-map-marker-alt"></i> Delivery Address</label>
+                                <input type="text" id="deliveryAddress" placeholder="Street, City, Country" required />
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label><i class="fas fa-store"></i> Branch</label>
+                                    <select id="deliveryBranch" required>
+                                        <option value="ruiru">Ruiru</option>
+                                        <option value="nyeri">Nyeri</option>
+                                        <option value="nakuru">Nakuru</option>
+                                        <option value="all">All Branches</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-user-tag"></i> Assign To</label>
+                                    <select id="deliveryAssignee">
+                                        <option value="">Unassigned</option>
+                                    </select>
+                                    <div class="helper">Assign delivery to a specific admin</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-box"></i> Items</label>
+                                <textarea id="deliveryItems" placeholder="List items being delivered..." rows="2"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-info-circle"></i> Status</label>
+                                <select id="deliveryStatus">
+                                    <option value="pending">Pending</option>
+                                    <option value="processing">Processing</option>
+                                    <option value="dispatched">Dispatched</option>
+                                    <option value="arrived">Arrived</option>
+                                    <option value="delivered">Delivered</option>
+                                </select>
+                            </div>
+                            <div style="display:flex; gap:12px; margin-top:16px;">
+                                <button type="submit" class="btn btn-primary" style="flex:1; justify-content:center;"><i class="fas fa-save"></i> Save Delivery</button>
+                                <button type="button" class="btn btn-danger" onclick="closeDeliveryModal()">Cancel</button>
+                            </div>
+                            <div id="deliveryMessage" style="margin-top:12px;"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- ===== NEW: PAYMENT MANAGEMENT SECTION ===== -->
+                <!-- ============================================================ -->
+                <section id="paymentSection" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h1 style="font-size:28px; color:#1a2a3a;"><i class="fas fa-credit-card" style="color:#c9a94e;"></i> Payment Management</h1>
+                            <p style="color:#888;">Track and manage all payments</p>
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button class="btn btn-info" onclick="refreshPayments()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                    </div>
+
+                    <!-- Payment Stats -->
+                    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock" style="background:#f59e0b;"></i></div><div class="stat-info"><h3 id="paymentPending">0</h3><p>Pending</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle" style="background:#10b981;"></i></div><div class="stat-info"><h3 id="paymentPaid">0</h3><p>Paid</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-times-circle" style="background:#ef4444;"></i></div><div class="stat-info"><h3 id="paymentFailed">0</h3><p>Failed</p></div></div>
+                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-money-bill-wave" style="background:#c9a94e;"></i></div><div class="stat-info"><h3 id="paymentTotal">0</h3><p>Total Revenue (KES)</p></div></div>
+                    </div>
+
+                    <!-- Payment List -->
+                    <div class="section">
+                        <h2><i class="fas fa-list"></i> All Payments</h2>
+                        <div id="paymentsList">
+                            <div class="empty-state">
+                                <i class="fas fa-credit-card"></i>
+                                <h3>No Payments</h3>
+                                <p>No payments have been recorded yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             </div>
         </main>
     </div>
 
     <script>
         // ============================================
-        // UPDATED TO LIVE URL
+        // API URL - Render Backend
         // ============================================
         const API_URL = 'https://modern-furniture-api.onrender.com/api';
         let currentUser = null;
         let allProducts = [];
         let editingProductId = null;
         let uploadedFiles = [];
-        let allApplicants = [];
         let allCareConversations = [];
         let allVideos = [];
         let videoFileData = null;
         let videoFileName = null;
+        let allJobs = [];
+        let allBranches = [];
+        let allSuppliers = [];
+        let allRepairs = [];
+        let allReviews = [];
+        let allScannerData = [];
+        let allAnnouncements = [];
+        
+        // ===== NEW: Delivery & Payment Variables =====
+        let allDeliveries = [];
+        let allPayments = [];
+        let editingDeliveryId = null;
 
         // ===== TOGGLE SIDEBAR =====
         function toggleSidebar() {
@@ -1225,7 +1383,7 @@
 
         // ===== SHOW SECTION =====
         function showSection(section) {
-            const sections = ['dashboard', 'announcements', 'applications', 'branches', 'products', 'suppliers', 'scanner', 'reviews', 'videos', 'customerCare', 'reports', 'profile'];
+            const sections = ['dashboard', 'announcements', 'applications', 'branches', 'products', 'suppliers', 'scanner', 'reviews', 'videos', 'customerCare', 'reports', 'profile', 'delivery', 'payment'];
             sections.forEach(s => {
                 const el = document.getElementById(s + 'Section');
                 if (el) el.style.display = 'none';
@@ -1242,345 +1400,10 @@
             if (window.innerWidth <= 768) {
                 document.getElementById('adminSidebar').classList.remove('active');
             }
-        }
-
-        // ===== POST ANNOUNCEMENT =====
-        function postAnnouncement(event) {
-            event.preventDefault();
-            const title = document.getElementById('announcementTitle').value;
-            const message = document.getElementById('announcementMessage').value;
-            const msgBox = document.getElementById('announcementMessageBox');
             
-            msgBox.innerHTML = '<span style="color:#10b981;">✅ Announcement posted successfully!</span>';
-            document.getElementById('announcementTitle').value = '';
-            document.getElementById('announcementMessage').value = '';
-            
-            const list = document.getElementById('announcementsList');
-            const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-            const newAnnouncement = document.createElement('div');
-            newAnnouncement.className = 'announcement';
-            newAnnouncement.innerHTML = `<h4>${title}</h4><p>${message}</p><span class="date">Posted: ${today}</span>`;
-            list.prepend(newAnnouncement);
-            showToast('✅ Announcement posted!');
-        }
-
-        // ===== CREATE JOB POSTING =====
-        function createJobPosting(event) {
-            event.preventDefault();
-            const title = document.getElementById('jobTitle').value;
-            const location = document.getElementById('jobLocation').value;
-            const type = document.getElementById('jobType').value;
-            const deadline = document.getElementById('jobDeadline').value;
-            const description = document.getElementById('jobDescription').value;
-            const msgBox = document.getElementById('jobPostingMessage');
-
-            const fields = {
-                phone: { required: document.getElementById('fieldPhoneRequired').checked, show: document.getElementById('fieldPhoneShow').checked },
-                location: { required: document.getElementById('fieldLocationRequired').checked, show: document.getElementById('fieldLocationShow').checked },
-                experience: { required: document.getElementById('fieldExperienceRequired').checked, show: document.getElementById('fieldExperienceShow').checked },
-                cover: { required: document.getElementById('fieldCoverRequired').checked, show: document.getElementById('fieldCoverShow').checked },
-                resume: { required: document.getElementById('fieldResumeRequired').checked, show: document.getElementById('fieldResumeShow').checked },
-                certificates: { required: document.getElementById('fieldCertRequired').checked, show: document.getElementById('fieldCertShow').checked },
-                idDocs: { required: document.getElementById('fieldIdRequired').checked, show: document.getElementById('fieldIdShow').checked },
-                portfolio: { required: document.getElementById('fieldPortfolioRequired').checked, show: document.getElementById('fieldPortfolioShow').checked }
-            };
-
-            const quizQ1 = document.getElementById('quizQ1').value;
-            const quizQ2 = document.getElementById('quizQ2').value;
-            const quizQ3 = document.getElementById('quizQ3').value;
-            const quizQuestions = [quizQ1, quizQ2, quizQ3].filter(q => q.trim() !== '');
-
-            const formattedDeadline = new Date(deadline).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-            
-            const jobsContainer = document.getElementById('activeJobs');
-            const newJob = document.createElement('div');
-            newJob.className = 'application-card';
-            
-            let fieldTags = '';
-            fieldTags += '<span class="field-tag required">Name Required</span>';
-            fieldTags += '<span class="field-tag required">Email Required</span>';
-            if (fields.phone.show) fieldTags += `<span class="field-tag ${fields.phone.required ? 'required' : 'optional'}">Phone ${fields.phone.required ? 'Required' : 'Optional'}</span>`;
-            if (fields.location.show) fieldTags += `<span class="field-tag ${fields.location.required ? 'required' : 'optional'}">Location ${fields.location.required ? 'Required' : 'Optional'}</span>`;
-            if (fields.experience.show) fieldTags += `<span class="field-tag ${fields.experience.required ? 'required' : 'optional'}">Experience ${fields.experience.required ? 'Required' : 'Optional'}</span>`;
-            if (fields.cover.show) fieldTags += `<span class="field-tag ${fields.cover.required ? 'required' : 'optional'}">Cover Letter ${fields.cover.required ? 'Required' : 'Optional'}</span>`;
-            if (fields.resume.show) fieldTags += `<span class="field-tag required">Resume Required</span>`;
-            if (fields.certificates.show) fieldTags += `<span class="field-tag ${fields.certificates.required ? 'required' : 'optional'}">Certificates ${fields.certificates.required ? 'Required' : 'Optional'}</span>`;
-            if (fields.idDocs.show) fieldTags += `<span class="field-tag ${fields.idDocs.required ? 'required' : 'optional'}">ID/Passport ${fields.idDocs.required ? 'Required' : 'Optional'}</span>`;
-            if (fields.portfolio.show) fieldTags += `<span class="field-tag ${fields.portfolio.required ? 'required' : 'optional'}">Portfolio ${fields.portfolio.required ? 'Required' : 'Optional'}</span>`;
-            if (quizQuestions.length > 0) fieldTags += `<span class="field-tag optional">📝 Quiz: ${quizQuestions.length} questions</span>`;
-
-            const quizHtml = quizQuestions.length > 0 ? `
-                <div style="margin:8px 0; font-size:12px; color:#888;">
-                    <strong>📝 Quiz Questions:</strong>
-                    ${quizQuestions.map((q, i) => `<div style="margin:2px 0;">${i+1}. ${q}</div>`).join('')}
-                </div>
-            ` : '';
-
-            newJob.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-                    <h3>${title}</h3>
-                    <span class="status-open">● Open</span>
-                </div>
-                <p style="color:#666; font-size:14px;">📍 ${location} | ${type.replace('-', ' ').toUpperCase()}</p>
-                <p style="font-size:13px; color:#888; margin:4px 0;">Deadline: ${formattedDeadline}</p>
-                <div style="margin:8px 0;">${fieldTags}</div>
-                ${quizHtml}
-                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                    <span class="app-count">📄 0 applicants</span>
-                    <button class="btn btn-primary btn-sm" onclick="viewApplicants('${title}')">View Applicants</button>
-                    <button class="btn btn-warning btn-sm" onclick="toggleJobStatus(this)">Close Applications</button>
-                </div>
-            `;
-            jobsContainer.prepend(newJob);
-
-            msgBox.innerHTML = '<span style="color:#10b981;">✅ Job posting created successfully!</span>';
-            document.getElementById('jobTitle').value = '';
-            document.getElementById('jobLocation').value = '';
-            document.getElementById('jobDescription').value = '';
-            document.getElementById('quizQ1').value = '';
-            document.getElementById('quizQ2').value = '';
-            document.getElementById('quizQ3').value = '';
-            
-            const openJobs = document.querySelectorAll('.application-card .status-open').length;
-            document.getElementById('openJobs').textContent = openJobs;
-            document.getElementById('appBadge').textContent = openJobs;
-            
-            showToast('✅ Job posting created!');
-            setTimeout(() => { msgBox.innerHTML = ''; }, 3000);
-        }
-
-        // ===== VIEW APPLICANTS =====
-        function viewApplicants(jobTitle) {
-            document.getElementById('jobTitleDisplay').textContent = jobTitle;
-            document.getElementById('applicantsSection').style.display = 'block';
-            document.getElementById('applicantsSection').scrollIntoView({ behavior: 'smooth' });
-            loadApplicants(jobTitle);
-        }
-
-        function loadApplicants(jobTitle) {
-            const container = document.getElementById('applicantsList');
-            
-            const applicants = [
-                {
-                    id: 'a1',
-                    name: 'John Doe',
-                    email: 'john@example.com',
-                    phone: '+254 700 123 456',
-                    location: 'Nairobi',
-                    experience: '5+ years experience in furniture design',
-                    coverLetter: 'I am passionate about furniture design and have worked with various clients...',
-                    resume: 'resume_john_doe.pdf',
-                    certificates: ['Certificate in Furniture Design.pdf', 'Advanced Woodworking.pdf'],
-                    idDocs: ['Passport_John_Doe.pdf'],
-                    quizAnswers: ['I want to work with Modern Furniture because of their reputation for quality.', 'I have 5 years of experience in furniture design.', 'I see myself leading a design team in 5 years.'],
-                    status: 'pending'
-                },
-                {
-                    id: 'a2',
-                    name: 'Jane Smith',
-                    email: 'jane@example.com',
-                    phone: '+254 700 123 457',
-                    location: 'Mombasa',
-                    experience: '3 years experience in furniture restoration',
-                    coverLetter: 'I have a keen eye for detail and love restoring old furniture...',
-                    resume: 'resume_jane_smith.pdf',
-                    certificates: ['Certificate in Restoration.pdf'],
-                    idDocs: ['ID_Jane_Smith.pdf', 'Driving_License.pdf'],
-                    quizAnswers: ['I admire Modern Furniture\'s designs.', 'I have 3 years of experience in restoration.', 'I want to become a master craftsman.'],
-                    status: 'pending'
-                },
-                {
-                    id: 'a3',
-                    name: 'Michael Ochieng',
-                    email: 'michael@example.com',
-                    phone: '+254 700 123 458',
-                    location: 'Kisumu',
-                    experience: '10+ years experience in woodworking',
-                    coverLetter: 'I have been in the woodworking industry for over a decade...',
-                    resume: 'resume_michael_ochieng.pdf',
-                    certificates: ['Certificate in Woodworking.pdf', 'Advanced Carpentry.pdf'],
-                    idDocs: ['ID_Michael_Ochieng.pdf'],
-                    quizAnswers: ['I want to bring my woodworking expertise to Modern Furniture.', 'I have 10+ years of experience.', 'I want to mentor young craftsmen.'],
-                    status: 'pending'
-                }
-            ];
-            
-            allApplicants = applicants;
-            renderApplicants(applicants);
-        }
-
-        function renderApplicants(applicants) {
-            const container = document.getElementById('applicantsList');
-            
-            if (!applicants || applicants.length === 0) {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><h3>No Applicants</h3><p>No applicants have applied yet.</p></div>`;
-                return;
-            }
-            
-            container.innerHTML = applicants.map(applicant => {
-                const statusColors = { 'pending': 'pending', 'approved': 'approved', 'rejected': 'rejected' };
-                const statusClass = statusColors[applicant.status] || 'pending';
-                
-                let fileTags = '';
-                if (applicant.resume) fileTags += `<span class="file-tag" onclick="viewFile('${applicant.id}', 'resume')"><i class="fas fa-file-pdf doc-icon"></i> Resume</span>`;
-                if (applicant.certificates && applicant.certificates.length > 0) {
-                    applicant.certificates.forEach(cert => {
-                        fileTags += `<span class="file-tag" onclick="viewFile('${applicant.id}', 'certificate', '${cert}')"><i class="fas fa-graduation-cap cert-icon"></i> ${cert}</span>`;
-                    });
-                }
-                if (applicant.idDocs && applicant.idDocs.length > 0) {
-                    applicant.idDocs.forEach(doc => {
-                        fileTags += `<span class="file-tag" onclick="viewFile('${applicant.id}', 'id', '${doc}')"><i class="fas fa-id-card id-icon"></i> ${doc}</span>`;
-                    });
-                }
-                
-                let quizHtml = '';
-                if (applicant.quizAnswers && applicant.quizAnswers.length > 0) {
-                    quizHtml = `
-                        <div style="margin:8px 0; background:white; padding:12px; border-radius:8px;">
-                            <strong style="font-size:13px;">📝 Quiz Answers:</strong>
-                            ${applicant.quizAnswers.map((a, i) => `<div style="font-size:13px; margin:2px 0; color:#666;"><strong>Q${i+1}:</strong> ${a}</div>`).join('')}
-                        </div>
-                    `;
-                }
-                
-                return `
-                    <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${applicant.status === 'approved' ? '#10b981' : applicant.status === 'rejected' ? '#ef4444' : '#c9a94e'};">
-                        <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap;">
-                            <div style="flex:1;">
-                                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                                    <strong style="font-size:16px;">${applicant.name}</strong>
-                                    <span class="status-badge ${statusClass}">${applicant.status}</span>
-                                </div>
-                                <p style="color:#666; font-size:13px;">📧 ${applicant.email} | 📱 ${applicant.phone || 'N/A'}</p>
-                                <p style="color:#666; font-size:13px;">📍 ${applicant.location || 'N/A'} | 💼 ${applicant.experience || 'N/A'}</p>
-                                ${applicant.coverLetter ? `<p style="color:#888; font-size:13px; margin-top:4px;">📄 "${applicant.coverLetter}"</p>` : ''}
-                                <div style="margin:8px 0;">
-                                    <strong style="font-size:13px;">📎 Documents:</strong>
-                                    <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:4px;">${fileTags}</div>
-                                </div>
-                                ${quizHtml}
-                            </div>
-                            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
-                                <button class="btn btn-success btn-sm" onclick="reviewApplicant('${applicant.id}', 'approve')"><i class="fas fa-check"></i> Approve</button>
-                                <button class="btn btn-danger btn-sm" onclick="reviewApplicant('${applicant.id}', 'reject')"><i class="fas fa-times"></i> Reject</button>
-                                <button class="btn btn-info btn-sm" onclick="viewApplicantDetails('${applicant.id}')"><i class="fas fa-eye"></i> Full Details</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function viewApplicantDetails(id) {
-            const applicant = allApplicants.find(a => a.id === id);
-            if (!applicant) return;
-            
-            const detailsHtml = `
-                <div class="grid-2">
-                    <div class="form-group"><label>Full Name</label><p style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">${applicant.name}</p></div>
-                    <div class="form-group"><label>Email</label><p style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">${applicant.email}</p></div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Phone</label><p style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">${applicant.phone || 'N/A'}</p></div>
-                    <div class="form-group"><label>Location</label><p style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">${applicant.location || 'N/A'}</p></div>
-                </div>
-                <div class="form-group"><label>Experience</label><p style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">${applicant.experience || 'N/A'}</p></div>
-                <div class="form-group"><label>Cover Letter</label><p style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">${applicant.coverLetter || 'N/A'}</p></div>
-                <div class="form-group"><label>📎 Documents</label>
-                    <div style="display:flex; flex-wrap:wrap; gap:8px; padding:8px 12px; background:#f8f7f4; border-radius:8px;">
-                        ${applicant.resume ? `<span class="file-tag"><i class="fas fa-file-pdf doc-icon"></i> ${applicant.resume}</span>` : ''}
-                        ${applicant.certificates ? applicant.certificates.map(c => `<span class="file-tag"><i class="fas fa-graduation-cap cert-icon"></i> ${c}</span>`).join('') : ''}
-                        ${applicant.idDocs ? applicant.idDocs.map(d => `<span class="file-tag"><i class="fas fa-id-card id-icon"></i> ${d}</span>`).join('') : ''}
-                    </div>
-                </div>
-                ${applicant.quizAnswers ? `
-                <div class="form-group"><label>📝 Quiz Answers</label>
-                    <div style="padding:8px 12px; background:#f8f7f4; border-radius:8px;">
-                        ${applicant.quizAnswers.map((a, i) => `<div style="margin:4px 0;"><strong>Q${i+1}:</strong> ${a}</div>`).join('')}
-                    </div>
-                </div>` : ''}
-                <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
-                    <button class="btn btn-success" onclick="reviewApplicant('${applicant.id}', 'approve'); closeApplicantModal();"><i class="fas fa-check"></i> Approve</button>
-                    <button class="btn btn-danger" onclick="reviewApplicant('${applicant.id}', 'reject'); closeApplicantModal();"><i class="fas fa-times"></i> Reject</button>
-                    <button class="btn btn-danger" onclick="closeApplicantModal()">Close</button>
-                </div>
-            `;
-            
-            document.getElementById('applicantDetails').innerHTML = detailsHtml;
-            document.getElementById('applicantModal').classList.add('active');
-        }
-
-        function closeApplicantModal() {
-            document.getElementById('applicantModal').classList.remove('active');
-        }
-
-        function viewFile(applicantId, type, filename) {
-            const applicant = allApplicants.find(a => a.id === applicantId);
-            if (!applicant) return;
-            let fileContent = '';
-            if (type === 'resume') fileContent = applicant.resume;
-            else if (type === 'certificate') fileContent = filename;
-            else if (type === 'id') fileContent = filename;
-            showToast(`📄 Viewing file: ${fileContent}`);
-        }
-
-        function reviewApplicant(id, action) {
-            const applicant = allApplicants.find(a => a.id === id);
-            if (!applicant) return;
-            
-            if (action === 'approve') {
-                if (confirm(`✅ Approve ${applicant.name}? The system will send a congratulation email.`)) {
-                    applicant.status = 'approved';
-                    renderApplicants(allApplicants);
-                    showToast(`✅ ${applicant.name} approved! Congratulation email sent.`);
-                    sendEmail(applicant.email, 'approved', applicant.name);
-                }
-            } else {
-                const reason = prompt(`❌ Reject ${applicant.name}?\n\nEnter the reason for rejection:`);
-                if (reason !== null) {
-                    applicant.status = 'rejected';
-                    renderApplicants(allApplicants);
-                    showToast(`❌ ${applicant.name} rejected. Email sent.`);
-                    sendEmail(applicant.email, 'rejected', applicant.name, reason);
-                }
-            }
-        }
-
-        function sendEmail(email, type, name, reason = '') {
-            let subject = '', message = '';
-            
-            if (type === 'approved') {
-                subject = '🎉 Congratulations! Your Application is Approved';
-                message = `Dear ${name},\n\nWe are delighted to inform you that your application has been APPROVED!\n\nOur HR team will contact you within 48 hours.\n\nWelcome to Modern Furniture Pacific Ltd!`;
-            } else {
-                subject = 'Update on Your Application - Modern Furniture Pacific Ltd';
-                message = `Dear ${name},\n\nAfter careful review, we regret to inform you that we will not be proceeding with your application.\n\nReason: ${reason || 'We have selected candidates whose qualifications more closely match our requirements.'}\n\nWe wish you all the best.`;
-            }
-            
-            console.log(`📧 Sending ${type} email to ${email}:`, { subject, message });
-            showToast(`📧 ${type === 'approved' ? '✅ Congratulation' : '📧 Rejection'} email sent to ${name}`);
-        }
-
-        // ===== TOGGLE JOB STATUS =====
-        function toggleJobStatus(btn) {
-            const card = btn.closest('.application-card');
-            const statusSpan = card.querySelector('.status-open, .status-closed');
-            const isOpen = statusSpan.classList.contains('status-open');
-            
-            if (isOpen) {
-                statusSpan.className = 'status-closed';
-                statusSpan.textContent = '● Closed';
-                btn.textContent = 'Reopen Applications';
-                btn.className = 'btn btn-success btn-sm';
-                showToast('🔒 Applications closed');
-            } else {
-                statusSpan.className = 'status-open';
-                statusSpan.textContent = '● Open';
-                btn.textContent = 'Close Applications';
-                btn.className = 'btn btn-warning btn-sm';
-                showToast('🔓 Applications reopened');
-            }
+            // Load data when switching sections
+            if (section === 'delivery') loadDeliveries();
+            if (section === 'payment') loadPayments();
         }
 
         // ===== TOAST =====
@@ -1596,6 +1419,18 @@
             document.getElementById('toast').classList.remove('show');
         }
 
+        // ===== GET AUTH TOKEN =====
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        function getHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            };
+        }
+
         // ===== LOGOUT =====
         function handleLogout() {
             if (confirm('Are you sure you want to logout?')) {
@@ -1605,10 +1440,139 @@
             }
         }
 
+        // ===== UPDATE PROFILE =====
+        function updateProfile(event) {
+            event.preventDefault();
+            const name = document.getElementById('profileName').value;
+            const phone = document.getElementById('profilePhone').value;
+            if (currentUser) {
+                currentUser.name = name;
+                currentUser.phone = phone;
+                localStorage.setItem('user', JSON.stringify(currentUser));
+                document.getElementById('adminName').textContent = name;
+                showToast('✅ Profile updated!');
+            }
+        }
+
+        // ============================================
+        // LOAD DASHBOARD STATS
+        // ============================================
+        async function loadDashboardStats() {
+            try {
+                const token = getToken();
+                
+                const productsRes = await fetch(`${API_URL}/products`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const productsData = await productsRes.json();
+                if (productsData.success) {
+                    document.getElementById('productCount').textContent = productsData.products?.length || 0;
+                }
+                
+                const jobsRes = await fetch(`${API_URL}/jobs`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const jobsData = await jobsRes.json();
+                if (jobsData.success) {
+                    const openJobs = jobsData.jobs?.filter(j => j.isOpen !== false) || [];
+                    document.getElementById('openJobs').textContent = openJobs.length;
+                    document.getElementById('appBadge').textContent = openJobs.length;
+                }
+                
+                const usersRes = await fetch(`${API_URL}/users`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const usersData = await usersRes.json();
+                if (usersData.success) {
+                    document.getElementById('totalCustomers').textContent = usersData.users?.length || 0;
+                }
+                
+                const supportRes = await fetch(`${API_URL}/support`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const supportData = await supportRes.json();
+                if (supportData.success) {
+                    const openTickets = supportData.conversations?.filter(c => c.status !== 'closed') || [];
+                    document.getElementById('careCount').textContent = openTickets.length;
+                    document.getElementById('careBadge').textContent = openTickets.length;
+                }
+                
+                // Load deliveries count
+                const deliveryRes = await fetch(`${API_URL}/deliveries`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const deliveryData = await deliveryRes.json();
+                if (deliveryData.success) {
+                    const pending = deliveryData.deliveries?.filter(d => d.status === 'pending' || d.status === 'processing') || [];
+                    document.getElementById('pendingDeliveries').textContent = pending.length;
+                    document.getElementById('deliveryBadge').textContent = pending.length;
+                }
+                
+                // Load payments count
+                const paymentRes = await fetch(`${API_URL}/payments`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const paymentData = await paymentRes.json();
+                if (paymentData.success) {
+                    const pending = paymentData.payments?.filter(p => p.status === 'pending') || [];
+                    document.getElementById('pendingPayments').textContent = pending.length;
+                    document.getElementById('paymentBadge').textContent = pending.length;
+                }
+                
+                loadRecentActivity();
+                
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        function loadRecentActivity() {
+            const container = document.getElementById('recentActivity');
+            container.innerHTML = `
+                <p style="padding:4px 0;"><i class="fas fa-shopping-bag" style="color:#c9a94e; width:20px;"></i> Loading recent activity...</p>
+            `;
+        }
+
+        // ===== ANNOUNCEMENTS =====
+        function postAnnouncement(event) {
+            event.preventDefault();
+            const title = document.getElementById('announcementTitle').value;
+            const message = document.getElementById('announcementMessage').value;
+            const msgBox = document.getElementById('announcementMessageBox');
+            
+            const announcement = {
+                id: Date.now().toString(),
+                title: title,
+                message: message,
+                category: document.getElementById('announcementCategory').value,
+                date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+                timestamp: new Date().toISOString()
+            };
+            
+            allAnnouncements.unshift(announcement);
+            renderAnnouncements();
+            
+            msgBox.innerHTML = '<span style="color:#10b981;">✅ Announcement posted successfully!</span>';
+            document.getElementById('announcementTitle').value = '';
+            document.getElementById('announcementMessage').value = '';
+            
+            showToast('✅ Announcement posted!');
+            setTimeout(() => { msgBox.innerHTML = ''; }, 3000);
+        }
+
+        function renderAnnouncements() {
+            const container = document.getElementById('announcementsList');
+            if (!allAnnouncements || allAnnouncements.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:20px; color:#888;">
+                        <i class="fas fa-bullhorn" style="font-size:32px; color:#ddd;"></i>
+                        <p style="margin-top:8px;">No announcements yet.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = allAnnouncements.map(a => `
+                <div class="announcement">
+                    <h4>${a.title}</h4>
+                    <p>${a.message}</p>
+                    <span class="date">Posted: ${a.date}</span>
+                </div>
+            `).join('');
+        }
+
         // ===== PRODUCT MANAGEMENT =====
         async function loadProducts() {
             try {
-                const token = localStorage.getItem('token');
+                const token = getToken();
                 const response = await fetch(`${API_URL}/products`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -1668,7 +1632,7 @@
 
         async function editProduct(id) {
             try {
-                const token = localStorage.getItem('token');
+                const token = getToken();
                 const response = await fetch(`${API_URL}/products/${id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -1765,7 +1729,7 @@
             const productData = { name, category, price, salePrice, stock, status, description, branch, features, images };
             
             try {
-                const token = localStorage.getItem('token');
+                const token = getToken();
                 const url = id ? `${API_URL}/products/${id}` : `${API_URL}/products`;
                 const method = id ? 'PUT' : 'POST';
                 const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(productData) });
@@ -1793,11 +1757,271 @@
             const nextIndex = (currentIndex + 1) % statuses.length;
             const newStatus = statuses[nextIndex];
             try {
-                const token = localStorage.getItem('token');
+                const token = getToken();
                 const response = await fetch(`${API_URL}/products/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ status: newStatus }) });
                 const data = await response.json();
                 if (data.success) { loadProducts(); showToast(`✅ Status changed to ${newStatus}`); }
             } catch (error) { showToast('❌ Failed to update status'); }
+        }
+
+        // ===== JOB APPLICATIONS =====
+        async function loadJobs() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/jobs`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allJobs = data.jobs || [];
+                    renderJobs(allJobs);
+                    updateJobStats();
+                }
+            } catch (error) {
+                console.error('Error loading jobs:', error);
+                showToast('❌ Failed to load jobs');
+            }
+        }
+
+        function renderJobs(jobs) {
+            const container = document.getElementById('activeJobs');
+            if (!container) return;
+            
+            if (!jobs || jobs.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-briefcase" style="font-size:48px; color:#ddd;"></i>
+                    <p style="margin-top:12px;">No job postings yet. Create one above!</p>
+                </div>`;
+                return;
+            }
+            
+            container.innerHTML = jobs.map(job => `
+                <div class="application-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                        <h3>${job.title || 'Job Opening'}</h3>
+                        <span class="${job.isOpen !== false ? 'status-open' : 'status-closed'}">● ${job.isOpen !== false ? 'Open' : 'Closed'}</span>
+                    </div>
+                    <p style="color:#666; font-size:14px;">📍 ${job.location || 'Location TBD'} | ${job.type || 'Full-time'}</p>
+                    <p style="font-size:13px; color:#888; margin:4px 0;">Deadline: ${job.deadline ? new Date(job.deadline).toLocaleDateString() : 'N/A'}</p>
+                    <div style="margin:8px 0;">
+                        ${job.quizQuestions && job.quizQuestions.length > 0 ? `<span class="field-tag optional">📝 Quiz: ${job.quizQuestions.length} questions</span>` : ''}
+                        ${job.requireResume ? `<span class="field-tag required">📄 Resume Required</span>` : ''}
+                        ${job.requireCertificates ? `<span class="field-tag required">🎓 Certificates</span>` : ''}
+                        ${job.requireId ? `<span class="field-tag required">🪪 ID Required</span>` : ''}
+                    </div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                        <span class="app-count">📄 ${job.applicants ? job.applicants.length : 0} applicants</span>
+                        <button class="btn btn-primary btn-sm" onclick="viewApplicants('${job.id}')">View Applicants</button>
+                        <button class="btn btn-warning btn-sm" onclick="toggleJobStatus('${job.id}')">${job.isOpen !== false ? 'Close' : 'Reopen'}</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteJob('${job.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateJobStats() {
+            const openJobs = allJobs.filter(j => j.isOpen !== false).length;
+            document.getElementById('openJobs').textContent = openJobs;
+            document.getElementById('appBadge').textContent = openJobs;
+        }
+
+        async function createJobPosting(event) {
+            event.preventDefault();
+            const title = document.getElementById('jobTitle').value;
+            const location = document.getElementById('jobLocation').value;
+            const type = document.getElementById('jobType').value;
+            const deadline = document.getElementById('jobDeadline').value;
+            const description = document.getElementById('jobDescription').value;
+            const msg = document.getElementById('jobPostingMessage');
+            
+            const fields = {
+                phoneRequired: document.getElementById('fieldPhoneRequired').checked,
+                phoneShow: document.getElementById('fieldPhoneShow').checked,
+                locationRequired: document.getElementById('fieldLocationRequired').checked,
+                locationShow: document.getElementById('fieldLocationShow').checked,
+                experienceRequired: document.getElementById('fieldExperienceRequired').checked,
+                experienceShow: document.getElementById('fieldExperienceShow').checked,
+                coverRequired: document.getElementById('fieldCoverRequired').checked,
+                coverShow: document.getElementById('fieldCoverShow').checked,
+                requireResume: document.getElementById('fieldResumeRequired').checked,
+                requireCertificates: document.getElementById('fieldCertRequired').checked,
+                requireId: document.getElementById('fieldIdRequired').checked,
+                requirePortfolio: document.getElementById('fieldPortfolioRequired').checked
+            };
+            
+            const quizQuestions = [
+                document.getElementById('quizQ1').value,
+                document.getElementById('quizQ2').value,
+                document.getElementById('quizQ3').value
+            ].filter(q => q.trim() !== '');
+            
+            const jobData = {
+                title,
+                location,
+                type,
+                deadline,
+                description,
+                ...fields,
+                quizQuestions,
+                isOpen: true
+            };
+            
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/jobs`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(jobData)
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    msg.innerHTML = '<span style="color:#10b981;">✅ Job posting created successfully!</span>';
+                    document.getElementById('jobTitle').value = '';
+                    document.getElementById('jobLocation').value = '';
+                    document.getElementById('jobDescription').value = '';
+                    document.getElementById('quizQ1').value = '';
+                    document.getElementById('quizQ2').value = '';
+                    document.getElementById('quizQ3').value = '';
+                    loadJobs();
+                    showToast('✅ Job posting created!');
+                    setTimeout(() => { msg.innerHTML = ''; }, 3000);
+                } else {
+                    msg.innerHTML = `<span style="color:#ef4444;">❌ ${data.message}</span>`;
+                }
+            } catch (error) {
+                console.error('Error creating job:', error);
+                msg.innerHTML = '<span style="color:#ef4444;">❌ Failed to create job posting</span>';
+            }
+        }
+
+        async function toggleJobStatus(jobId) {
+            const job = allJobs.find(j => j.id === jobId);
+            if (!job) return;
+            const newStatus = job.isOpen !== false ? false : true;
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/jobs/${jobId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ isOpen: newStatus })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadJobs();
+                    showToast(newStatus ? '🔓 Job reopened!' : '🔒 Job closed!');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error toggling job status:', error);
+                showToast('❌ Failed to update job status');
+            }
+        }
+
+        async function deleteJob(jobId) {
+            if (!confirm('⚠️ Delete this job posting?')) return;
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/jobs/${jobId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadJobs();
+                    showToast('🗑️ Job deleted!');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error deleting job:', error);
+                showToast('❌ Failed to delete job');
+            }
+        }
+
+        async function viewApplicants(jobId) {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/jobs/${jobId}/applicants`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const job = allJobs.find(j => j.id === jobId);
+                    document.getElementById('jobTitleDisplay').textContent = job?.title || 'Job';
+                    document.getElementById('applicantsSection').style.display = 'block';
+                    document.getElementById('applicantsSection').scrollIntoView({ behavior: 'smooth' });
+                    renderApplicants(data.applicants || []);
+                } else {
+                    showToast('❌ Failed to load applicants');
+                }
+            } catch (error) {
+                console.error('Error loading applicants:', error);
+                showToast('❌ Failed to load applicants');
+            }
+        }
+
+        function renderApplicants(applicants) {
+            const container = document.getElementById('applicantsList');
+            if (!applicants || applicants.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><h3>No Applicants</h3><p>No applicants have applied yet.</p></div>`;
+                return;
+            }
+            
+            container.innerHTML = applicants.map(applicant => {
+                const statusColors = { 'pending': 'pending', 'approved': 'approved', 'rejected': 'rejected' };
+                const statusClass = statusColors[applicant.status] || 'pending';
+                return `
+                    <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${applicant.status === 'approved' ? '#10b981' : applicant.status === 'rejected' ? '#ef4444' : '#c9a94e'};">
+                        <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap;">
+                            <div style="flex:1;">
+                                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                                    <strong style="font-size:16px;">${applicant.name}</strong>
+                                    <span class="status-badge ${statusClass}">${applicant.status}</span>
+                                </div>
+                                <p style="color:#666; font-size:13px;">📧 ${applicant.email} | 📱 ${applicant.phone || 'N/A'}</p>
+                                <p style="color:#666; font-size:13px;">📍 ${applicant.location || 'N/A'} | 💼 ${applicant.experience || 'N/A'}</p>
+                                ${applicant.coverLetter ? `<p style="color:#888; font-size:13px; margin-top:4px;">📄 "${applicant.coverLetter}"</p>` : ''}
+                                ${applicant.quizAnswers ? `<div style="margin:8px 0; background:white; padding:12px; border-radius:8px;">
+                                    <strong style="font-size:13px;">📝 Quiz Answers:</strong>
+                                    ${applicant.quizAnswers.map((a, i) => `<div style="font-size:13px; margin:2px 0; color:#666;"><strong>Q${i+1}:</strong> ${a}</div>`).join('')}
+                                </div>` : ''}
+                            </div>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+                                <button class="btn btn-success btn-sm" onclick="reviewApplicant('${applicant.id}', 'approve')"><i class="fas fa-check"></i> Approve</button>
+                                <button class="btn btn-danger btn-sm" onclick="reviewApplicant('${applicant.id}', 'reject')"><i class="fas fa-times"></i> Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function reviewApplicant(applicantId, action) {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/applicants/${applicantId}/review`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ status: action })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast(`✅ Applicant ${action === 'approve' ? 'approved' : 'rejected'}!`);
+                    const jobId = document.getElementById('careConvId')?.value || '';
+                    if (jobId) viewApplicants(jobId);
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error reviewing applicant:', error);
+                showToast('❌ Failed to review applicant');
+            }
+        }
+
+        function closeApplicantModal() {
+            document.getElementById('applicantModal').classList.remove('active');
         }
 
         // ===== BRANCH FUNCTIONS =====
@@ -1823,9 +2047,9 @@
 
         function getDefaultBranches() {
             return [
-                { id: 'ruiru', name: 'Ruiru', location: 'Ruiru Town, Main Street', products: 15, orders: 45, manager: null },
-                { id: 'nyeri', name: 'Nyeri', location: 'Nyeri Town, Kenyatta Road', products: 12, orders: 38, manager: null },
-                { id: 'nakuru', name: 'Nakuru', location: 'Nakuru Town, Moi Road', products: 18, orders: 45, manager: null }
+                { id: 'ruiru', name: 'Ruiru', location: 'Ruiru Town, Main Street', products: 0, orders: 0, manager: null },
+                { id: 'nyeri', name: 'Nyeri', location: 'Nyeri Town, Kenyatta Road', products: 0, orders: 0, manager: null },
+                { id: 'nakuru', name: 'Nakuru', location: 'Nakuru Town, Moi Road', products: 0, orders: 0, manager: null }
             ];
         }
 
@@ -1847,8 +2071,8 @@
                     <div class="branch-card" style="background:#f8f7f4; padding:20px; border-radius:12px; border:1px solid #e9e7e2;">
                         <h3>🏪 ${branch.name}</h3>
                         <p>📍 ${branch.location}</p>
-                        <p>📦 ${branch.products} products</p>
-                        <p>📊 ${branch.orders} orders</p>
+                        <p>📦 ${branch.products || 0} products</p>
+                        <p>📊 ${branch.orders || 0} orders</p>
                         <p>👤 Manager: ${managerDisplay}</p>
                         <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
                             <button class="btn btn-primary btn-sm" onclick="viewBranchDetails('${branch.id}')">View Details</button>
@@ -1861,8 +2085,10 @@
 
         function updateBranchStats(branches) {
             document.getElementById('totalBranches').textContent = branches.length;
-            document.getElementById('totalBranchProducts').textContent = branches.reduce((sum, b) => sum + (b.products || 0), 0);
-            document.getElementById('totalBranchOrders').textContent = branches.reduce((sum, b) => sum + (b.orders || 0), 0);
+            const totalProducts = branches.reduce((sum, b) => sum + (b.products || 0), 0);
+            const totalOrders = branches.reduce((sum, b) => sum + (b.orders || 0), 0);
+            document.getElementById('totalBranchProducts').textContent = totalProducts;
+            document.getElementById('totalBranchOrders').textContent = totalOrders;
         }
 
         function viewBranchDetails(branch) {
@@ -1912,11 +2138,10 @@
                     generated: new Date().toLocaleString(),
                     description: description,
                     data: {
-                        totalProducts: branch === 'all' ? 45 : branch === 'ruiru' ? 15 : branch === 'nyeri' ? 12 : 18,
-                        totalOrders: branch === 'all' ? 128 : branch === 'ruiru' ? 45 : branch === 'nyeri' ? 38 : 45,
-                        revenue: branch === 'all' ? 'KSh 2,450,000' : branch === 'ruiru' ? 'KSh 850,000' : branch === 'nyeri' ? 'KSh 720,000' : 'KSh 880,000',
-                        topProducts: branch === 'all' ? ['Mahogany Bed Frame', 'Luxury Sofa', 'Dining Table'] : ['Mahogany Bed Frame', 'Dining Table'],
-                        summary: `Report generated based on: ${description.substring(0, 100)}...`
+                        totalProducts: Math.floor(Math.random() * 50) + 10,
+                        totalOrders: Math.floor(Math.random() * 200) + 50,
+                        revenue: 'KSh ' + (Math.floor(Math.random() * 5000000) + 1000000).toLocaleString(),
+                        topProducts: ['Mahogany Bed Frame', 'Luxury Sofa', 'Dining Table']
                     }
                 };
                 
@@ -1991,111 +2216,300 @@ Description: ${report.description}
         }
 
         // ===== SUPPLIER FUNCTIONS =====
-        function loadSuppliers() {
+        async function loadSuppliers() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/suppliers`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allSuppliers = data.suppliers || [];
+                    renderSuppliers(allSuppliers);
+                }
+            } catch (error) {
+                console.error('Error loading suppliers:', error);
+                showToast('❌ Failed to load suppliers');
+            }
+        }
+
+        function renderSuppliers(suppliers) {
             const container = document.getElementById('suppliersList');
-            const suppliers = [
-                { id: 'sp1', companyName: 'WoodWorks Ltd', name: 'Peter Wood', email: 'peter@woodworks.com', phone: '+254 712 345 678', status: 'pending', createdAt: new Date().toISOString() },
-                { id: 'sp2', companyName: 'Metal Masters', name: 'James Steel', email: 'james@metalmasters.com', phone: '+254 722 345 678', status: 'approved', createdAt: new Date(Date.now() - 86400000).toISOString() }
-            ];
+            if (!suppliers || suppliers.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-truck" style="font-size:48px; color:#ddd;"></i>
+                    <p style="margin-top:12px;">No suppliers registered yet.</p>
+                </div>`;
+                return;
+            }
+            
             container.innerHTML = suppliers.map(s => `
                 <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${s.status === 'approved' ? '#10b981' : '#f59e0b'};">
                     <div><strong>${s.companyName || s.name || 'Supplier'}</strong></div>
                     <div style="color:#666;font-size:13px;">${s.email || ''} | ${s.phone || ''}</div>
                     <span class="status-badge ${s.status === 'approved' ? 'approved' : 'pending'}">${s.status || 'pending'}</span>
                     ${s.status !== 'approved' ? `<button class="btn btn-success btn-sm" onclick="approveSupplier('${s.id}')">Approve</button>` : ''}
-                    <button class="btn btn-info btn-sm" onclick="showToast('📄 View supplier ${s.id}')">View</button>
+                    <button class="btn btn-info btn-sm" onclick="viewSupplierDetails('${s.id}')">View</button>
                 </div>
             `).join('');
-            showToast('🚚 Suppliers loaded!');
         }
 
-        function approveSupplier(id) {
-            showToast('✅ Supplier approved!');
-            loadSuppliers();
+        async function approveSupplier(id) {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/suppliers/${id}/approve`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadSuppliers();
+                    showToast('✅ Supplier approved!');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error approving supplier:', error);
+                showToast('❌ Failed to approve supplier');
+            }
+        }
+
+        function viewSupplierDetails(id) {
+            const supplier = allSuppliers.find(s => s.id === id);
+            if (!supplier) return;
+            showToast(`📄 ${supplier.companyName || supplier.name}`);
         }
 
         // ===== SCANNER FUNCTIONS =====
-        function loadScannerData() {
+        async function loadScannerData() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/scanner`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allScannerData = data.scans || [];
+                    renderScannerData(allScannerData);
+                }
+            } catch (error) {
+                console.error('Error loading scanner data:', error);
+                showToast('❌ Failed to load scanner data');
+            }
+        }
+
+        function renderScannerData(scans) {
             const container = document.getElementById('scannerDataList');
-            const scans = [
-                { id: 's1', userName: 'John Doe', userEmail: 'john@example.com', dimensions: { width: 4.5, length: 6.0, height: 3.0 }, status: 'pending', createdAt: new Date().toISOString() },
-                { id: 's2', userName: 'Jane Smith', userEmail: 'jane@example.com', dimensions: { width: 3.0, length: 5.0, height: 2.8 }, status: 'matched', createdAt: new Date(Date.now() - 86400000).toISOString() }
-            ];
+            if (!scans || scans.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-camera" style="font-size:48px; color:#ddd;"></i>
+                    <p style="margin-top:12px;">No scanner submissions yet.</p>
+                </div>`;
+                return;
+            }
+            
             container.innerHTML = scans.map(s => `
-                <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid #c9a94e;">
+                <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${s.status === 'matched' ? '#10b981' : '#c9a94e'};">
                     <div><strong>${s.userName || 'Guest'}</strong> <span style="color:#888;font-size:12px;">${s.userEmail || ''}</span></div>
                     <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:8px 0;">
-                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;"><span style="color:#888;font-size:11px;">Width</span><div style="font-weight:600;">${s.dimensions?.width || 0}m</div></div>
-                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;"><span style="color:#888;font-size:11px;">Length</span><div style="font-weight:600;">${s.dimensions?.length || 0}m</div></div>
-                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;"><span style="color:#888;font-size:11px;">Height</span><div style="font-weight:600;">${s.dimensions?.height || 0}m</div></div>
-                        <div style="background:white; padding:8px; border-radius:8px; text-align:center; border:2px solid #c9a94e;"><span style="color:#888;font-size:11px;">Area</span><div style="font-weight:700;color:#c9a94e;">${((s.dimensions?.width || 0) * (s.dimensions?.length || 0)).toFixed(2)}m²</div></div>
+                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;">
+                            <span style="color:#888;font-size:11px;">Width</span>
+                            <div style="font-weight:600;">${s.dimensions?.width || 0}m</div>
+                        </div>
+                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;">
+                            <span style="color:#888;font-size:11px;">Length</span>
+                            <div style="font-weight:600;">${s.dimensions?.length || 0}m</div>
+                        </div>
+                        <div style="background:white; padding:8px; border-radius:8px; text-align:center;">
+                            <span style="color:#888;font-size:11px;">Height</span>
+                            <div style="font-weight:600;">${s.dimensions?.height || 0}m</div>
+                        </div>
+                        <div style="background:white; padding:8px; border-radius:8px; text-align:center; border:2px solid #c9a94e;">
+                            <span style="color:#888;font-size:11px;">Area</span>
+                            <div style="font-weight:700;color:#c9a94e;">${((s.dimensions?.width || 0) * (s.dimensions?.length || 0)).toFixed(2)}m²</div>
+                        </div>
                     </div>
-                    <span class="status-badge ${s.status === 'matched' ? 'approved' : s.status === 'contacted' ? 'active' : 'pending'}">${s.status || 'pending'}</span>
-                    <button class="btn btn-primary btn-sm" onclick="showToast('📏 View scan ${s.id}')">View</button>
-                    <button class="btn btn-success btn-sm" onclick="showToast('📧 Contact ${s.userName}')">Contact</button>
+                    <span class="status-badge ${s.status === 'matched' ? 'approved' : 'pending'}">${s.status || 'pending'}</span>
+                    <button class="btn btn-primary btn-sm" onclick="viewScanDetails('${s.id}')">View</button>
+                    <button class="btn btn-success btn-sm" onclick="contactScanUser('${s.id}')">Contact</button>
                 </div>
             `).join('');
-            showToast('📷 Scanner data loaded!');
+        }
+
+        function viewScanDetails(id) {
+            const scan = allScannerData.find(s => s.id === id);
+            if (!scan) return;
+            showToast(`📏 Scan: ${scan.userName} - ${scan.dimensions?.width}x${scan.dimensions?.length}m`);
+        }
+
+        function contactScanUser(id) {
+            const scan = allScannerData.find(s => s.id === id);
+            if (!scan) return;
+            showToast(`📧 Contact ${scan.userName} at ${scan.userEmail}`);
         }
 
         // ===== REVIEW FUNCTIONS =====
-        function loadReviews() {
+        async function loadReviews() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/reviews`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allReviews = data.reviews || [];
+                    renderReviews(allReviews);
+                }
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                showToast('❌ Failed to load reviews');
+            }
+        }
+
+        function renderReviews(reviews) {
             const container = document.getElementById('reviewsList');
-            const sampleReviews = [
-                { id: 'r1', name: 'John Doe', rating: 5, comment: 'Amazing quality! The sofa is exactly what we wanted.', branch: 'Ruiru', date: '2 days ago', status: 'pending' },
-                { id: 'r2', name: 'Jane Smith', rating: 4, comment: 'Great service! The delivery was prompt.', branch: 'Nyeri', date: '5 days ago', status: 'approved' },
-                { id: 'r3', name: 'Michael Ochieng', rating: 3, comment: 'The bed frame had some scratches on delivery.', branch: 'Nakuru', date: '1 week ago', status: 'rejected' }
-            ];
-            container.innerHTML = sampleReviews.map(r => `
-                <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${r.status === 'approved' ? '#10b981' : r.status === 'rejected' ? '#ef4444' : '#c9a94e'};">
+            if (!reviews || reviews.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-star" style="font-size:48px; color:#ddd;"></i>
+                    <p style="margin-top:12px;">No reviews yet.</p>
+                </div>`;
+                return;
+            }
+            
+            container.innerHTML = reviews.map(r => `
+                <div class="review-item" style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${r.status === 'approved' ? '#10b981' : r.status === 'rejected' ? '#ef4444' : '#c9a94e'};">
                     <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
-                        <div><strong>${r.name}</strong> <span style="color:#f59e0b;">${'⭐'.repeat(r.rating)}</span> <span style="color:#888; font-size:12px; margin-left:8px;">${r.branch}</span></div>
-                        <span style="color:#888; font-size:12px;">${r.date}</span>
+                        <div><strong>${r.name}</strong> <span style="color:#f59e0b;">${'⭐'.repeat(r.rating)}</span> <span style="color:#888; font-size:12px; margin-left:8px;">${r.branch || ''}</span></div>
+                        <span style="color:#888; font-size:12px;">${r.createdAt ? new Date(r.createdAt).toLocaleDateString() : 'N/A'}</span>
                     </div>
                     <p style="color:#666; margin:8px 0;">"${r.comment}"</p>
                     <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-                        <span class="status-badge ${r.status === 'approved' ? 'approved' : r.status === 'rejected' ? 'rejected' : 'pending'}">${r.status}</span>
-                        ${r.status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="approveReview('${r.id}')">Approve</button><button class="btn btn-danger btn-sm" onclick="rejectReview('${r.id}')">Reject</button>` : ''}
+                        <span class="review-status status-badge ${r.status === 'approved' ? 'approved' : r.status === 'rejected' ? 'rejected' : 'pending'}">${r.status || 'pending'}</span>
+                        ${r.status === 'pending' ? `
+                            <button class="btn btn-success btn-sm" onclick="approveReview('${r.id}')">Approve</button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectReview('${r.id}')">Reject</button>
+                        ` : ''}
                         <button class="btn btn-danger btn-sm" onclick="deleteReview('${r.id}')">Delete</button>
                     </div>
                 </div>
             `).join('');
-            showToast('📋 Reviews loaded!');
         }
 
-        function approveReview(id) { showToast('✅ Review approved and visible to users!'); loadReviews(); }
-        function rejectReview(id) { showToast('❌ Review rejected'); loadReviews(); }
-        function deleteReview(id) { if (!confirm('⚠️ Delete this review?')) return; showToast('🗑️ Review deleted'); loadReviews(); }
+        async function approveReview(id) {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/reviews/${id}/approve`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadReviews();
+                    showToast('✅ Review approved!');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error approving review:', error);
+                showToast('❌ Failed to approve review');
+            }
+        }
+
+        async function rejectReview(id) {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/reviews/${id}/reject`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadReviews();
+                    showToast('❌ Review rejected');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error rejecting review:', error);
+                showToast('❌ Failed to reject review');
+            }
+        }
+
+        async function deleteReview(id) {
+            if (!confirm('⚠️ Delete this review?')) return;
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/reviews/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadReviews();
+                    showToast('🗑️ Review deleted!');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error deleting review:', error);
+                showToast('❌ Failed to delete review');
+            }
+        }
 
         // ===== CUSTOMER CARE FUNCTIONS =====
-        function loadCustomerCare() {
-            const conversations = [
-                { id: 'c1', userName: 'John Doe', userEmail: 'john@example.com', subject: 'Delivery Inquiry', status: 'open', messages: [{ sender: 'user', message: 'When will my order arrive?', timestamp: new Date().toISOString() }], createdAt: new Date().toISOString() },
-                { id: 'c2', userName: 'Jane Smith', userEmail: 'jane@example.com', subject: 'Product Question', status: 'in-progress', messages: [{ sender: 'user', message: 'Is the sofa available in blue?', timestamp: new Date().toISOString() }], createdAt: new Date(Date.now() - 86400000).toISOString() }
-            ];
-            allCareConversations = conversations;
-            renderCustomerCare(conversations);
-            updateCareStats();
+        async function loadCustomerCare() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/support`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allCareConversations = data.conversations || [];
+                    renderCustomerCare(allCareConversations);
+                    updateCareStats();
+                }
+            } catch (error) {
+                console.error('Error loading customer care:', error);
+                showToast('❌ Failed to load customer care');
+            }
         }
 
         function renderCustomerCare(conversations) {
             const container = document.getElementById('careContainer');
             if (!conversations || conversations.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:60px 20px; color:#888;"><i class="fas fa-headset" style="font-size:48px; color:#ddd; margin-bottom:16px;"></i><h3>No Conversations</h3></div>`;
+                container.innerHTML = `<div style="text-align:center; padding:60px 20px; color:#888;">
+                    <i class="fas fa-headset" style="font-size:48px; color:#ddd; margin-bottom:16px;"></i>
+                    <h3>No Conversations</h3>
+                </div>`;
                 return;
             }
+            
             container.innerHTML = conversations.map(conv => {
                 const statusColors = { 'open': 'open', 'in-progress': 'in-progress', 'closed': 'closed' };
                 const statusClass = statusColors[conv.status] || 'open';
-                return `<div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${conv.status === 'closed' ? '#10b981' : conv.status === 'in-progress' ? '#3b82f6' : '#f59e0b'};">
-                    <div style="display:flex; justify-content:space-between; flex-wrap:wrap;"><div><strong>${conv.userName || 'Guest'}</strong> <span style="color:#888; font-size:12px; margin-left:8px;">${conv.userEmail || ''}</span></div><span style="color:#888; font-size:12px;">${new Date(conv.createdAt).toLocaleDateString()}</span></div>
-                    <div style="margin:8px 0;"><span style="font-weight:600; font-size:14px;">${conv.subject || 'General Inquiry'}</span><p style="color:#666; font-size:14px; margin-top:4px;">${conv.messages && conv.messages.length > 0 ? conv.messages[0].message : ''}</p></div>
-                    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px;">
-                        <span class="status-badge ${statusClass}">${conv.status}</span>
-                        <span style="color:#888; font-size:12px;">💬 ${conv.messages ? conv.messages.length : 0} messages</span>
-                        ${conv.status !== 'closed' ? `<button class="btn btn-primary btn-sm" onclick="openCareConversation('${conv.id}')"><i class="fas fa-reply"></i> Reply</button><button class="btn btn-success btn-sm" onclick="closeCareTicket('${conv.id}')"><i class="fas fa-check"></i> Close</button>` : ''}
+                const lastMessage = conv.messages?.[conv.messages.length - 1];
+                
+                return `
+                    <div style="background:#f8f7f4; padding:16px; border-radius:12px; margin-bottom:12px; border-left:4px solid ${conv.status === 'closed' ? '#10b981' : conv.status === 'in-progress' ? '#3b82f6' : '#f59e0b'};">
+                        <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
+                            <div><strong>${conv.userName || 'Guest'}</strong> <span style="color:#888; font-size:12px; margin-left:8px;">${conv.userEmail || ''}</span></div>
+                            <span style="color:#888; font-size:12px;">${conv.createdAt ? new Date(conv.createdAt).toLocaleDateString() : 'N/A'}</span>
+                        </div>
+                        <div style="margin:8px 0;">
+                            <span style="font-weight:600; font-size:14px;">${conv.subject || 'General Inquiry'}</span>
+                            ${lastMessage ? `<p style="color:#666; font-size:14px; margin-top:4px;">${lastMessage.message}</p>` : ''}
+                        </div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px;">
+                            <span class="status-badge ${statusClass}">${conv.status}</span>
+                            <span style="color:#888; font-size:12px;">💬 ${conv.messages ? conv.messages.length : 0} messages</span>
+                            ${conv.status !== 'closed' ? `
+                                <button class="btn btn-primary btn-sm" onclick="openCareConversation('${conv.id}')"><i class="fas fa-reply"></i> Reply</button>
+                                <button class="btn btn-success btn-sm" onclick="closeCareTicket('${conv.id}')"><i class="fas fa-check"></i> Close</button>
+                            ` : ''}
+                        </div>
                     </div>
-                </div>`;
+                `;
             }).join('');
         }
 
@@ -2161,21 +2575,589 @@ Description: ${report.description}
             document.getElementById('careModal').classList.remove('active');
         }
 
-        // ===== UPDATE PROFILE =====
-        function updateProfile(event) {
+        // ===== VIDEO MANAGEMENT =====
+        function loadVideos() {
+            const saved = localStorage.getItem('dashboardVideos');
+            if (saved) {
+                try { allVideos = JSON.parse(saved); } catch (e) { allVideos = []; }
+            } else {
+                allVideos = [];
+                localStorage.setItem('dashboardVideos', JSON.stringify(allVideos));
+            }
+            renderVideos();
+            updateVideoStats();
+        }
+
+        function renderVideos() {
+            const container = document.getElementById('videoContainer');
+            if (!container) return;
+            
+            if (!allVideos || allVideos.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:#888;">
+                        <i class="fas fa-video" style="font-size:48px; color:#ddd; margin-bottom:16px;"></i>
+                        <h3>No Media Uploaded</h3>
+                        <p style="margin-top:8px;">Click "Upload Media" to add videos or images for users.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = allVideos.map(v => {
+                const isVideo = v.fileType === 'video' || v.type === 'video';
+                const isSent = v.sentToUsers === true;
+                const branchName = v.branch === 'all' ? '🌍 All Branches' : v.branch?.charAt(0).toUpperCase() + v.branch?.slice(1) || '';
+                
+                return `
+                    <div class="video-card" style="${isSent ? 'border-color: #10b981;' : ''}">
+                        <div class="video-preview">
+                            ${v.fileData ? (isVideo ? `<video muted><source src="${v.fileData}"></video>` : `<img src="${v.fileData}" />`) : `<i class="fas fa-${isVideo ? 'video' : 'image'}" style="font-size:48px;"></i>`}
+                            ${isVideo ? `<div class="play-icon"><i class="fas fa-play-circle"></i></div>` : ''}
+                            ${isSent ? `<span style="position:absolute; top:12px; left:12px; background:#10b981; color:white; padding:4px 12px; border-radius:20px; font-size:10px; font-weight:600;">✓ Sent</span>` : ''}
+                        </div>
+                        <div class="video-body">
+                            <h4>${v.title}</h4>
+                            <p>${v.note || 'No description'}</p>
+                            <div class="video-meta">
+                                <span>📁 ${branchName}</span>
+                                <span>👁️ ${v.views || 0} views</span>
+                                <span>📅 ${new Date(v.uploadedAt).toLocaleDateString()}</span>
+                            </div>
+                            <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+                                <button class="btn btn-success btn-sm" onclick="sendToUsers('${v.id}')"><i class="fas fa-paper-plane"></i> Send</button>
+                                <button class="btn btn-primary btn-sm" onclick="editVideo('${v.id}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteVideo('${v.id}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateVideoStats() {
+            document.getElementById('totalVideos').textContent = allVideos.length;
+            document.getElementById('totalViews').textContent = allVideos.reduce((sum, v) => sum + (v.views || 0), 0);
+            document.getElementById('sentCount').textContent = allVideos.filter(v => v.sentToUsers === true).length;
+        }
+
+        function showUploadVideo() {
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoNote').value = '';
+            document.getElementById('videoFileData').value = '';
+            document.getElementById('videoFilePreview').style.display = 'none';
+            document.getElementById('videoUploadMsg').innerHTML = '';
+            videoFileData = null;
+            videoFileName = null;
+            document.getElementById('videoUploadModal').classList.add('active');
+        }
+
+        function closeVideoUpload() {
+            document.getElementById('videoUploadModal').classList.remove('active');
+        }
+
+        function handleVideoFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                videoFileData = e.target.result;
+                videoFileName = file.name;
+                document.getElementById('videoFileName').textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+                document.getElementById('videoFilePreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+            input.value = '';
+        }
+
+        function removeVideoFile() {
+            videoFileData = null;
+            videoFileName = null;
+            document.getElementById('videoFilePreview').style.display = 'none';
+            document.getElementById('videoFileInput').value = '';
+        }
+
+        function uploadMedia(event) {
             event.preventDefault();
-            const name = document.getElementById('profileName').value;
-            const phone = document.getElementById('profilePhone').value;
-            if (currentUser) {
-                currentUser.name = name;
-                currentUser.phone = phone;
-                localStorage.setItem('user', JSON.stringify(currentUser));
-                document.getElementById('adminName').textContent = name;
-                showToast('✅ Profile updated!');
+            const title = document.getElementById('videoTitle').value;
+            const note = document.getElementById('videoNote').value;
+            const branch = document.getElementById('videoBranch').value;
+            const msgBox = document.getElementById('videoUploadMsg');
+            
+            if (!videoFileData) {
+                msgBox.innerHTML = '<span style="color:#ef4444;">❌ Please select a file to upload</span>';
+                return;
+            }
+            
+            const isVideo = videoFileName.match(/\.(mp4|webm|mov|avi|mkv|flv)$/i);
+            const newVideo = {
+                id: 'v' + Date.now(),
+                title: title,
+                note: note,
+                branch: branch,
+                fileData: videoFileData,
+                fileName: videoFileName,
+                fileType: isVideo ? 'video' : 'image',
+                type: isVideo ? 'video' : 'image',
+                views: 0,
+                sentToUsers: false,
+                uploadedBy: currentUser ? currentUser.name : 'CEO Admin',
+                uploadedAt: new Date().toISOString()
+            };
+            
+            allVideos.push(newVideo);
+            localStorage.setItem('dashboardVideos', JSON.stringify(allVideos));
+            
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoNote').value = '';
+            document.getElementById('videoFilePreview').style.display = 'none';
+            videoFileData = null;
+            videoFileName = null;
+            
+            msgBox.innerHTML = '<span style="color:#10b981;">✅ Media uploaded successfully!</span>';
+            setTimeout(() => { msgBox.innerHTML = ''; }, 3000);
+            
+            renderVideos();
+            updateVideoStats();
+            showToast('📤 Media uploaded successfully!');
+            setTimeout(() => closeVideoUpload(), 1500);
+        }
+
+        function sendToUsers(id) {
+            const video = allVideos.find(v => v.id === id);
+            if (!video) return;
+            if (!confirm(`Send "${video.title}" to all users?`)) return;
+            
+            video.sentToUsers = true;
+            video.sentAt = new Date().toISOString();
+            localStorage.setItem('dashboardVideos', JSON.stringify(allVideos));
+            
+            renderVideos();
+            updateVideoStats();
+            showToast(`✅ "${video.title}" sent to users!`);
+        }
+
+        function editVideo(id) {
+            const video = allVideos.find(v => v.id === id);
+            if (!video) return;
+            
+            const newTitle = prompt('Edit Title:', video.title);
+            if (newTitle !== null) video.title = newTitle;
+            
+            const newNote = prompt('Edit Note:', video.note || '');
+            if (newNote !== null) video.note = newNote;
+            
+            localStorage.setItem('dashboardVideos', JSON.stringify(allVideos));
+            renderVideos();
+            updateVideoStats();
+            showToast('✅ Video updated!');
+        }
+
+        function deleteVideo(id) {
+            if (!confirm('⚠️ Delete this media?')) return;
+            allVideos = allVideos.filter(v => v.id !== id);
+            localStorage.setItem('dashboardVideos', JSON.stringify(allVideos));
+            renderVideos();
+            updateVideoStats();
+            showToast('🗑️ Media deleted!');
+        }
+
+        // ============================================
+        // ===== NEW: DELIVERY MANAGEMENT =====
+        // ============================================
+        async function loadDeliveries() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/deliveries`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allDeliveries = data.deliveries || [];
+                    renderDeliveries(allDeliveries);
+                    updateDeliveryStats(allDeliveries);
+                }
+            } catch (error) {
+                console.error('Error loading deliveries:', error);
+                showToast('❌ Failed to load deliveries');
             }
         }
 
-        // ===== DOM READY =====
+        function renderDeliveries(deliveries) {
+            const container = document.getElementById('deliveriesList');
+            if (!deliveries || deliveries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-truck"></i>
+                        <h3>No Deliveries</h3>
+                        <p>Click "Add Delivery" to create a new delivery.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = deliveries.map(d => {
+                const statusMap = {
+                    'pending': 'pending',
+                    'processing': 'in-progress',
+                    'dispatched': 'active',
+                    'arrived': 'active',
+                    'delivered': 'approved'
+                };
+                const statusClass = statusMap[d.status] || 'pending';
+                const statusLabel = d.status.charAt(0).toUpperCase() + d.status.slice(1);
+                
+                return `
+                    <div class="delivery-card">
+                        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center;">
+                            <div>
+                                <strong>${d.customer || 'Customer'}</strong>
+                                <span style="color:#888; font-size:12px; margin-left:8px;">${d.phone || ''}</span>
+                            </div>
+                            <span class="status-badge ${statusClass}">${statusLabel}</span>
+                        </div>
+                        <p style="color:#666; font-size:13px; margin:4px 0;">📍 ${d.address || 'No address'}</p>
+                        <p style="color:#888; font-size:12px;">🏪 ${d.branch || 'All Branches'} ${d.assignee ? `• 👤 ${d.assignee}` : ''}</p>
+                        ${d.items ? `<p style="color:#666; font-size:12px; margin:4px 0;">📦 ${d.items}</p>` : ''}
+                        
+                        <div class="delivery-timeline">
+                            ${['pending', 'processing', 'dispatched', 'arrived', 'delivered'].map((step, idx) => {
+                                const steps = ['pending', 'processing', 'dispatched', 'arrived', 'delivered'];
+                                const currentIdx = steps.indexOf(d.status);
+                                const isCompleted = idx < currentIdx;
+                                const isActive = idx === currentIdx;
+                                const stepLabels = ['Pending', 'Processing', 'Dispatched', 'Arrived', 'Delivered'];
+                                const stepIcons = ['🕐', '⚙️', '🚚', '📍', '✅'];
+                                return `
+                                    <div class="step ${isCompleted ? 'completed' : isActive ? 'active' : ''}">
+                                        ${stepIcons[idx]} ${stepLabels[idx]}
+                                    </div>
+                                    ${idx < 4 ? `<div class="step-line ${isCompleted ? 'completed' : isActive ? 'active' : ''}"></div>` : ''}
+                                `;
+                            }).join('')}
+                        </div>
+                        
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+                            <button class="btn btn-primary btn-sm" onclick="editDelivery('${d.id}')"><i class="fas fa-edit"></i> Edit</button>
+                            <select onchange="updateDeliveryStatus('${d.id}', this.value)" style="padding:4px 8px; border:2px solid #e9e7e2; border-radius:8px; font-size:12px; font-family:inherit;">
+                                <option value="">Update Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="dispatched">Dispatched</option>
+                                <option value="arrived">Arrived</option>
+                                <option value="delivered">Delivered</option>
+                            </select>
+                            <button class="btn btn-danger btn-sm" onclick="deleteDelivery('${d.id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateDeliveryStats(deliveries) {
+            document.getElementById('deliveryPending').textContent = deliveries.filter(d => d.status === 'pending').length;
+            document.getElementById('deliveryProcessing').textContent = deliveries.filter(d => d.status === 'processing').length;
+            document.getElementById('deliveryDispatched').textContent = deliveries.filter(d => d.status === 'dispatched' || d.status === 'arrived').length;
+            document.getElementById('deliveryDelivered').textContent = deliveries.filter(d => d.status === 'delivered').length;
+            document.getElementById('deliveryBadge').textContent = deliveries.filter(d => d.status === 'pending' || d.status === 'processing').length;
+        }
+
+        function showAddDelivery() {
+            editingDeliveryId = null;
+            document.getElementById('deliveryModalTitle').textContent = 'Add New Delivery';
+            document.getElementById('deliveryForm').reset();
+            document.getElementById('deliveryId').value = '';
+            document.getElementById('deliveryMessage').innerHTML = '';
+            
+            // Populate assignee dropdown with admins
+            const assigneeSelect = document.getElementById('deliveryAssignee');
+            assigneeSelect.innerHTML = '<option value="">Unassigned</option>';
+            // In CEO admin, we can assign to branch admins
+            const admins = JSON.parse(localStorage.getItem('admins') || '[]');
+            admins.forEach(admin => {
+                if (admin.role === 'branch_admin' || admin.role === 'super_admin') {
+                    assigneeSelect.innerHTML += `<option value="${admin.id}">${admin.name} (${admin.role})</option>`;
+                }
+            });
+            
+            document.getElementById('deliveryModal').classList.add('active');
+        }
+
+        function closeDeliveryModal() {
+            document.getElementById('deliveryModal').classList.remove('active');
+        }
+
+        async function editDelivery(id) {
+            const delivery = allDeliveries.find(d => d.id === id);
+            if (!delivery) {
+                showToast('❌ Delivery not found');
+                return;
+            }
+            
+            editingDeliveryId = id;
+            document.getElementById('deliveryModalTitle').textContent = 'Edit Delivery';
+            document.getElementById('deliveryId').value = id;
+            document.getElementById('deliveryCustomer').value = delivery.customer || '';
+            document.getElementById('deliveryPhone').value = delivery.phone || '';
+            document.getElementById('deliveryAddress').value = delivery.address || '';
+            document.getElementById('deliveryBranch').value = delivery.branch || 'all';
+            document.getElementById('deliveryItems').value = delivery.items || '';
+            document.getElementById('deliveryStatus').value = delivery.status || 'pending';
+            document.getElementById('deliveryMessage').innerHTML = '';
+            
+            const assigneeSelect = document.getElementById('deliveryAssignee');
+            assigneeSelect.innerHTML = '<option value="">Unassigned</option>';
+            const admins = JSON.parse(localStorage.getItem('admins') || '[]');
+            admins.forEach(admin => {
+                if (admin.role === 'branch_admin' || admin.role === 'super_admin') {
+                    assigneeSelect.innerHTML += `<option value="${admin.id}" ${admin.id === delivery.assignee ? 'selected' : ''}>${admin.name} (${admin.role})</option>`;
+                }
+            });
+            
+            document.getElementById('deliveryModal').classList.add('active');
+        }
+
+        async function saveDelivery(event) {
+            event.preventDefault();
+            const id = document.getElementById('deliveryId').value;
+            const customer = document.getElementById('deliveryCustomer').value;
+            const phone = document.getElementById('deliveryPhone').value;
+            const address = document.getElementById('deliveryAddress').value;
+            const branch = document.getElementById('deliveryBranch').value;
+            const assignee = document.getElementById('deliveryAssignee').value;
+            const items = document.getElementById('deliveryItems').value;
+            const status = document.getElementById('deliveryStatus').value;
+
+            const deliveryData = { customer, phone, address, branch, assignee, items, status };
+            const msg = document.getElementById('deliveryMessage');
+
+            try {
+                const token = getToken();
+                const url = id ? `${API_URL}/deliveries/${id}` : `${API_URL}/deliveries`;
+                const method = id ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method,
+                    headers: getHeaders(),
+                    body: JSON.stringify(deliveryData)
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    closeDeliveryModal();
+                    loadDeliveries();
+                    loadDashboardStats();
+                    showToast(id ? '✅ Delivery updated!' : '✅ Delivery created!');
+                } else {
+                    msg.innerHTML = `<span style="color:#ef4444;">❌ ${data.message}</span>`;
+                }
+            } catch (error) {
+                console.error('Error saving delivery:', error);
+                msg.innerHTML = '<span style="color:#ef4444;">❌ Failed to save delivery</span>';
+            }
+        }
+
+        async function updateDeliveryStatus(id, status) {
+            if (!status) return;
+            if (!confirm(`Update delivery status to ${status}?`)) return;
+
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/deliveries/${id}/status`, {
+                    method: 'PATCH',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ status })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    loadDeliveries();
+                    loadDashboardStats();
+                    showToast(`✅ Delivery status updated to ${status}`);
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error updating delivery:', error);
+                showToast('❌ Failed to update delivery status');
+            }
+        }
+
+        async function deleteDelivery(id) {
+            if (!confirm('⚠️ Delete this delivery?')) return;
+
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/deliveries/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    loadDeliveries();
+                    loadDashboardStats();
+                    showToast('🗑️ Delivery deleted!');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error deleting delivery:', error);
+                showToast('❌ Failed to delete delivery');
+            }
+        }
+
+        function refreshDeliveries() {
+            loadDeliveries();
+            showToast('🔄 Deliveries refreshed!');
+        }
+
+        // ============================================
+        // ===== NEW: PAYMENT MANAGEMENT =====
+        // ============================================
+        async function loadPayments() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/payments`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allPayments = data.payments || [];
+                    renderPayments(allPayments);
+                    updatePaymentStats(allPayments);
+                }
+            } catch (error) {
+                console.error('Error loading payments:', error);
+                showToast('❌ Failed to load payments');
+            }
+        }
+
+        function renderPayments(payments) {
+            const container = document.getElementById('paymentsList');
+            if (!payments || payments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-credit-card"></i>
+                        <h3>No Payments</h3>
+                        <p>No payments have been recorded yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = payments.map(p => {
+                const statusMap = {
+                    'pending': 'pending',
+                    'paid': 'approved',
+                    'failed': 'rejected',
+                    'refunded': 'closed'
+                };
+                const statusClass = statusMap[p.status] || 'pending';
+                
+                return `
+                    <div class="payment-card">
+                        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center;">
+                            <div>
+                                <strong>${p.customer || 'Customer'}</strong>
+                                <span style="color:#888; font-size:12px; margin-left:8px;">${p.phone || ''}</span>
+                            </div>
+                            <span class="status-badge ${statusClass}">${p.status || 'pending'}</span>
+                        </div>
+                        <div style="display:flex; gap:16px; flex-wrap:wrap; margin:8px 0;">
+                            <span style="font-weight:700; color:#1a2a3a;">KSh ${(p.amount || 0).toLocaleString()}</span>
+                            <span style="color:#888; font-size:13px;">${p.method || 'M-Pesa'}</span>
+                            <span style="color:#888; font-size:13px;">📅 ${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : 'N/A'}</span>
+                        </div>
+                        ${p.transactionId ? `<p style="color:#888; font-size:12px;">🔑 Transaction: ${p.transactionId}</p>` : ''}
+                        ${p.orderId ? `<p style="color:#888; font-size:12px;">📦 Order: ${p.orderId}</p>` : ''}
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+                            ${p.status === 'pending' ? `
+                                <button class="btn btn-success btn-sm" onclick="updatePaymentStatus('${p.id}', 'paid')"><i class="fas fa-check"></i> Mark Paid</button>
+                                <button class="btn btn-danger btn-sm" onclick="updatePaymentStatus('${p.id}', 'failed')"><i class="fas fa-times"></i> Mark Failed</button>
+                            ` : ''}
+                            ${p.status === 'paid' ? `<button class="btn btn-warning btn-sm" onclick="updatePaymentStatus('${p.id}', 'refunded')"><i class="fas fa-undo"></i> Refund</button>` : ''}
+                            <button class="btn btn-info btn-sm" onclick="viewPaymentDetails('${p.id}')"><i class="fas fa-eye"></i> View</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updatePaymentStats(payments) {
+            document.getElementById('paymentPending').textContent = payments.filter(p => p.status === 'pending').length;
+            document.getElementById('paymentPaid').textContent = payments.filter(p => p.status === 'paid').length;
+            document.getElementById('paymentFailed').textContent = payments.filter(p => p.status === 'failed').length;
+            const total = payments.filter(p => p.status === 'paid').reduce((sum, p) => sum + (p.amount || 0), 0);
+            document.getElementById('paymentTotal').textContent = total.toLocaleString();
+            document.getElementById('paymentBadge').textContent = payments.filter(p => p.status === 'pending').length;
+        }
+
+        async function updatePaymentStatus(id, status) {
+            if (!confirm(`Update payment status to ${status}?`)) return;
+
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/payments/${id}/status`, {
+                    method: 'PATCH',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ status })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    loadPayments();
+                    loadDashboardStats();
+                    showToast(`✅ Payment status updated to ${status}`);
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error updating payment:', error);
+                showToast('❌ Failed to update payment status');
+            }
+        }
+
+        function viewPaymentDetails(id) {
+            const payment = allPayments.find(p => p.id === id);
+            if (!payment) {
+                showToast('❌ Payment not found');
+                return;
+            }
+            
+            const details = `
+                <div style="background:#f8f7f4; padding:16px; border-radius:12px;">
+                    <p><strong>Customer:</strong> ${payment.customer || 'N/A'}</p>
+                    <p><strong>Phone:</strong> ${payment.phone || 'N/A'}</p>
+                    <p><strong>Amount:</strong> KSh ${(payment.amount || 0).toLocaleString()}</p>
+                    <p><strong>Method:</strong> ${payment.method || 'M-Pesa'}</p>
+                    <p><strong>Status:</strong> ${payment.status || 'pending'}</p>
+                    ${payment.transactionId ? `<p><strong>Transaction:</strong> ${payment.transactionId}</p>` : ''}
+                    ${payment.orderId ? `<p><strong>Order:</strong> ${payment.orderId}</p>` : ''}
+                    <p><strong>Date:</strong> ${payment.createdAt ? new Date(payment.createdAt).toLocaleString() : 'N/A'}</p>
+                    ${payment.notes ? `<p><strong>Notes:</strong> ${payment.notes}</p>` : ''}
+                </div>
+            `;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+            modal.innerHTML = `
+                <div style="background:white;border-radius:16px;padding:32px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;">
+                    <h2 style="margin-bottom:16px;"><i class="fas fa-credit-card" style="color:#c9a94e;"></i> Payment Details</h2>
+                    ${details}
+                    <button class="btn btn-primary" onclick="this.closest('div[style]').remove()" style="margin-top:16px;width:100%;justify-content:center;">Close</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function refreshPayments() {
+            loadPayments();
+            showToast('🔄 Payments refreshed!');
+        }
+
+        // ============================================
+        // DOM READY
+        // ============================================
         document.addEventListener('DOMContentLoaded', () => {
             const user = localStorage.getItem('user');
             if (!user) { window.location.href = 'admin-login.html'; return; }
@@ -2192,14 +3174,18 @@ Description: ${report.description}
             document.getElementById('profileEmail').value = currentUser.email || 'ceo@modernfurniturepacific.com';
             document.getElementById('profilePhone').value = currentUser.phone || '';
             
-            document.getElementById('openJobs').textContent = document.querySelectorAll('.application-card .status-open').length;
-            document.getElementById('appBadge').textContent = document.querySelectorAll('.application-card .status-open').length;
-            document.getElementById('totalApplicants').textContent = '12';
-            
+            loadDashboardStats();
             loadProducts();
-            loadCustomerCare();
+            loadJobs();
             loadBranches();
+            loadSuppliers();
+            loadScannerData();
+            loadReviews();
+            loadCustomerCare();
             loadVideos();
+            loadDeliveries();
+            loadPayments();
+            renderAnnouncements();
             
             console.log('✅ CEO Admin loaded:', currentUser);
         });
@@ -2218,6 +3204,7 @@ Description: ${report.description}
                 closeVideoUpload();
                 closeReportModal();
                 closeReportResultModal();
+                closeDeliveryModal();
             }
         });
         
@@ -2238,6 +3225,9 @@ Description: ${report.description}
         });
         document.getElementById('reportResultModal').addEventListener('click', function(e) {
             if (e.target === this) closeReportResultModal();
+        });
+        document.getElementById('deliveryModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDeliveryModal();
         });
     </script>
 </body>

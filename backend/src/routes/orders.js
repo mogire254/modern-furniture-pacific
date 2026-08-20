@@ -1,48 +1,24 @@
 ﻿const express = require('express');
 const router = express.Router();
-const { readData, addItem } = require('../utils/fileHandler');
-const { v4: uuidv4 } = require('uuid');
-const { protect } = require('../middleware/auth');
+const { protect, isAdmin } = require('../middleware/auth');
+const orderController = require('../controllers/orderController');
 
-// @route   GET /api/orders
-router.get('/', protect, (req, res) => {
-  try {
-    const orders = readData('orders');
-    const userOrders = orders.filter(o => o.userId === req.user.id);
-    res.json({
-      success: true,
-      orders: userOrders
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
-});
+// Create order
+router.post('/create', protect, orderController.createOrder);
 
-// @route   POST /api/orders
-router.post('/', protect, (req, res) => {
-  try {
-    const newOrder = {
-      id: uuidv4(),
-      userId: req.user.id,
-      ...req.body,
-      status: 'pending',
-      isPaid: false,
-      createdAt: new Date().toISOString()
-    };
-    addItem('orders', newOrder);
-    res.status(201).json({
-      success: true,
-      order: newOrder
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
-});
+// Get user's orders
+router.get('/my', protect, orderController.getMyOrders);
+
+// Get all orders (Admin only)
+router.get('/', protect, isAdmin, orderController.getAllOrders);
+
+// Update order status (Admin only)
+router.patch('/:id/status', protect, isAdmin, orderController.updateOrderStatus);
+
+// Update payment status (Admin only)
+router.patch('/:id/payment', protect, isAdmin, orderController.updatePaymentStatus);
+
+// Cancel order
+router.patch('/:id/cancel', protect, orderController.cancelOrder);
 
 module.exports = router;

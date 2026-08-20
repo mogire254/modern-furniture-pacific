@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="../css/style.css" />
     <style>
-        /* ===== VIDEO BACKGROUND ===== */
         .video-background {
             position: fixed;
             top: 0;
@@ -32,7 +31,6 @@
             background: rgba(26, 42, 58, 0.6);
         }
 
-        /* ===== LOGIN PAGE ===== */
         .login-page {
             min-height: 100vh;
             display: flex;
@@ -46,41 +44,108 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             padding: 48px;
-            border-radius: var(--radius);
+            border-radius: 16px;
             max-width: 440px;
             width: 100%;
-            box-shadow: var(--shadow);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
         }
         .login-container .logo {
             text-align: center;
             margin-bottom: 32px;
         }
         .login-container .logo img {
-            height: 50px;
+            height: 60px;
             width: auto;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         .login-container .logo h1 {
             font-size: 24px;
-            color: var(--primary);
-            margin-top: 8px;
+            color: #1a2a3a;
         }
         .login-container .logo p {
-            color: var(--gray-600);
+            color: #888;
             font-size: 14px;
         }
-        .login-container .form-footer {
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a2a3a;
+            margin-bottom: 6px;
+        }
+        .form-group label i {
+            color: #c9a94e;
+            margin-right: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e9e7e2;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.4s ease;
+            font-family: inherit;
+            background: #f8f7f4;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #c9a94e;
+            box-shadow: 0 0 0 4px rgba(201,169,78,0.15);
+        }
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .form-options a {
+            color: #c9a94e;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .form-options a:hover {
+            text-decoration: underline;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: inherit;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-primary {
+            background: #c9a94e;
+            color: #1a2a3a;
+        }
+        .btn-primary:hover {
+            background: #e8d5a3;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201,169,78,0.3);
+        }
+        .form-footer {
             text-align: center;
             margin-top: 20px;
             font-size: 14px;
-            color: var(--gray-600);
+            color: #888;
         }
-        .login-container .form-footer a {
-            color: var(--gold);
+        .form-footer a {
+            color: #c9a94e;
             font-weight: 600;
             text-decoration: none;
         }
-        .login-container .form-footer a:hover {
+        .form-footer a:hover {
             text-decoration: underline;
         }
         .message {
@@ -108,81 +173,17 @@
             text-decoration: none;
             font-size: 14px;
             margin-bottom: 20px;
-            transition: var(--transition);
+            transition: all 0.4s ease;
             position: relative;
             z-index: 2;
         }
         .back-home:hover {
-            color: var(--gold);
+            color: #c9a94e;
         }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 28px;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: inherit;
-            text-decoration: none;
-            width: 100%;
-            justify-content: center;
-        }
-        .btn-primary {
-            background: var(--gold);
-            color: var(--primary);
-        }
-        .btn-primary:hover {
-            background: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(201, 169, 78, 0.3);
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--primary);
-            margin-bottom: 6px;
-        }
-        .form-group label i {
-            color: var(--gold);
-            margin-right: 8px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid var(--gray-200);
-            border-radius: 12px;
-            font-size: 15px;
-            transition: var(--transition);
-            font-family: inherit;
-            background: var(--gray-100);
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 4px rgba(201, 169, 78, 0.15);
-        }
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 20px 0;
-            font-size: 14px;
-        }
-        .form-options a {
-            color: var(--gold);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .form-options a:hover {
-            text-decoration: underline;
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 24px;
+            }
         }
     </style>
 </head>
@@ -197,9 +198,7 @@
 
     <div class="login-page">
         <div class="login-container">
-            <a href="../index.html" class="back-home">
-                <i class="fas fa-arrow-left"></i> Back to Home
-            </a>
+            <a href="../index.html" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
 
             <div class="logo">
                 <img src="../assets/images/logo.png" alt="Modern Furniture Pacific" />
@@ -217,7 +216,7 @@
                     <input type="password" id="loginPassword" placeholder="••••••••" required />
                 </div>
                 <div class="form-options">
-                    <label><input type="checkbox" /> Remember Me</label>
+                    <label><input type="checkbox" id="rememberMe" /> Remember Me</label>
                     <a href="#">Forgot Password?</a>
                 </div>
                 <button type="submit" class="btn btn-primary">
@@ -233,15 +232,26 @@
 
     <script>
         // ============================================
-        // UPDATED TO LIVE URL
+        // API CONFIGURATION - LIVE
         // ============================================
         const API_URL = 'https://modern-furniture-api.onrender.com/api';
 
+        // ============================================
+        // HANDLE LOGIN
+        // ============================================
         async function handleLogin(event) {
             event.preventDefault();
             
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const msg = document.getElementById('loginMessage');
+            
+            msg.textContent = '⏳ Logging in...';
+            msg.className = 'message';
+            msg.style.display = 'block';
+            msg.style.background = '#dbeafe';
+            msg.style.color = '#1e40af';
             
             try {
                 const response = await fetch(`${API_URL}/auth/login`, {
@@ -256,8 +266,13 @@
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
                     
-                    const msg = document.getElementById('loginMessage');
-                    msg.textContent = '✅ Login successful!';
+                    if (rememberMe) {
+                        localStorage.setItem('rememberMe', 'true');
+                    } else {
+                        localStorage.removeItem('rememberMe');
+                    }
+                    
+                    msg.textContent = '✅ Login successful! Redirecting...';
                     msg.className = 'message success';
                     msg.style.display = 'block';
                     
@@ -265,19 +280,39 @@
                         window.location.href = 'dashboard.html';
                     }, 1000);
                 } else {
-                    const msg = document.getElementById('loginMessage');
-                    msg.textContent = data.message || 'Login failed';
+                    msg.textContent = '❌ ' + (data.message || 'Login failed. Please check your credentials.');
                     msg.className = 'message error';
                     msg.style.display = 'block';
                 }
             } catch (error) {
-                const msg = document.getElementById('loginMessage');
-                msg.textContent = 'Network error. Is the backend running?';
+                console.error('Login error:', error);
+                msg.textContent = '❌ Network error. Please check your connection.';
                 msg.className = 'message error';
                 msg.style.display = 'block';
-                console.error('Login error:', error);
             }
         }
+
+        // ============================================
+        // CHECK IF ALREADY LOGGED IN
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            if (token && user) {
+                try {
+                    const userData = JSON.parse(user);
+                    if (userData.role && ['super_admin', 'ceo_admin', 'branch_admin'].includes(userData.role)) {
+                        window.location.href = 'admin/admin-login.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                } catch (e) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                }
+            }
+        });
     </script>
 </body>
 </html>

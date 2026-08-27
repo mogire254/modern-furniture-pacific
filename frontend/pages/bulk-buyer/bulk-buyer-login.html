@@ -7,54 +7,305 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        /* ... (same styles as before) ... */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #1a2a3a; overflow-x: hidden; }
-        #bgVideo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
-        .video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 42, 58, 0.75); z-index: 1; }
-        .login-wrapper { position: relative; z-index: 2; width: 100%; max-width: 440px; padding: 20px; margin: 40px auto; }
-        .login-container { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px 32px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .login-logo { text-align: center; margin-bottom: 32px; }
-        .login-logo img { height: 60px; width: auto; margin-bottom: 8px; }
-        .login-logo h1 { font-size: 20px; color: #1a2a3a; font-weight: 700; }
-        .login-logo h1 span { color: #c9a94e; }
-        .login-logo p { color: #888; font-size: 14px; margin-top: 4px; }
-        .login-logo .badge-bulk { display: inline-block; background: #8b5cf6; color: white; padding: 2px 16px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-top: 6px; }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-weight: 600; font-size: 13px; color: #1a2a3a; margin-bottom: 6px; }
-        .form-group label i { color: #c9a94e; margin-right: 8px; }
-        .form-group input { width: 100%; padding: 12px 16px; border: 2px solid #e9e7e2; border-radius: 10px; font-size: 14px; font-family: inherit; background: #f8f7f4; transition: all 0.3s ease; }
-        .form-group input:focus { outline: none; border-color: #c9a94e; box-shadow: 0 0 0 4px rgba(201, 169, 78, 0.15); }
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; border: none; border-radius: 50px; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.4s ease; font-family: inherit; }
-        .btn-primary { background: #c9a94e; color: #1a2a3a; }
-        .btn-primary:hover { background: #e8d5a3; transform: translateY(-2px); box-shadow: 0 12px 30px rgba(201, 169, 78, 0.3); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .login-footer { text-align: center; margin-top: 20px; }
-        .login-footer p { color: #888; font-size: 14px; }
-        .login-footer a { color: #c9a94e; text-decoration: none; font-weight: 600; }
-        .login-footer a:hover { text-decoration: underline; }
-        .error-message { color: #ef4444; font-size: 13px; margin-top: 8px; display: none; padding: 10px 14px; background: #fee2e2; border-radius: 8px; }
-        .error-message.show { display: block; }
-        .success-message { color: #10b981; font-size: 13px; margin-top: 8px; display: none; padding: 10px 14px; background: #d1fae5; border-radius: 8px; }
-        .success-message.show { display: block; }
-        .showrooms-section { margin-top: 30px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 24px 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .showrooms-section h2 { color: #c9a94e; font-size: 18px; text-align: center; margin-bottom: 16px; }
-        .showrooms-section h2 i { margin-right: 8px; }
-        .showrooms-section .subtitle { text-align: center; color: rgba(0, 0, 0, 0.5); font-size: 13px; margin-bottom: 16px; }
-        .showrooms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .showroom-card { background: #f8f7f4; padding: 16px; border-radius: 12px; text-align: center; transition: all 0.3s ease; }
-        .showroom-card:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); }
-        .showroom-card i { font-size: 24px; color: #c9a94e; margin-bottom: 6px; }
-        .showroom-card h4 { font-size: 14px; color: #1a2a3a; margin-bottom: 2px; }
-        .showroom-card p { color: #888; font-size: 12px; margin: 1px 0; }
-        .showroom-card .phone { color: #c9a94e; font-weight: 600; font-size: 12px; }
-        .back-home { display: inline-block; margin-top: 12px; color: #888; text-decoration: none; font-size: 13px; }
-        .back-home:hover { color: #c9a94e; }
-        @media (max-width: 768px) { .showrooms-grid { grid-template-columns: 1fr; } .login-container { padding: 28px 20px; } .login-logo img { height: 45px; } }
-        @media (max-width: 480px) { .login-wrapper { padding: 12px; margin: 20px auto; } .login-container { padding: 20px 16px; } .showrooms-section { padding: 16px; } }
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a2a3a;
+            overflow-x: hidden;
+        }
+
+        #bgVideo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 42, 58, 0.75);
+            z-index: 1;
+        }
+
+        .login-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 440px;
+            padding: 20px;
+            margin: 40px auto;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-logo img {
+            height: 60px;
+            width: auto;
+            margin-bottom: 8px;
+        }
+        .login-logo h1 {
+            font-size: 20px;
+            color: #1a2a3a;
+            font-weight: 700;
+        }
+        .login-logo h1 span {
+            color: #c9a94e;
+        }
+        .login-logo p {
+            color: #888;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .login-logo .badge-bulk {
+            display: inline-block;
+            background: #8b5cf6;
+            color: white;
+            padding: 4px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a2a3a;
+            margin-bottom: 6px;
+        }
+        .form-group label i {
+            color: #c9a94e;
+            margin-right: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9e7e2;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #f8f7f4;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #c9a94e;
+            box-shadow: 0 0 0 4px rgba(201, 169, 78, 0.15);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: #c9a94e;
+            color: #1a2a3a;
+        }
+        .btn-primary:hover {
+            background: #e8d5a3;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201, 169, 78, 0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .login-footer p {
+            color: #888;
+            font-size: 14px;
+        }
+        .login-footer a {
+            color: #c9a94e;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+            padding: 10px 14px;
+            background: #fee2e2;
+            border-radius: 8px;
+        }
+        .error-message.show {
+            display: block;
+        }
+        .success-message {
+            color: #10b981;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+            padding: 10px 14px;
+            background: #d1fae5;
+            border-radius: 8px;
+        }
+        .success-message.show {
+            display: block;
+        }
+
+        /* ===== FIXED: Separate links ===== */
+        .other-logins {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+        }
+        .other-logins a {
+            color: #c9a94e;
+            text-decoration: none;
+        }
+        .other-logins a:hover {
+            text-decoration: underline;
+        }
+
+        .showrooms-section {
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .showrooms-section h2 {
+            color: #c9a94e;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .showrooms-section h2 i {
+            margin-right: 8px;
+        }
+        .showrooms-section .subtitle {
+            text-align: center;
+            color: rgba(0, 0, 0, 0.5);
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+        .showrooms-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .showroom-card {
+            background: #f8f7f4;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .showroom-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        .showroom-card i {
+            font-size: 24px;
+            color: #c9a94e;
+            margin-bottom: 6px;
+        }
+        .showroom-card h4 {
+            font-size: 14px;
+            color: #1a2a3a;
+            margin-bottom: 2px;
+        }
+        .showroom-card p {
+            color: #888;
+            font-size: 12px;
+            margin: 1px 0;
+        }
+        .showroom-card .phone {
+            color: #c9a94e;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .back-home {
+            display: inline-block;
+            margin-top: 12px;
+            color: #888;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .back-home:hover {
+            color: #c9a94e;
+        }
+
+        @media (max-width: 768px) {
+            .showrooms-grid {
+                grid-template-columns: 1fr;
+            }
+            .login-container {
+                padding: 28px 20px;
+            }
+            .login-logo img {
+                height: 45px;
+            }
+        }
+        @media (max-width: 480px) {
+            .login-wrapper {
+                padding: 12px;
+                margin: 20px auto;
+            }
+            .login-container {
+                padding: 20px 16px;
+            }
+            .showrooms-section {
+                padding: 16px;
+            }
+        }
     </style>
 </head>
 <body>
+
     <video autoplay muted loop playsinline id="bgVideo">
         <source src="../../assets/videos/ceo-intro.mp4" type="video/mp4">
     </video>
@@ -69,7 +320,7 @@
                 <span class="badge-bulk"><i class="fas fa-building"></i> Wholesale & Bulk Orders</span>
             </div>
 
-            <!-- ===== FIXED: Login Form (uses EMAIL) ===== -->
+            <!-- ===== BULK LOGIN FORM ===== -->
             <form id="bulkLoginForm" onsubmit="handleBulkLogin(event)">
                 <div class="form-group">
                     <label><i class="fas fa-envelope"></i> Email</label>
@@ -89,11 +340,21 @@
 
                 <div class="login-footer">
                     <p>Don't have a bulk account? <a href="bulk-buyer-register.html">Register as Bulk Buyer</a></p>
-                    <p style="margin-top:8px;font-size:12px;color:#aaa;">
-                        <i class="fas fa-arrow-left"></i> <a href="../../index.html" style="color:#888;">Back to Home</a>
-                    </p>
                 </div>
             </form>
+
+            <!-- ===== FIXED: Separate links ===== -->
+            <div class="other-logins">
+                <p>
+                    <a href="../../pages/login.html"><i class="fas fa-user"></i> User Login</a>
+                    &nbsp;|&nbsp;
+                    <a href="../../pages/admin/admin-login.html"><i class="fas fa-shield-alt"></i> Admin Login</a>
+                </p>
+            </div>
+
+            <div style="text-align:center;margin-top:12px;">
+                <a href="../../index.html" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            </div>
         </div>
 
         <div class="showrooms-section">
@@ -131,9 +392,6 @@
     <script>
         const API_URL = 'https://modern-furniture-api.onrender.com/api';
 
-        // ============================================
-        // ===== FIXED: BULK LOGIN (Uses EMAIL) =====
-        // ============================================
         async function handleBulkLogin(event) {
             event.preventDefault();
 
@@ -146,7 +404,6 @@
             errorEl.classList.remove('show');
             successEl.classList.remove('show');
 
-            // ===== FIXED: Validation =====
             if (!email || !password) {
                 errorEl.textContent = '⚠️ Please enter both email and password';
                 errorEl.classList.add('show');
@@ -166,7 +423,6 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    // Check if user is bulk buyer
                     if (data.user.role !== 'bulk_buyer') {
                         errorEl.textContent = '❌ This account is not registered as a bulk buyer. Please use the regular login.';
                         errorEl.classList.add('show');
@@ -182,12 +438,11 @@
                     successEl.textContent = '✅ Login successful! Redirecting...';
                     successEl.classList.add('show');
 
-                    // ===== FIXED: Correct redirect =====
                     setTimeout(() => {
                         window.location.href = 'bulk-buyer-dashboard.html';
                     }, 1500);
                 } else {
-                    errorEl.textContent = '❌ ' + (data.message || 'Login failed. Please check your credentials.');
+                    errorEl.textContent = '❌ ' + (data.message || 'Invalid email or password');
                     errorEl.classList.add('show');
                     btn.disabled = false;
                     btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';

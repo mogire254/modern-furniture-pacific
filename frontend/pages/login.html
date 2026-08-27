@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Modern Furniture Pacific</title>
+    <title>User Login - Modern Furniture Pacific</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="../css/style.css" />
@@ -62,9 +62,20 @@
             font-size: 24px;
             color: #1a2a3a;
         }
+        .login-container .logo .badge-user {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 4px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
         .login-container .logo p {
             color: #888;
             font-size: 14px;
+            margin-top: 4px;
         }
         .form-group {
             margin-bottom: 20px;
@@ -180,15 +191,21 @@
         .back-home:hover {
             color: #c9a94e;
         }
-        .badge-user {
-            display: inline-block;
-            background: #3b82f6;
-            color: white;
-            padding: 2px 16px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-top: 4px;
+        /* ===== FIXED: Remove combined links ===== */
+        .other-logins {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e9e7e2;
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+        }
+        .other-logins a {
+            color: #c9a94e;
+            text-decoration: none;
+        }
+        .other-logins a:hover {
+            text-decoration: underline;
         }
         @media (max-width: 768px) {
             .login-container {
@@ -217,7 +234,7 @@
                 <p>Welcome back! Please login to your account.</p>
             </div>
 
-            <!-- ===== FIXED: User Login Form ===== -->
+            <!-- ===== USER LOGIN FORM ===== -->
             <form id="loginForm" onsubmit="handleUserLogin(event)">
                 <div class="form-group">
                     <label><i class="fas fa-envelope"></i> Email</label>
@@ -234,20 +251,21 @@
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </button>
+
+                <!-- ===== FIXED: "Sign Up" not "Register" ===== -->
                 <p class="form-footer">
-                    Don't have an account? <a href="register.html">Sign Up</a>
+                    Don't have an account? <a href="signup.html">Sign Up</a>
                 </p>
                 <div id="loginMessage" class="message"></div>
             </form>
 
-            <div style="text-align:center;margin-top:16px;font-size:13px;color:#888;">
-                <a href="../admin/admin-login.html" style="color:#c9a94e;text-decoration:none;">
-                    <i class="fas fa-shield-alt"></i> Admin Login
-                </a>
-                &nbsp;|&nbsp;
-                <a href="../bulk-buyer/bulk-buyer-login.html" style="color:#8b5cf6;text-decoration:none;">
-                    <i class="fas fa-building"></i> Bulk Buyer Login
-                </a>
+            <!-- ===== FIXED: Separate links to other login pages ===== -->
+            <div class="other-logins">
+                <p>
+                    <a href="../admin/admin-login.html"><i class="fas fa-shield-alt"></i> Admin Login</a>
+                    &nbsp;|&nbsp;
+                    <a href="../bulk-buyer/bulk-buyer-login.html" style="color:#8b5cf6;"><i class="fas fa-building"></i> Bulk Buyer Login</a>
+                </p>
             </div>
         </div>
     </div>
@@ -259,7 +277,7 @@
         const API_URL = 'https://modern-furniture-api.onrender.com/api';
 
         // ============================================
-        // ===== FIXED: USER LOGIN =====
+        // USER LOGIN
         // ============================================
         async function handleUserLogin(event) {
             event.preventDefault();
@@ -269,11 +287,9 @@
             const rememberMe = document.getElementById('rememberMe').checked;
             const msg = document.getElementById('loginMessage');
 
-            // Reset message
             msg.className = 'message';
             msg.style.display = 'none';
 
-            // ===== VALIDATION =====
             if (!email || !password) {
                 msg.textContent = '⚠️ Please enter both email and password';
                 msg.className = 'message error';
@@ -298,16 +314,15 @@
                 if (data.success) {
                     const user = data.user;
 
-                    // ===== FIXED: Check if user is admin - redirect to admin login page instead =====
+                    // Check if admin - show error
                     const adminRoles = ['super_admin', 'ceo_admin', 'branch_admin'];
                     if (adminRoles.includes(user.role)) {
-                        msg.textContent = '⚠️ This is an admin account. Please use the Admin Login page.';
+                        msg.textContent = '⚠️ Admin accounts must use the Admin Login page.';
                         msg.className = 'message error';
                         msg.style.display = 'block';
                         return;
                     }
 
-                    // Save token and user data
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(user));
 
@@ -321,7 +336,6 @@
                     msg.className = 'message success';
                     msg.style.display = 'block';
 
-                    // ===== FIXED: Redirect regular users to user dashboard =====
                     setTimeout(() => {
                         if (user.role === 'bulk_buyer') {
                             window.location.href = 'bulk-buyer/bulk-buyer-dashboard.html';
@@ -331,7 +345,7 @@
                     }, 1000);
 
                 } else {
-                    msg.textContent = '❌ ' + (data.message || 'Login failed. Please check your credentials.');
+                    msg.textContent = '❌ ' + (data.message || 'Invalid email or password');
                     msg.className = 'message error';
                     msg.style.display = 'block';
                 }
@@ -344,7 +358,7 @@
         }
 
         // ============================================
-        // ===== FIXED: REMOVE AUTO-REDIRECT =====
+        // CHECK IF ALREADY LOGGED IN
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
@@ -355,17 +369,12 @@
                     const userData = JSON.parse(user);
                     const adminRoles = ['super_admin', 'ceo_admin', 'branch_admin'];
 
-                    // ===== FIXED: Only redirect if NOT admin =====
                     if (!adminRoles.includes(userData.role)) {
                         if (userData.role === 'bulk_buyer') {
                             window.location.href = 'bulk-buyer/bulk-buyer-dashboard.html';
                         } else {
                             window.location.href = 'dashboard.html';
                         }
-                    } else {
-                        // Admin users - stay on login page or go to admin login
-                        // Don't auto-redirect
-                        console.log('Admin account detected. Please use Admin Login page.');
                     }
                 } catch (e) {
                     localStorage.removeItem('token');

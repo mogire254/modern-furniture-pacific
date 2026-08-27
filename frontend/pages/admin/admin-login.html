@@ -39,6 +39,9 @@
         .admin-banner i { margin-right: 8px; }
         .auto-login-badge { background: #10b981; color: white; padding: 8px 16px; border-radius: 8px; font-size: 13px; text-align: center; margin-bottom: 16px; display: none; }
         .auto-login-badge i { margin-right: 8px; }
+        .user-link { text-align: center; margin-top: 12px; font-size: 13px; }
+        .user-link a { color: #888; text-decoration: none; }
+        .user-link a:hover { color: #c9a94e; }
     </style>
 </head>
 <body>
@@ -52,10 +55,12 @@
         </div>
         <div id="autoLoginBadge" class="auto-login-badge"><i class="fas fa-robot"></i> Auto-login in progress...</div>
         <div class="admin-banner"><i class="fas fa-shield-alt"></i> Admin access is restricted to authorized personnel only</div>
+
+        <!-- ===== FIXED: Admin Login Form ===== -->
         <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
             <div class="form-group">
                 <label><i class="fas fa-envelope"></i> Email</label>
-                <input type="email" id="adminEmail" placeholder="superadmin@modernfurniturepacific.com" required />
+                <input type="email" id="adminEmail" placeholder="admin@modernfurniturepacific.com" required />
             </div>
             <div class="form-group">
                 <label><i class="fas fa-lock"></i> Password</label>
@@ -68,31 +73,50 @@
             <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Admin Login</button>
             <div id="adminLoginMessage" class="message"></div>
         </form>
-        <p class="form-footer"><a href="../../pages/login.html">Regular User Login</a> • <a href="#">Contact Support</a></p>
+
+        <div class="user-link">
+            <a href="../../pages/login.html"><i class="fas fa-user"></i> Regular User Login</a>
+            &nbsp;|&nbsp;
+            <a href="../../pages/bulk-buyer/bulk-buyer-login.html" style="color:#8b5cf6;">
+                <i class="fas fa-building"></i> Bulk Buyer Login
+            </a>
+        </div>
+        <p class="form-footer"><a href="#">Contact Support</a></p>
     </div>
 
     <script>
         // ============================================
-        // LIVE API URL - Updated for Render Deployment
+        // LIVE API URL
         // ============================================
         const API_URL = 'https://modern-furniture-api.onrender.com/api';
 
         // ============================================
-        // HANDLE ADMIN LOGIN
+        // ===== FIXED: ADMIN LOGIN =====
         // ============================================
         async function handleAdminLogin(event) {
             event.preventDefault();
-            const email = document.getElementById('adminEmail').value;
+
+            const email = document.getElementById('adminEmail').value.trim();
             const password = document.getElementById('adminPassword').value;
             const msg = document.getElementById('adminLoginMessage');
-            
-            // Show loading state
-            msg.textContent = '⏳ Logging in...';
+
+            // Reset message
             msg.className = 'message';
+            msg.style.display = 'none';
+
+            // ===== VALIDATION =====
+            if (!email || !password) {
+                msg.textContent = '⚠️ Please enter both email and password';
+                msg.className = 'message error';
+                msg.style.display = 'block';
+                return;
+            }
+
+            msg.textContent = '⏳ Logging in...';
             msg.style.display = 'block';
             msg.style.background = '#dbeafe';
             msg.style.color = '#1e40af';
-            
+
             try {
                 const response = await fetch(`${API_URL}/auth/login`, {
                     method: 'POST',
@@ -100,29 +124,31 @@
                     body: JSON.stringify({ email, password })
                 });
                 const data = await response.json();
-                
+
                 if (data.success) {
                     const user = data.user;
+
+                    // ===== FIXED: Check if user is admin =====
                     const adminRoles = ['super_admin', 'ceo_admin', 'branch_admin'];
-                    
                     if (!adminRoles.includes(user.role)) {
-                        msg.textContent = '❌ Access denied. Admin privileges required.';
+                        msg.textContent = '❌ Access denied. Admin privileges required. Please use the regular login page.';
                         msg.className = 'message error';
                         msg.style.display = 'block';
                         return;
                     }
-                    
+
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(user));
-                    
+
                     // Clear auto-login session data
                     sessionStorage.removeItem('loginEmail');
                     sessionStorage.removeItem('autoLogin');
-                    
+
                     msg.textContent = '✅ Admin login successful! Redirecting...';
                     msg.className = 'message success';
                     msg.style.display = 'block';
-                    
+
+                    // ===== FIXED: Redirect based on admin role =====
                     setTimeout(() => {
                         if (user.role === 'super_admin') {
                             window.location.href = 'super-admin.html';
@@ -141,58 +167,51 @@
                 }
             } catch (error) {
                 console.error('Admin login error:', error);
-                msg.textContent = '❌ Network error. Please check your connection or backend status.';
+                msg.textContent = '❌ Network error. Please check your connection.';
                 msg.className = 'message error';
                 msg.style.display = 'block';
             }
         }
 
         // ============================================
-        // CHECK IF ALREADY LOGGED IN / AUTO-LOGIN
+        // CHECK IF ALREADY LOGGED IN
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
             // Check for auto-login
             const loginEmail = sessionStorage.getItem('loginEmail');
             const autoLogin = sessionStorage.getItem('autoLogin');
-            
-            // Show auto-login badge if auto-login is in progress
+
             if (loginEmail && autoLogin === 'true') {
                 const badge = document.getElementById('autoLoginBadge');
                 badge.style.display = 'block';
                 badge.innerHTML = `<i class="fas fa-robot"></i> Auto-login as ${loginEmail}...`;
-            }
-            
-            if (loginEmail && autoLogin === 'true') {
-                // Auto-fill the email
+
                 const emailField = document.getElementById('adminEmail');
                 if (emailField) {
                     emailField.value = loginEmail;
                 }
-                
-                // Auto-submit the form
+
                 setTimeout(() => {
                     document.getElementById('adminLoginForm').dispatchEvent(new Event('submit'));
                 }, 600);
-                
-                // Clear session storage after use (cleared in handleAdminLogin on success)
-                // If login fails, clear it anyway after a delay
+
                 setTimeout(() => {
                     sessionStorage.removeItem('loginEmail');
                     sessionStorage.removeItem('autoLogin');
                 }, 10000);
-                
+
                 return;
             }
-            
-            // Regular login check - redirect if already logged in
+
+            // ===== FIXED: Only redirect if admin is already logged in =====
             const token = localStorage.getItem('token');
             const user = localStorage.getItem('user');
-            
+
             if (token && user) {
                 try {
                     const userData = JSON.parse(user);
                     const adminRoles = ['super_admin', 'ceo_admin', 'branch_admin'];
-                    
+
                     if (adminRoles.includes(userData.role)) {
                         if (userData.role === 'super_admin') {
                             window.location.href = 'super-admin.html';

@@ -1,5 +1,5 @@
 // ============================================
-// COMPLETE API CONFIGURATION - PRODUCTION READY
+// COMPLETE API CONFIGURATION - 100 YEAR TOKEN
 // ============================================
 
 // API URL - Render Backend
@@ -7,6 +7,14 @@ const API_URL = 'https://modern-furniture-api.onrender.com/api';
 
 // WebSocket URL for real-time chat
 const WS_URL = 'wss://modern-furniture-api.onrender.com';
+
+// Token Configuration - 100 Years!
+const TOKEN_CONFIG = {
+    expiry: '100y',        // 100 years - never expires!
+    storageKey: 'token',
+    userKey: 'user',
+    expiryKey: 'tokenExpiry'
+};
 
 // Company Contact Info
 const COMPANY_INFO = {
@@ -117,4 +125,5 @@ const API_ENDPOINTS = {
 };
 
 console.log('✅ API_URL configured:', API_URL);
+console.log('✅ 100-year token configured');
 console.log('✅ API Endpoints loaded');

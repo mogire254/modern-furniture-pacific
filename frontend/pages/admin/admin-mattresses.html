@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Mattresses - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8f7f4; }
+        
+        .admin-wrapper { display: flex; min-height: 100vh; }
+        
+        .admin-sidebar {
+            width: 280px;
+            background: #1a2a3a;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        .admin-sidebar::-webkit-scrollbar { width: 4px; }
+        .admin-sidebar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .admin-sidebar::-webkit-scrollbar-thumb { background: #c9a94e; border-radius: 4px; }
+        
+        .admin-sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .admin-sidebar-header .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .admin-sidebar-header .logo img { height: 40px; width: auto; }
+        .admin-sidebar-header .logo span { color: white; font-weight: 700; font-size: 16px; }
+        .admin-sidebar-header .role-badge {
+            background: #3b82f6;
+            color: white;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        .close-sidebar {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .admin-nav { padding: 16px 0; }
+        .admin-nav a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 24px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            position: relative;
+        }
+        .admin-nav a:hover { background: rgba(255,255,255,0.05); color: white; }
+        .admin-nav a.active { background: rgba(255,255,255,0.08); color: #c9a94e; border-left-color: #c9a94e; }
+        .admin-nav a i { width: 20px; text-align: center; font-size: 16px; }
+        .admin-nav a .badge {
+            position: absolute;
+            right: 24px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .admin-nav .logout { margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; color: #ef4444; }
+        .admin-nav .logout:hover { color: #ef4444; }
+        
+        .admin-main { flex: 1; margin-left: 280px; }
+        
+        .admin-topbar {
+            background: white;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid #e9e7e2;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+        .hamburger-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #1a2a3a;
+            padding: 8px;
+            transition: all 0.3s ease;
+        }
+        .hamburger-btn:hover { color: #c9a94e; }
+        
+        .admin-topbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+        .admin-topbar .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #c9a94e;
+            object-fit: cover;
+        }
+        .admin-topbar .user-info span { font-weight: 500; color: #1a2a3a; }
+        
+        .admin-content { padding: 32px; }
+        
+        .section {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+        .section h2 { margin-bottom: 16px; color: #1a2a3a; }
+        .section h2 i { color: #c9a94e; margin-right: 8px; }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: inherit;
+        }
+        .btn-primary { background: #c9a94e; color: #1a2a3a; }
+        .btn-primary:hover { background: #e8d5a3; transform: translateY(-2px); }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-warning { background: #f59e0b; color: #1a2a3a; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-sm { padding: 4px 12px; font-size: 12px; border-radius: 20px; }
+        .btn-outline { background: transparent; border: 2px solid #c9a94e; color: #c9a94e; }
+        .btn-outline:hover { background: #c9a94e; color: #1a2a3a; }
+        .btn-info { background: #3b82f6; color: white; }
+        .btn-info:hover { background: #2563eb; }
+        .btn-lg { padding: 14px 32px; font-size: 16px; }
+        
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a2a3a;
+            margin-bottom: 6px;
+        }
+        .form-group label i { color: #c9a94e; margin-right: 8px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9e7e2;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #f8f7f4;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #c9a94e;
+            box-shadow: 0 0 0 4px rgba(201,169,78,0.15);
+        }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        .form-group .helper { font-size: 12px; color: #888; margin-top: 4px; }
+        .form-group .checkbox-group { display: flex; gap: 12px; flex-wrap: wrap; }
+        .form-group .checkbox-group label { font-weight: 400; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        
+        .status-badge {
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-badge.available { background: #d1fae5; color: #065f46; }
+        .status-badge.sold { background: #fee2e2; color: #991b1b; }
+        .status-badge.pre-order { background: #fef3c7; color: #92400e; }
+        
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1a2a3a;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            z-index: 2000;
+            max-width: 400px;
+            animation: slideUp 0.3s ease-out;
+            display: none;
+        }
+        .toast.show { display: block; }
+        .toast .close-toast { background: none; border: none; color: rgba(255,255,255,0.6); float: right; cursor: pointer; font-size: 18px; }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            max-width: 750px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+        }
+        .modal-content .close-modal {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+            background: none;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .modal-content .close-modal:hover { color: #ef4444; transform: rotate(90deg); }
+        
+        .upload-area {
+            border: 2px dashed #e9e7e2;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover { border-color: #c9a94e; background: #fef9f0; }
+        .upload-area .upload-icon { font-size: 36px; color: #c9a94e; }
+        .upload-area .upload-text { color: #888; margin-top: 8px; }
+        .upload-area .upload-sub { color: #aaa; font-size: 12px; }
+        
+        .uploaded-files-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .uploaded-file-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background: #f8f7f4;
+            border-radius: 8px;
+            border: 1px solid #e9e7e2;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .uploaded-file-item img { width: 100%; height: 100%; object-fit: cover; }
+        .uploaded-file-item .file-icon { font-size: 32px; color: #c9a94e; }
+        .uploaded-file-item .remove-file {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .uploaded-file-item .remove-file:hover { background: #dc2626; transform: scale(1.1); }
+        .uploaded-file-item .file-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .mattress-card {
+            background: #f8f7f4;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e9e7e2;
+            transition: all 0.3s ease;
+        }
+        .mattress-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+        .mattress-card .mattress-image {
+            background: #1a2a3a;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            overflow: hidden;
+        }
+        .mattress-card .mattress-image img { width: 100%; height: 100%; object-fit: cover; }
+        .mattress-card .mattress-body { padding: 16px; }
+        .mattress-card .mattress-body .mattress-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+        .mattress-card .mattress-body .mattress-title h3 {
+            font-size: 16px;
+            color: #1a2a3a;
+            margin: 0;
+        }
+        .empty-state { text-align: center; padding: 40px; color: #888; }
+        .empty-state i { font-size: 48px; color: #ddd; margin-bottom: 16px; }
+        .empty-state h3 { color: #666; margin-bottom: 8px; }
+        
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .filter-bar select, .filter-bar input {
+            padding: 10px 16px;
+            border: 2px solid #e9e7e2;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: white;
+        }
+        .filter-bar select:focus, .filter-bar input:focus { outline: none; border-color: #c9a94e; }
+        
+        @media (max-width: 768px) {
+            .admin-sidebar { transform: translateX(-100%); width: 280px; max-width: 80%; box-shadow: 2px 0 20px rgba(0,0,0,0.2); }
+            .admin-sidebar.active { transform: translateX(0); }
+            .close-sidebar { display: block; }
+            .admin-main { margin-left: 0; }
+            .hamburger-btn { display: block; }
+            .admin-topbar { padding: 12px 16px; }
+            .admin-content { padding: 16px; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .grid-3 { grid-template-columns: 1fr; }
+            .modal-content { max-width: 95%; padding: 20px; }
+        }
+        @media (min-width: 769px) {
+            .admin-sidebar { transform: translateX(0) !important; }
+            .close-sidebar { display: none !important; }
+            .hamburger-btn { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toast" id="toast">
+        <button class="close-toast" onclick="closeToast()">&times;</button>
+        <p id="toastMessage">Notification</p>
+    </div>
+
+    <!-- ===== MATTRESS MODAL ===== -->
+    <div class="modal" id="mattressModal">
+        <div class="modal-content" style="max-width:750px;">
+            <button class="close-modal" onclick="closeMattressModal()">&times;</button>
+            <h2 id="mattressModalTitle"><i class="fas fa-plus-circle"></i> Add New Mattress</h2>
+            <form onsubmit="saveMattress(event)" id="mattressForm">
+                <input type="hidden" id="mattressId" />
+                <div class="grid-2">
+                    <div class="form-group"><label><i class="fas fa-tag"></i> Mattress Name</label><input type="text" id="matName" placeholder="e.g., Luxury Orthopedic" required /></div>
+                    <div class="form-group"><label><i class="fas fa-th-large"></i> Category</label>
+                        <select id="matCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="Orthopedic Mattress">💪 Orthopedic Mattress</option>
+                            <option value="Pocket Spring Mattress">🔧 Pocket Spring Mattress</option>
+                            <option value="Cloud Foam Mattress">☁️ Cloud Foam Mattress</option>
+                            <option value="Nobel Mattress">👑 Nobel Mattress</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group"><label><i class="fas fa-money-bill-wave"></i> Price (KSh)</label><input type="number" id="matPrice" placeholder="e.g., 89999" required /></div>
+                    <div class="form-group"><label><i class="fas fa-tags"></i> Sale Price (KSh)</label><input type="number" id="matSalePrice" placeholder="Leave empty if no sale" /><div class="helper">Discounted price for promotions</div></div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group"><label><i class="fas fa-boxes"></i> Stock Quantity</label><input type="number" id="matStock" placeholder="e.g., 10" required /></div>
+                    <div class="form-group"><label><i class="fas fa-circle"></i> Status</label><select id="matStatus"><option value="available">Available</option><option value="sold">Sold</option><option value="pre-order">Pre-order</option></select></div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group"><label><i class="fas fa-ruler-combined"></i> Size</label><input type="text" id="matSize" placeholder="e.g., 6ft x 6ft" /></div>
+                    <div class="form-group"><label><i class="fas fa-weight-hanging"></i> Weight</label><input type="text" id="matWeight" placeholder="e.g., 100kg" /></div>
+                </div>
+                <div class="form-group"><label><i class="fas fa-align-left"></i> Description</label><textarea id="matDescription" placeholder="Describe the mattress..." rows="3"></textarea></div>
+                <div class="grid-2">
+                    <div class="form-group"><label><i class="fas fa-store"></i> Branch</label><select id="matBranch"><option value="all">All Branches</option><option value="ruiru">Ruiru</option><option value="nyeri">Nyeri</option><option value="nakuru">Nakuru</option></select></div>
+                    <div class="form-group"><label><i class="fas fa-list"></i> Features</label><input type="text" id="matFeatures" placeholder="e.g., Memory foam, Hypoallergenic (comma separated)" /><div class="helper">Separate features with commas</div></div>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-upload"></i> Upload Images</label>
+                    <div class="upload-area" onclick="document.getElementById('fileUpload').click()">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <p class="upload-text">Click to upload images</p>
+                        <p class="upload-sub">Supports: JPG, PNG, GIF</p>
+                        <input type="file" id="fileUpload" multiple accept="image/*" style="display:none" onchange="handleFileUpload(this)" />
+                    </div>
+                    <div id="uploadedFilesContainer" class="uploaded-files-container"></div>
+                    <input type="hidden" id="matImages" value="" />
+                    <div class="helper">Upload mattress images. You can upload multiple files.</div>
+                </div>
+                
+                <div style="display:flex; gap:12px; margin-top:16px;">
+                    <button type="submit" class="btn btn-primary" style="flex:1; justify-content:center;"><i class="fas fa-save"></i> Save Mattress</button>
+                    <button type="button" class="btn btn-danger" onclick="closeMattressModal()">Cancel</button>
+                </div>
+                <div id="mattressMessage" style="margin-top:12px;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN WRAPPER ===== -->
+    <div class="admin-wrapper">
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-header">
+                <div class="logo">
+                    <img src="../../assets/images/logo.png" alt="Logo" />
+                    <span>Mattress Admin</span>
+                </div>
+                <span class="role-badge">Mattress Mgr</span>
+                <button class="close-sidebar" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+            </div>
+            <nav class="admin-nav">
+                <a class="active" onclick="showSection('dashboard')"><i class="fas fa-home"></i> Dashboard</a>
+                <a onclick="showSection('mattresses')"><i class="fas fa-bed"></i> Mattresses <span class="badge" id="matBadge">0</span></a>
+                <a href="super-admin.html"><i class="fas fa-arrow-left"></i> Back to Super Admin</a>
+                <a class="logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+
+            <!-- Top Bar -->
+            <header class="admin-topbar">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <div class="user-info">
+                    <img src="../../assets/images/avatar-default.png" alt="Admin" />
+                    <span id="adminName">Mattress Manager</span>
+                </div>
+            </header>
+
+            <div class="admin-content">
+
+                <!-- Dashboard -->
+                <section id="dashboardSection">
+                    <h1 style="font-size:28px; color:#1a2a3a; margin-bottom:8px;">🛏️ Mattress Management</h1>
+                    <p style="color:#888; margin-bottom:24px;">Manage all mattresses across all branches</p>
+                    
+                    <div class="grid-3" style="margin-bottom:24px;">
+                        <div style="background:white;padding:24px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                            <p style="color:#888;font-size:14px;">Total Mattresses</p>
+                            <h2 style="font-size:32px;color:#1a2a3a;" id="totalMattresses">0</h2>
+                        </div>
+                        <div style="background:white;padding:24px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                            <p style="color:#888;font-size:14px;">Available</p>
+                            <h2 style="font-size:32px;color:#10b981;" id="availableMattresses">0</h2>
+                        </div>
+                        <div style="background:white;padding:24px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                            <p style="color:#888;font-size:14px;">Sold</p>
+                            <h2 style="font-size:32px;color:#ef4444;" id="soldMattresses">0</h2>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <button class="btn btn-success" onclick="showAddMattressForm()"><i class="fas fa-plus"></i> Add Mattress</button>
+                        <button class="btn btn-outline" onclick="loadMattresses()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+
+                    <div class="section">
+                        <h2><i class="fas fa-bed"></i> All Mattresses</h2>
+                        <div class="filter-bar">
+                            <input type="text" id="matSearch" placeholder="Search mattresses..." onkeyup="filterMattresses()" style="flex:1;min-width:150px;" />
+                            <select id="matCategoryFilter" onchange="filterMattresses()">
+                                <option value="all">All Categories</option>
+                                <option value="Orthopedic Mattress">💪 Orthopedic</option>
+                                <option value="Pocket Spring Mattress">🔧 Pocket Spring</option>
+                                <option value="Cloud Foam Mattress">☁️ Cloud Foam</option>
+                                <option value="Nobel Mattress">👑 Nobel</option>
+                            </select>
+                            <select id="matStatusFilter" onchange="filterMattresses()">
+                                <option value="all">All Status</option>
+                                <option value="available">Available</option>
+                                <option value="sold">Sold</option>
+                                <option value="pre-order">Pre-order</option>
+                            </select>
+                        </div>
+                        <div id="mattressesContainer" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:20px;">
+                            <div style="grid-column:1/-1;text-align:center;padding:40px;color:#888;">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading mattresses...</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Mattresses Section -->
+                <section id="mattressesSection" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                        <div><h1 style="font-size:28px; color:#1a2a3a;">🛏️ Mattresses</h1><p style="color:#888;">Manage all mattresses</p></div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button class="btn btn-success" onclick="showAddMattressForm()"><i class="fas fa-plus"></i> Add Mattress</button>
+                            <button class="btn btn-outline" onclick="loadMattresses()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="filter-bar">
+                            <input type="text" id="matSearch2" placeholder="Search mattresses..." onkeyup="filterMattresses()" style="flex:1;min-width:150px;" />
+                            <select id="matCategoryFilter2" onchange="filterMattresses()">
+                                <option value="all">All Categories</option>
+                                <option value="Orthopedic Mattress">💪 Orthopedic</option>
+                                <option value="Pocket Spring Mattress">🔧 Pocket Spring</option>
+                                <option value="Cloud Foam Mattress">☁️ Cloud Foam</option>
+                                <option value="Nobel Mattress">👑 Nobel</option>
+                            </select>
+                            <select id="matStatusFilter2" onchange="filterMattresses()">
+                                <option value="all">All Status</option>
+                                <option value="available">Available</option>
+                                <option value="sold">Sold</option>
+                                <option value="pre-order">Pre-order</option>
+                            </select>
+                        </div>
+                        <div id="mattressesContainer2" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:20px;">
+                            <div style="grid-column:1/-1;text-align:center;padding:40px;color:#888;">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading mattresses...</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ============================================
+        // API CONFIGURATION
+        // ============================================
+        const API_URL = 'https://modern-furniture-api.onrender.com/api';
+        let allMattresses = [];
+        let editingMattressId = null;
+        let uploadedFiles = [];
+
+        // ============================================
+        // TOAST
+        // ============================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            msg.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function closeToast() {
+            document.getElementById('toast').classList.remove('show');
+        }
+
+        // ============================================
+        // AUTH
+        // ============================================
+        function getToken() { return localStorage.getItem('token'); }
+        function getHeaders() { return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` }; }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('tokenExpiry');
+                window.location.href = 'admin-login.html';
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('adminSidebar').classList.toggle('active');
+        }
+
+        function showSection(section) {
+            const sections = ['dashboard', 'mattresses'];
+            sections.forEach(s => {
+                const el = document.getElementById(s + 'Section');
+                if (el) el.style.display = 'none';
+            });
+            const target = document.getElementById(section + 'Section');
+            if (target) target.style.display = 'block';
+            document.querySelectorAll('.admin-nav a').forEach(el => el.classList.remove('active'));
+            const navLinks = document.querySelectorAll('.admin-nav a');
+            navLinks.forEach(el => {
+                if (el.textContent.toLowerCase().includes(section)) el.classList.add('active');
+            });
+            if (window.innerWidth <= 768) {
+                document.getElementById('adminSidebar').classList.remove('active');
+            }
+        }
+
+        // ============================================
+        // LOAD MATTRESSES
+        // ============================================
+        async function loadMattresses() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/mattresses`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    allMattresses = data.mattresses || [];
+                    renderMattresses(allMattresses);
+                    updateStats(allMattresses);
+                    document.getElementById('matBadge').textContent = allMattresses.length;
+                } else {
+                    showToast('❌ Failed to load mattresses');
+                }
+            } catch (error) {
+                console.error('Error loading mattresses:', error);
+                showToast('❌ Failed to load mattresses');
+            }
+        }
+
+        function renderMattresses(mattresses) {
+            const container1 = document.getElementById('mattressesContainer');
+            const container2 = document.getElementById('mattressesContainer2');
+            
+            if (!mattresses || mattresses.length === 0) {
+                const emptyHtml = `
+                    <div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:#888;">
+                        <i class="fas fa-bed" style="font-size:48px; color:#ddd; margin-bottom:16px;"></i>
+                        <h3>No Mattresses Found</h3>
+                        <p style="margin-top:8px;">Click "Add Mattress" to create your first mattress.</p>
+                    </div>
+                `;
+                if (container1) container1.innerHTML = emptyHtml;
+                if (container2) container2.innerHTML = emptyHtml;
+                return;
+            }
+
+            const html = mattresses.map(mattress => {
+                const statusColors = { 'available': 'available', 'sold': 'sold', 'pre-order': 'pre-order' };
+                const statusClass = statusColors[mattress.status] || 'available';
+                const saleBadge = mattress.salePrice ? `<span style="background:#ef4444; color:white; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:600; margin-left:8px;">SALE</span>` : '';
+                const branchName = mattress.branch === 'all' ? 'All Branches' : mattress.branch?.charAt(0).toUpperCase() + mattress.branch?.slice(1) || 'N/A';
+                const hasImage = mattress.images && mattress.images.length > 0;
+                const imageSrc = hasImage ? mattress.images[0] : null;
+                const categoryEmojis = {
+                    'Orthopedic Mattress': '💪',
+                    'Pocket Spring Mattress': '🔧',
+                    'Cloud Foam Mattress': '☁️',
+                    'Nobel Mattress': '👑'
+                };
+                const categoryEmoji = categoryEmojis[mattress.category] || '🛏️';
+                
+                return `
+                    <div class="mattress-card">
+                        <div class="mattress-image">
+                            ${imageSrc ? `<img src="${imageSrc}" alt="${mattress.name}" />` : `<i class="fas fa-bed" style="font-size:48px;"></i>`}
+                        </div>
+                        <div class="mattress-body">
+                            <div class="mattress-title">
+                                <h3>${mattress.name}</h3>
+                                <span class="status-badge ${statusClass}">${mattress.status}</span>
+                            </div>
+                            <p style="color:#888; font-size:13px; margin-bottom:8px;">${categoryEmoji} ${mattress.category} • ${branchName}</p>
+                            <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px; flex-wrap:wrap;">
+                                <span style="font-weight:700; color:#1a2a3a; font-size:18px;">KSh ${parseInt(mattress.price || 0).toLocaleString()}</span>
+                                ${mattress.salePrice ? `<span style="text-decoration:line-through; color:#888; font-size:14px;">KSh ${parseInt(mattress.salePrice || 0).toLocaleString()}</span>` : ''}
+                                ${saleBadge}
+                            </div>
+                            ${mattress.size ? `<p style="color:#888; font-size:13px;">📏 ${mattress.size}</p>` : ''}
+                            <p style="color:#888; font-size:13px;">Stock: ${mattress.stock || 0} units</p>
+                            <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+                                <button class="btn btn-primary btn-sm" onclick="editMattress('${mattress.id}')"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteMattress('${mattress.id}')"><i class="fas fa-trash"></i> Delete</button>
+                                <button class="btn btn-warning btn-sm" onclick="toggleMattressStatus('${mattress.id}')"><i class="fas fa-exchange-alt"></i> Status</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (container1) container1.innerHTML = html;
+            if (container2) container2.innerHTML = html;
+        }
+
+        function updateStats(mattresses) {
+            document.getElementById('totalMattresses').textContent = mattresses.length;
+            document.getElementById('availableMattresses').textContent = mattresses.filter(m => m.status === 'available').length;
+            document.getElementById('soldMattresses').textContent = mattresses.filter(m => m.status === 'sold').length;
+            document.getElementById('matBadge').textContent = mattresses.length;
+        }
+
+        // ============================================
+        // FILTER MATTRESSES
+        // ============================================
+        function filterMattresses() {
+            const search = document.getElementById('matSearch')?.value?.toLowerCase() || document.getElementById('matSearch2')?.value?.toLowerCase() || '';
+            const category = document.getElementById('matCategoryFilter')?.value || document.getElementById('matCategoryFilter2')?.value || 'all';
+            const status = document.getElementById('matStatusFilter')?.value || document.getElementById('matStatusFilter2')?.value || 'all';
+            
+            let filtered = allMattresses;
+            if (search) {
+                filtered = filtered.filter(m => 
+                    m.name.toLowerCase().includes(search) || 
+                    (m.description && m.description.toLowerCase().includes(search))
+                );
+            }
+            if (category !== 'all') {
+                filtered = filtered.filter(m => m.category === category);
+            }
+            if (status !== 'all') {
+                filtered = filtered.filter(m => m.status === status);
+            }
+            renderMattresses(filtered);
+        }
+
+        // ============================================
+        // ADD/EDIT MATTRESS
+        // ============================================
+        function showAddMattressForm() {
+            editingMattressId = null;
+            uploadedFiles = [];
+            document.getElementById('uploadedFilesContainer').innerHTML = '';
+            document.getElementById('mattressModalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Mattress';
+            document.getElementById('mattressForm').reset();
+            document.getElementById('mattressId').value = '';
+            document.getElementById('matBranch').value = 'all';
+            document.getElementById('matStatus').value = 'available';
+            document.getElementById('mattressMessage').innerHTML = '';
+            document.getElementById('mattressModal').classList.add('active');
+        }
+
+        async function editMattress(id) {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/mattresses/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const mattress = data.mattress;
+                    editingMattressId = id;
+                    document.getElementById('mattressModalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Mattress';
+                    document.getElementById('mattressId').value = id;
+                    document.getElementById('matName').value = mattress.name || '';
+                    document.getElementById('matCategory').value = mattress.category || '';
+                    document.getElementById('matPrice').value = mattress.price || '';
+                    document.getElementById('matSalePrice').value = mattress.salePrice || '';
+                    document.getElementById('matStock').value = mattress.stock || 0;
+                    document.getElementById('matStatus').value = mattress.status || 'available';
+                    document.getElementById('matDescription').value = mattress.description || '';
+                    document.getElementById('matBranch').value = mattress.branch || 'all';
+                    document.getElementById('matSize').value = mattress.size || '';
+                    document.getElementById('matWeight').value = mattress.weight || '';
+                    document.getElementById('matFeatures').value = (mattress.features || []).join(', ');
+                    
+                    if (mattress.images && mattress.images.length > 0) {
+                        uploadedFiles = mattress.images.map(img => ({ url: img, type: 'image' }));
+                        renderUploadedFiles();
+                    }
+                    
+                    document.getElementById('mattressMessage').innerHTML = '';
+                    document.getElementById('mattressModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading mattress:', error);
+                showToast('❌ Failed to load mattress');
+            }
+        }
+
+        function closeMattressModal() {
+            document.getElementById('mattressModal').classList.remove('active');
+        }
+
+        // ============================================
+        // FILE UPLOAD
+        // ============================================
+        function handleFileUpload(input) {
+            const files = input.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const url = e.target.result;
+                    uploadedFiles.push({ url, type: 'image', file });
+                    renderUploadedFiles();
+                };
+                reader.readAsDataURL(file);
+            }
+            input.value = '';
+        }
+
+        function removeUploadedFile(index) {
+            uploadedFiles.splice(index, 1);
+            renderUploadedFiles();
+        }
+
+        function renderUploadedFiles() {
+            const container = document.getElementById('uploadedFilesContainer');
+            container.innerHTML = '';
+            uploadedFiles.forEach((file, index) => {
+                const div = document.createElement('div');
+                div.className = 'uploaded-file-item';
+                div.innerHTML = `
+                    <img src="${file.url}" alt="Mattress image" />
+                    <button class="remove-file" onclick="removeUploadedFile(${index})">×</button>
+                    <div class="file-name">${file.file?.name || 'image'}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // ============================================
+        // SAVE MATTRESS
+        // ============================================
+        async function saveMattress(event) {
+            event.preventDefault();
+            const id = document.getElementById('mattressId').value;
+            const name = document.getElementById('matName').value;
+            const category = document.getElementById('matCategory').value;
+            const price = parseFloat(document.getElementById('matPrice').value);
+            const salePrice = document.getElementById('matSalePrice').value ? parseFloat(document.getElementById('matSalePrice').value) : null;
+            const stock = parseInt(document.getElementById('matStock').value) || 0;
+            const status = document.getElementById('matStatus').value;
+            const description = document.getElementById('matDescription').value;
+            const branch = document.getElementById('matBranch').value;
+            const size = document.getElementById('matSize').value;
+            const weight = document.getElementById('matWeight').value;
+            const features = document.getElementById('matFeatures').value.split(',').map(f => f.trim()).filter(f => f);
+            
+            const images = [];
+            for (const fileData of uploadedFiles) {
+                if (fileData.file) {
+                    try {
+                        const base64 = await fileToBase64(fileData.file);
+                        images.push(base64);
+                    } catch (err) {
+                        console.error('Error converting file:', err);
+                    }
+                } else if (fileData.url) {
+                    images.push(fileData.url);
+                }
+            }
+            
+            const mattressData = { 
+                name, category, price, salePrice, stock, status, 
+                description, branch, size, weight, features, images 
+            };
+            
+            const msg = document.getElementById('mattressMessage');
+            
+            try {
+                const token = getToken();
+                const url = id ? `${API_URL}/mattresses/${id}` : `${API_URL}/mattresses`;
+                const method = id ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(mattressData)
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    closeMattressModal();
+                    loadMattresses();
+                    uploadedFiles = [];
+                    document.getElementById('uploadedFilesContainer').innerHTML = '';
+                    showToast(id ? '✅ Mattress updated!' : '✅ Mattress created!');
+                } else {
+                    msg.innerHTML = `<span style="color:#ef4444;">❌ ${data.message}</span>`;
+                }
+            } catch (error) {
+                console.error('Error saving mattress:', error);
+                msg.innerHTML = `<span style="color:#ef4444;">❌ Failed to save mattress</span>`;
+            }
+        }
+
+        // ============================================
+        // DELETE MATTRESS
+        // ============================================
+        async function deleteMattress(id) {
+            if (!confirm('⚠️ Are you sure you want to delete this mattress?')) return;
+            
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/mattresses/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    loadMattresses();
+                    showToast('🗑️ Mattress deleted!');
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error deleting mattress:', error);
+                showToast('❌ Failed to delete mattress');
+            }
+        }
+
+        // ============================================
+        // TOGGLE MATTRESS STATUS
+        // ============================================
+        async function toggleMattressStatus(id) {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/mattresses/${id}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    loadMattresses();
+                    showToast(`✅ Status changed to ${data.mattress.status}`);
+                } else {
+                    showToast(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error toggling status:', error);
+                showToast('❌ Failed to update status');
+            }
+        }
+
+        // ============================================
+        // DOM READY
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('user');
+            if (!user) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            
+            try {
+                const userData = JSON.parse(user);
+                document.getElementById('adminName').textContent = userData.name || 'Mattress Manager';
+            } catch (e) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            
+            loadMattresses();
+            console.log('✅ Mattress Manager loaded');
+        });
+
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeMattressModal();
+            }
+        });
+
+        document.getElementById('mattressModal').addEventListener('click', function(e) {
+            if (e.target === this) closeMattressModal();
+        });
+    </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 ﻿// ============================================
-// MAIN APPLICATION - COMPLETE INTEGRATION
+// MAIN APPLICATION - 100 YEAR TOKEN
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,22 +9,66 @@ document.addEventListener('DOMContentLoaded', () => {
         video.play().catch(() => console.log('Video autoplay prevented'));
     }
 
-    // Check authentication
-    if (!auth.isAuthenticated()) {
-        // Redirect to login if on protected page
-        const protectedPages = ['dashboard.html', 'profile.html', 'cart.html', 'checkout.html'];
-        const currentPage = window.location.pathname.split('/').pop();
-        if (protectedPages.includes(currentPage)) {
-            window.location.href = '/pages/login.html';
-        }
-    } else {
-        // Update user info
-        updateUserUI();
-    }
+    // Check authentication with 100-year token support
+    checkAuthAndRedirect();
 
     // Load contact info
     loadContactInfo();
 });
+
+// ===== CHECK AUTHENTICATION - 100 YEAR TOKEN =====
+function checkAuthAndRedirect() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    const expiry = localStorage.getItem('tokenExpiry');
+    
+    // Protected pages list
+    const protectedPages = ['dashboard.html', 'profile.html', 'cart.html', 'checkout.html'];
+    const currentPage = window.location.pathname.split('/').pop();
+    const isProtectedPage = protectedPages.includes(currentPage);
+    
+    // If no token or user, redirect if on protected page
+    if (!token || !user) {
+        if (isProtectedPage) {
+            window.location.href = '/pages/login.html';
+        }
+        return;
+    }
+    
+    // Check if token is marked as 'never' expiring (100 years!)
+    if (expiry === 'never') {
+        // 100-year token - always valid
+        console.log('✅ 100-year token is active');
+        updateUserUI();
+        return;
+    }
+    
+    // Legacy token - check if expired
+    if (expiry) {
+        try {
+            if (new Date(expiry) < new Date()) {
+                // Token expired - logout
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('tokenExpiry');
+                if (isProtectedPage) {
+                    window.location.href = '/pages/login.html';
+                }
+                return;
+            }
+        } catch (e) {
+            // Error checking expiry - logout
+            localStorage.clear();
+            if (isProtectedPage) {
+                window.location.href = '/pages/login.html';
+            }
+            return;
+        }
+    }
+    
+    // No expiry set but token exists - assume valid for now
+    updateUserUI();
+}
 
 // ===== UPDATE USER UI =====
 function updateUserUI() {

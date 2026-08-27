@@ -132,6 +132,19 @@
         .toast.show { display: block; }
         .toast .close { background: none; border: none; color: rgba(255,255,255,0.6); float: right; cursor: pointer; font-size: 18px; }
         
+        .message {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+        .message.success { display: block; background: #d1fae5; color: #065f46; }
+        .message.error { display: block; background: #fee2e2; color: #991b1b; }
+        
+        .back-link { color: #c9a94e; text-decoration: none; font-size: 14px; }
+        .back-link:hover { text-decoration: underline; }
+        
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         
         @media (max-width: 768px) {
@@ -216,7 +229,7 @@
                 <button type="submit" class="btn btn-success" id="submitBtn">
                     <i class="fas fa-paper-plane"></i> Submit Supplier Request
                 </button>
-                <div id="supplierMessage" style="margin-top:12px; display:none;"></div>
+                <div id="supplierMessage" class="message"></div>
             </form>
 
             <!-- Materials Needed -->
@@ -237,6 +250,8 @@
                 </div>
             </div>
         </div>
+
+        <a href="dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
     </div>
 
     <div class="toast" id="toast">
@@ -326,10 +341,11 @@
                 const data = await response.json();
 
                 if (data.success) {
+                    // FIXED: Success message
                     showToast('✅ Supplier request submitted! We will review your application.');
                     msgBox.style.display = 'block';
                     msgBox.className = 'message success';
-                    msgBox.textContent = '✅ ' + (data.message || 'Submitted successfully!');
+                    msgBox.textContent = '✅ Thank you for your interest! We\'ll get back to you soon. Stay tuned!';
                     document.getElementById('supplierForm').reset();
                     btn.innerHTML = '<i class="fas fa-check"></i> Submitted!';
                     

@@ -1,13 +1,13 @@
-const { readData, writeData, addItem, updateItem, findById } = require('../utils/fileHandler');
+const { readData, writeData, addItem, updateItem, findById, findUserById } = require('../utils/fileHandler');
 const { v4: uuidv4 } = require('uuid');
 
-// Submit supplier application (User)
+// ===== FIXED: SUBMIT SUPPLIER (with image upload) =====
 exports.submitSupplier = async (req, res) => {
     try {
         const { 
             companyName, materialType, description, 
             quantity, pricePerUnit, location,
-            businessLicense
+            businessLicense, image
         } = req.body;
 
         if (!companyName || !materialType || !description) {
@@ -30,6 +30,7 @@ exports.submitSupplier = async (req, res) => {
             pricePerUnit: pricePerUnit || '',
             location: location || '',
             businessLicense: businessLicense || '',
+            image: image || null,
             status: 'pending',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
@@ -39,6 +40,7 @@ exports.submitSupplier = async (req, res) => {
 
         // Notify admin
         console.log(`📦 New supplier application from ${req.user.name}: ${companyName}`);
+        console.log(`📧 Email: ${req.user.email}, Phone: ${req.user.phone}`);
 
         res.status(201).json({
             success: true,
@@ -54,7 +56,7 @@ exports.submitSupplier = async (req, res) => {
     }
 };
 
-// Get all suppliers (Admin only)
+// ===== FIXED: GET ALL SUPPLIERS =====
 exports.getSuppliers = async (req, res) => {
     try {
         const { status } = req.query;
@@ -64,12 +66,18 @@ exports.getSuppliers = async (req, res) => {
             suppliers = suppliers.filter(s => s.status === status);
         }
 
+        // Remove sensitive data
+        const safeSuppliers = suppliers.map(s => {
+            return { ...s };
+        });
+
         res.json({
             success: true,
-            suppliers,
+            suppliers: safeSuppliers,
             total: suppliers.length
         });
     } catch (error) {
+        console.error('❌ Get suppliers error:', error);
         res.status(500).json({
             success: false,
             message: error.message
@@ -77,7 +85,7 @@ exports.getSuppliers = async (req, res) => {
     }
 };
 
-// Get user's supplier applications
+// ===== GET USER'S SUPPLIER APPLICATIONS =====
 exports.getMySuppliers = async (req, res) => {
     try {
         const suppliers = readData('suppliers');
@@ -94,7 +102,7 @@ exports.getMySuppliers = async (req, res) => {
     }
 };
 
-// Approve supplier (Admin only)
+// ===== FIXED: APPROVE SUPPLIER (with notification) =====
 exports.approveSupplier = async (req, res) => {
     try {
         const { id } = req.params;
@@ -114,17 +122,34 @@ exports.approveSupplier = async (req, res) => {
 
         updateItem('suppliers', id, supplier);
 
-        // Send notification to user
-        console.log(`📧 Supplier approved for ${supplier.userName} (${supplier.userEmail})`);
-        console.log(`📞 Contact: ${supplier.userPhone}`);
+        // Create notification for user
+        const notification = {
+            id: uuidv4(),
+            userId: supplier.userId,
+            type: 'supplier_approved',
+            title: '✅ Supplier Application Approved!',
+            message: `Dear ${supplier.userName},\n\nYour supplier application for ${supplier.companyName} has been approved! Please reach out to us via Customer Care or WhatsApp to negotiate terms.\n\n📞 WhatsApp: +254 716 335555\n📧 Email: info@modernfurniturepacificltd.com\n\nWe look forward to working with you!`,
+            read: false,
+            createdAt: new Date().toISOString()
+        };
+        addItem('notifications', notification);
+
+        // Send to socket if available
+        const io = req.app.get('io');
+        if (io) {
+            io.to(`user_${supplier.userId}`).emit('new-notification', notification);
+        }
+
+        console.log(`✅ Supplier approved for ${supplier.userName} (${supplier.userEmail})`);
         console.log(`💬 Message: Please contact us via Customer Care or WhatsApp for negotiation`);
 
         res.json({
             success: true,
             supplier,
-            message: '✅ Supplier approved! Contact info sent to user.'
+            message: '✅ Supplier approved! User has been notified.'
         });
     } catch (error) {
+        console.error('❌ Approve supplier error:', error);
         res.status(500).json({
             success: false,
             message: error.message
@@ -132,7 +157,7 @@ exports.approveSupplier = async (req, res) => {
     }
 };
 
-// Reject supplier (Admin only)
+// ===== FIXED: REJECT SUPPLIER (with notification) =====
 exports.rejectSupplier = async (req, res) => {
     try {
         const { id } = req.params;
@@ -152,16 +177,34 @@ exports.rejectSupplier = async (req, res) => {
 
         updateItem('suppliers', id, supplier);
 
-        // Send notification to user
-        console.log(`📧 Supplier rejected for ${supplier.userName} (${supplier.userEmail})`);
+        // Create notification for user
+        const notification = {
+            id: uuidv4(),
+            userId: supplier.userId,
+            type: 'supplier_rejected',
+            title: '📋 Supplier Application Update',
+            message: `Dear ${supplier.userName},\n\nThank you for your interest in supplying materials to Modern Furniture Pacific.\n\nAfter careful review, we regret to inform you that we don't require your services at this time. However, we have kept your contact details and will reach out immediately when we need your materials.\n\nWe appreciate your support and wish you all the best!`,
+            read: false,
+            createdAt: new Date().toISOString()
+        };
+        addItem('notifications', notification);
+
+        // Send to socket if available
+        const io = req.app.get('io');
+        if (io) {
+            io.to(`user_${supplier.userId}`).emit('new-notification', notification);
+        }
+
+        console.log(`❌ Supplier rejected for ${supplier.userName} (${supplier.userEmail})`);
         console.log(`📝 Message: Thank you for your support. We'll contact you when we require your materials.`);
 
         res.json({
             success: true,
             supplier,
-            message: '✅ Supplier rejected. Thank you for your support. We\'ll contact you when we require your materials.'
+            message: '✅ Supplier rejected. User has been notified.'
         });
     } catch (error) {
+        console.error('❌ Reject supplier error:', error);
         res.status(500).json({
             success: false,
             message: error.message
@@ -169,7 +212,7 @@ exports.rejectSupplier = async (req, res) => {
     }
 };
 
-// Get supplier by ID
+// ===== GET SUPPLIER BY ID =====
 exports.getSupplier = async (req, res) => {
     try {
         const { id } = req.params;

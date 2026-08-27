@@ -144,6 +144,24 @@
             border-radius: 20px;
             font-size: 13px;
         }
+        .video-card .video-wrapper .badge-top {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            z-index: 2;
+        }
+        .video-card .video-wrapper .badge-top.ai-generated {
+            background: #8b5cf6;
+            color: white;
+        }
+        .video-card .video-wrapper .badge-top.featured {
+            background: #c9a94e;
+            color: #1a2a3a;
+        }
         .video-card .video-duration {
             position: absolute;
             bottom: 12px;
@@ -173,6 +191,12 @@
             border-radius: 20px;
             font-size: 12px;
         }
+        .video-card .video-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
         
         .empty-state {
             grid-column: 1/-1;
@@ -198,6 +222,30 @@
         }
         .toast.show { display: block; }
         .toast .close { background: none; border: none; color: rgba(255,255,255,0.6); float: right; cursor: pointer; font-size: 18px; }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .btn-primary { background: #c9a94e; color: #1a2a3a; }
+        .btn-primary:hover { background: #e8d5a3; }
+        .btn-sm { padding: 4px 12px; font-size: 11px; }
+        .btn-outline { background: transparent; border: 2px solid #e9e7e2; }
+        .btn-outline:hover { border-color: #c9a94e; color: #c9a94e; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        
+        .back-link { color: #c9a94e; text-decoration: none; font-size: 14px; }
+        .back-link:hover { text-decoration: underline; }
         
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -250,6 +298,7 @@
                     <option value="craftsmanship">Craftsmanship</option>
                     <option value="testimonial">Customer Testimonial</option>
                     <option value="promo">Promotional</option>
+                    <option value="ai-generated">AI Generated</option>
                 </select>
             </div>
         </div>
@@ -276,21 +325,23 @@
         // ============================================
         const API_URL = 'https://modern-furniture-api.onrender.com/api';
         let allVideos = [];
+        let currentUser = null;
 
         // ============================================
         // CHECK LOGIN
         // ============================================
+        const token = localStorage.getItem('token');
         const user = localStorage.getItem('user');
+
         if (user) {
-            const currentUser = JSON.parse(user);
+            currentUser = JSON.parse(user);
             document.getElementById('userName').textContent = currentUser.name || 'User';
         } else {
             document.getElementById('userName').textContent = 'Guest';
         }
 
         // ============================================
-        // ===== LOAD VIDEOS =====
-        // Uses /api/videos (CORRECT)
+        // LOAD VIDEOS
         // ============================================
         async function loadVideos() {
             const grid = document.getElementById('videosGrid');
@@ -309,7 +360,7 @@
                             <i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i>
                             <h3>Failed to load videos</h3>
                             <p>Please try again later.</p>
-                            <button class="btn btn-primary" onclick="loadVideos()" style="margin-top:16px; width:auto;">
+                            <button class="btn btn-primary" onclick="loadVideos()" style="margin-top:16px;">
                                 <i class="fas fa-sync-alt"></i> Retry
                             </button>
                         </div>
@@ -322,7 +373,7 @@
                         <i class="fas fa-wifi" style="color:#ef4444;"></i>
                         <h3>Network Error</h3>
                         <p>Could not connect to the server.</p>
-                        <button class="btn btn-primary" onclick="loadVideos()" style="margin-top:16px; width:auto;">
+                        <button class="btn btn-primary" onclick="loadVideos()" style="margin-top:16px;">
                             <i class="fas fa-sync-alt"></i> Retry
                         </button>
                     </div>
@@ -351,12 +402,18 @@
                     'product': 'Product Showcase',
                     'craftsmanship': 'Craftsmanship',
                     'testimonial': 'Customer Testimonial',
-                    'promo': 'Promotional'
+                    'promo': 'Promotional',
+                    'ai-generated': 'AI Generated'
                 };
                 const category = categoryMap[video.category] || 'General';
                 
-                // Check if video has file data
                 const hasFileData = video.fileData && video.fileData.length > 100;
+                const isAIGenerated = video.isAIGenerated || false;
+                const isFeatured = video.isFeatured || false;
+                
+                const badgeHtml = [];
+                if (isAIGenerated) badgeHtml.push('<span class="badge-top ai-generated">🤖 AI</span>');
+                if (isFeatured) badgeHtml.push('<span class="badge-top featured">✦ Featured</span>');
                 
                 return `
                     <div class="video-card" data-category="${video.category || 'general'}">
@@ -371,6 +428,7 @@
                                     <span class="play-text">Click to Play</span>
                                 </div>`
                             }
+                            ${badgeHtml.join('')}
                             <span class="video-duration">${video.duration || '2:30'}</span>
                         </div>
                         <div class="video-info">
@@ -378,9 +436,14 @@
                             <div class="video-description">${video.note || video.description || 'No description available.'}</div>
                             <div class="video-meta">
                                 <span><i class="fas fa-tag"></i> <span class="tag">${category}</span></span>
-                                <span><i class="fas fa-calendar"></i> ${video.uploadedAt ? new Date(video.uploadedAt).toLocaleDateString() : 'Recently'}</span>
+                                <span><i class="fas fa-calendar"></i> ${video.createdAt ? new Date(video.createdAt).toLocaleDateString() : 'Recently'}</span>
                                 <span><i class="fas fa-eye"></i> ${video.views || 0} views</span>
                                 <span><i class="fas fa-thumbs-up"></i> ${video.likes || 0}</span>
+                                ${video.sendTo ? `<span><i class="fas fa-location-arrow"></i> ${video.sendTo === 'both' ? 'Carousel + Video' : video.sendTo}</span>` : ''}
+                            </div>
+                            <div class="video-actions">
+                                <button class="btn btn-primary btn-sm" onclick="likeVideo('${video.id}')"><i class="fas fa-thumbs-up"></i> Like</button>
+                                <button class="btn btn-outline btn-sm" onclick="shareVideo('${video.id}')"><i class="fas fa-share-alt"></i> Share</button>
                             </div>
                         </div>
                     </div>
@@ -410,6 +473,46 @@
             }
 
             renderVideos(filtered);
+        }
+
+        // ============================================
+        // LIKE VIDEO
+        // ============================================
+        async function likeVideo(videoId) {
+            try {
+                const response = await fetch(`${API_URL}/videos/${videoId}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('👍 Video liked!');
+                    loadVideos();
+                }
+            } catch (error) {
+                console.error('Error liking video:', error);
+                showToast('❌ Failed to like video');
+            }
+        }
+
+        // ============================================
+        // SHARE VIDEO
+        // ============================================
+        function shareVideo(videoId) {
+            const url = `${window.location.origin}${window.location.pathname}?video=${videoId}`;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Check out this video',
+                    text: 'Watch this video from Modern Furniture Pacific',
+                    url: url
+                });
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('📋 Link copied to clipboard!');
+                });
+            }
         }
 
         // ============================================

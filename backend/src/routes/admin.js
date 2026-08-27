@@ -3,23 +3,28 @@ const router = express.Router();
 const { protect, isSuperAdmin, isAdmin } = require('../middleware/auth');
 const adminController = require('../controllers/adminController');
 
-// Super Admin only routes
-router.get('/', protect, isSuperAdmin, adminController.getAdmins);
-router.post('/create', protect, isSuperAdmin, adminController.createAdmin);
-router.delete('/:id', protect, isSuperAdmin, adminController.deleteAdmin);
-router.put('/:id', protect, isSuperAdmin, adminController.updateAdmin);
+// ============================================
+// SUPER ADMIN ONLY ROUTES
+// ============================================
 
-// User management
+// Get all admins
+router.get('/', protect, isSuperAdmin, adminController.getAdmins);
+
+// Create new admin (CEO or Branch)
+router.post('/create', protect, isSuperAdmin, adminController.createAdmin);
+
+// ===== FIXED: Delete Admin =====
+router.delete('/:id', protect, isSuperAdmin, adminController.deleteAdmin);
+
+// ===== FIXED: Reset Admin Password =====
+router.put('/:id/reset-password', protect, isSuperAdmin, adminController.resetAdminPassword);
+
+// Get all users (Super Admin only)
 router.get('/users', protect, isSuperAdmin, adminController.getAllUsers);
 
-// Branch management
-router.get('/branches', protect, isSuperAdmin, adminController.getBranches);
-router.post('/branches', protect, isSuperAdmin, adminController.createBranch);
-router.delete('/branches/:id', protect, isSuperAdmin, adminController.deleteBranch);
-
-// Maintenance
-router.post('/maintenance', protect, isSuperAdmin, adminController.toggleMaintenance);
-router.get('/maintenance', protect, isSuperAdmin, adminController.getMaintenanceStatus);
+// ============================================
+// ANY ADMIN ROUTES
+// ============================================
 
 // Dashboard stats (any admin)
 router.get('/stats', protect, isAdmin, adminController.getDashboardStats);

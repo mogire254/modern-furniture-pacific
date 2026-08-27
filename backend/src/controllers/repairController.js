@@ -1,19 +1,34 @@
 const { readData, writeData, addItem, updateItem, deleteItem, findById } = require('../utils/fileHandler');
 const { v4: uuidv4 } = require('uuid');
 
-// Submit repair request (User)
+// ===== FIXED: SUBMIT REPAIR (with image upload) =====
 exports.submitRepair = async (req, res) => {
     try {
         const { 
             productType, issue, description, 
             preferredDate, preferredTime, location,
-            phone, images = []
+            phone, image
         } = req.body;
 
-        if (!productType || !issue || !description) {
+        // FIXED: Better validation
+        if (!productType || productType === '') {
             return res.status(400).json({
                 success: false,
-                message: 'Product type, issue, and description are required'
+                message: 'Please select an item type'
+            });
+        }
+        
+        if (!issue || issue.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: 'Please describe the issue'
+            });
+        }
+        
+        if (!description || description.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide a detailed description'
             });
         }
 
@@ -24,13 +39,13 @@ exports.submitRepair = async (req, res) => {
             userEmail: req.user.email,
             userPhone: phone || req.user.phone || '',
             productType,
-            issue,
-            description: description || '',
+            issue: issue.trim(),
+            description: description.trim(),
             preferredDate: preferredDate || null,
             preferredTime: preferredTime || null,
             location: location || '',
-            images: images || [],
-            status: 'pending', // pending, in-progress, completed, cancelled
+            image: image || null,
+            status: 'pending',
             branch: req.user.branch || 'all',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
@@ -56,7 +71,7 @@ exports.submitRepair = async (req, res) => {
     }
 };
 
-// Get all repairs (Admin only)
+// ===== GET ALL REPAIRS (Admin) =====
 exports.getRepairs = async (req, res) => {
     try {
         const { status } = req.query;
@@ -72,6 +87,7 @@ exports.getRepairs = async (req, res) => {
             total: repairs.length
         });
     } catch (error) {
+        console.error('❌ Get repairs error:', error);
         res.status(500).json({
             success: false,
             message: error.message
@@ -79,7 +95,7 @@ exports.getRepairs = async (req, res) => {
     }
 };
 
-// Get user's repairs
+// ===== GET USER'S REPAIRS =====
 exports.getMyRepairs = async (req, res) => {
     try {
         const repairs = readData('repairs');
@@ -96,7 +112,7 @@ exports.getMyRepairs = async (req, res) => {
     }
 };
 
-// Get repair by ID
+// ===== GET REPAIR BY ID =====
 exports.getRepair = async (req, res) => {
     try {
         const { id } = req.params;
@@ -109,7 +125,6 @@ exports.getRepair = async (req, res) => {
             });
         }
 
-        // Check if user owns this repair or is admin
         if (repair.userId !== req.user.id && !req.user.isAdmin) {
             return res.status(403).json({
                 success: false,
@@ -129,7 +144,7 @@ exports.getRepair = async (req, res) => {
     }
 };
 
-// Update repair (Admin only)
+// ===== FIXED: UPDATE REPAIR (with approve/reject) =====
 exports.updateRepair = async (req, res) => {
     try {
         const { id } = req.params;
@@ -161,19 +176,53 @@ exports.updateRepair = async (req, res) => {
 
         updateItem('repairs', id, updates);
 
-        // Send notification based on status
-        if (status === 'in-progress') {
-            console.log(`🔧 Repair in progress for ${repair.userName}. Quote: ${quote || 'TBD'}`);
-        } else if (status === 'completed') {
-            console.log(`✅ Repair completed for ${repair.userName}`);
+        // If status changed to approved/confirmed, notify user
+        if (status === 'approved' || status === 'confirmed') {
+            const notification = {
+                id: uuidv4(),
+                userId: repair.userId,
+                type: 'repair_approved',
+                title: '🔧 Repair Request Confirmed',
+                message: `Dear ${repair.userName},\n\nYour repair request for ${repair.productType} has been confirmed!\n\nWe will contact you shortly to schedule the repair. If you have any questions, please reach out via Customer Care.\n\n📞 WhatsApp: +254 716 335555\n📧 Email: info@modernfurniturepacificltd.com`,
+                read: false,
+                createdAt: new Date().toISOString()
+            };
+            addItem('notifications', notification);
+            
+            const io = req.app.get('io');
+            if (io) {
+                io.to(`user_${repair.userId}`).emit('new-notification', notification);
+            }
         }
+
+        // If status changed to rejected
+        if (status === 'rejected') {
+            const notification = {
+                id: uuidv4(),
+                userId: repair.userId,
+                type: 'repair_rejected',
+                title: '🔧 Repair Request Update',
+                message: `Dear ${repair.userName},\n\nThank you for your repair request. After review, we regret to inform you that we cannot proceed with this repair at this time.\n\nIf you have any questions, please reach out via Customer Care.\n\n📞 WhatsApp: +254 716 335555\n📧 Email: info@modernfurniturepacificltd.com`,
+                read: false,
+                createdAt: new Date().toISOString()
+            };
+            addItem('notifications', notification);
+            
+            const io = req.app.get('io');
+            if (io) {
+                io.to(`user_${repair.userId}`).emit('new-notification', notification);
+            }
+        }
+
+        console.log(`🔧 Repair ${status} for ${repair.userName}`);
 
         res.json({
             success: true,
             repair: { ...repair, ...updates },
-            message: 'Repair updated successfully'
+            message: `Repair ${status} successfully`
         });
     } catch (error) {
+        console.error('❌ Update repair error:', error);
         res.status(500).json({
             success: false,
             message: error.message
@@ -181,7 +230,7 @@ exports.updateRepair = async (req, res) => {
     }
 };
 
-// Update payment status (Admin only)
+// ===== UPDATE PAYMENT STATUS =====
 exports.updatePayment = async (req, res) => {
     try {
         const { id } = req.params;
@@ -214,7 +263,7 @@ exports.updatePayment = async (req, res) => {
     }
 };
 
-// Cancel repair (User)
+// ===== CANCEL REPAIR =====
 exports.cancelRepair = async (req, res) => {
     try {
         const { id } = req.params;

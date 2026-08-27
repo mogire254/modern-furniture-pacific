@@ -1,45 +1,59 @@
 const { readData, writeData, addItem, updateItem, deleteItem, findById } = require('../utils/fileHandler');
 const { v4: uuidv4 } = require('uuid');
 
-// Submit review (User)
+// ===== FIXED: SUBMIT REVIEW (allow 'general' product) =====
 exports.submitReview = async (req, res) => {
     try {
         const { productId, rating, comment, images = [], title = '' } = req.body;
 
-        if (!productId || !rating || !comment) {
-            return res.status(400).json({ success: false, message: 'Product ID, rating, and comment are required' });
+        if (!rating || !comment) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Rating and comment are required' 
+            });
         }
 
-        // Check if product exists
-        const product = findById('products', productId);
-        if (!product) {
-            return res.status(404).json({ success: false, message: 'Product not found' });
+        // FIXED: Allow 'general' product ID for general reviews
+        if (productId && productId !== 'general') {
+            const product = findById('products', productId);
+            if (!product) {
+                return res.status(404).json({ 
+                    success: false, 
+                    message: 'Product not found' 
+                });
+            }
         }
 
         // Check if user already reviewed this product
         const reviews = readData('reviews');
         const existingReview = reviews.find(r => r.productId === productId && r.userId === req.user.id);
         if (existingReview) {
-            return res.status(400).json({ success: false, message: 'You have already reviewed this product' });
+            return res.status(400).json({ 
+                success: false, 
+                message: 'You have already reviewed this product' 
+            });
         }
 
         const review = {
             id: uuidv4(),
-            productId,
+            productId: productId || 'general',
             userId: req.user.id,
             userName: req.user.name,
             userEmail: req.user.email,
             rating: parseInt(rating),
             title: title || '',
-            comment,
+            comment: comment.trim(),
             images: images || [],
-            status: 'pending', // pending, approved, rejected
+            branch: req.user.branch || 'all',
+            status: 'pending',
             likes: 0,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
 
         addItem('reviews', review);
+
+        console.log(`⭐ New review from ${req.user.name} - Rating: ${rating}`);
 
         res.status(201).json({
             success: true,
@@ -48,11 +62,14 @@ exports.submitReview = async (req, res) => {
         });
     } catch (error) {
         console.error('❌ Review error:', error);
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({ 
+            success: false, 
+            message: error.message 
+        });
     }
 };
 
-// Get product reviews (Public)
+// ===== GET PRODUCT REVIEWS =====
 exports.getProductReviews = async (req, res) => {
     try {
         const { productId } = req.params;
@@ -72,11 +89,14 @@ exports.getProductReviews = async (req, res) => {
             averageRating: Math.round(averageRating * 10) / 10
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({ 
+            success: false, 
+            message: error.message 
+        });
     }
 };
 
-// Get all reviews (Admin only)
+// ===== GET ALL REVIEWS =====
 exports.getReviews = async (req, res) => {
     try {
         const { status } = req.query;
@@ -92,11 +112,15 @@ exports.getReviews = async (req, res) => {
             total: reviews.length
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        console.error('❌ Get reviews error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: error.message 
+        });
     }
 };
 
-// Get user's reviews
+// ===== GET USER'S REVIEWS =====
 exports.getMyReviews = async (req, res) => {
     try {
         const reviews = readData('reviews');
@@ -106,18 +130,24 @@ exports.getMyReviews = async (req, res) => {
             reviews: userReviews
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({ 
+            success: false, 
+            message: error.message 
+        });
     }
 };
 
-// Approve review (Admin only)
+// ===== APPROVE REVIEW =====
 exports.approveReview = async (req, res) => {
     try {
         const { id } = req.params;
         const review = findById('reviews', id);
 
         if (!review) {
-            return res.status(404).json({ success: false, message: 'Review not found' });
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Review not found' 
+            });
         }
 
         review.status = 'approved';
@@ -127,21 +157,23 @@ exports.approveReview = async (req, res) => {
 
         updateItem('reviews', id, review);
 
-        // Update product rating
-        const product = findById('products', review.productId);
-        if (product) {
-            const reviews = readData('reviews');
-            const productReviews = reviews.filter(r => 
-                r.productId === review.productId && r.status === 'approved'
-            );
-            const averageRating = productReviews.length > 0 
-                ? productReviews.reduce((sum, r) => sum + r.rating, 0) / productReviews.length 
-                : 0;
-            product.ratings = {
-                average: Math.round(averageRating * 10) / 10,
-                count: productReviews.length
-            };
-            updateItem('products', product.id, product);
+        // Update product rating if product exists
+        if (review.productId && review.productId !== 'general') {
+            const product = findById('products', review.productId);
+            if (product) {
+                const reviews = readData('reviews');
+                const productReviews = reviews.filter(r => 
+                    r.productId === review.productId && r.status === 'approved'
+                );
+                const averageRating = productReviews.length > 0 
+                    ? productReviews.reduce((sum, r) => sum + r.rating, 0) / productReviews.length 
+                    : 0;
+                product.ratings = {
+                    average: Math.round(averageRating * 10) / 10,
+                    count: productReviews.length
+                };
+                updateItem('products', product.id, product);
+            }
         }
 
         res.json({
@@ -150,18 +182,25 @@ exports.approveReview = async (req, res) => {
             message: 'Review approved successfully'
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        console.error('❌ Approve review error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: error.message 
+        });
     }
 };
 
-// Reject review (Admin only)
+// ===== REJECT REVIEW =====
 exports.rejectReview = async (req, res) => {
     try {
         const { id } = req.params;
         const review = findById('reviews', id);
 
         if (!review) {
-            return res.status(404).json({ success: false, message: 'Review not found' });
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Review not found' 
+            });
         }
 
         review.status = 'rejected';
@@ -176,32 +215,53 @@ exports.rejectReview = async (req, res) => {
             message: 'Review rejected'
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        console.error('❌ Reject review error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: error.message 
+        });
     }
 };
 
-// Delete review (Admin only)
+// ===== DELETE REVIEW =====
 exports.deleteReview = async (req, res) => {
     try {
         const { id } = req.params;
+        const review = findById('reviews', id);
+
+        if (!review) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Review not found' 
+            });
+        }
+
         deleteItem('reviews', id);
+
         res.json({
             success: true,
             message: 'Review deleted successfully'
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        console.error('❌ Delete review error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: error.message 
+        });
     }
 };
 
-// Like review (User)
+// ===== LIKE REVIEW =====
 exports.likeReview = async (req, res) => {
     try {
         const { id } = req.params;
         const review = findById('reviews', id);
 
         if (!review) {
-            return res.status(404).json({ success: false, message: 'Review not found' });
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Review not found' 
+            });
         }
 
         review.likes = (review.likes || 0) + 1;
@@ -213,6 +273,9 @@ exports.likeReview = async (req, res) => {
             message: 'Review liked'
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({ 
+            success: false, 
+            message: error.message 
+        });
     }
 };

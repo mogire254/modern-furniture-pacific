@@ -8,13 +8,16 @@ if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-// Ensure all required files exist
+// ===== FIXED: Ensure all required files exist - ADDED mattresses.json =====
 const requiredFiles = [
     'users.json', 'admins.json', 'products.json', 'categories.json',
     'applications.json', 'scanner-measurements.json', 'suppliers.json',
     'repairs.json', 'reviews.json', 'videos.json', 'orders.json',
     'chat.json', 'admin-chat.json', 'deliveries.json', 'announcements.json',
-    'settings.json', 'branches.json'
+    'settings.json', 'branches.json',
+    'mattresses.json',          // ← ADDED
+    'ai-history.json',          // ← ADDED
+    'notifications.json'        // ← ADDED
 ];
 
 requiredFiles.forEach(file => {
@@ -132,6 +135,7 @@ const getStats = () => {
     const repairs = readData('repairs');
     const suppliers = readData('suppliers');
     const reviews = readData('reviews');
+    const mattresses = readData('mattresses'); // ← ADDED
     
     const totalUsers = users.length + admins.length;
     const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
@@ -140,6 +144,7 @@ const getStats = () => {
         totalUsers,
         totalAdmins: admins.length,
         totalProducts: products.length,
+        totalMattresses: mattresses.length, // ← ADDED
         totalOrders: orders.length,
         totalApplications: applications.length,
         totalRepairs: repairs.length,

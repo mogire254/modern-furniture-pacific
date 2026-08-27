@@ -3,11 +3,15 @@ const router = express.Router();
 const { protect, isAdmin } = require('../middleware/auth');
 const customerCareController = require('../controllers/customerCareController');
 
-// User routes
+// ============================================
+// USER ROUTES
+// ============================================
 router.get('/my', protect, customerCareController.getMyMessages);
 router.post('/send', protect, customerCareController.sendMessage);
 
-// Admin routes
+// ============================================
+// ADMIN ROUTES
+// ============================================
 router.get('/all', protect, isAdmin, customerCareController.getAllConversations);
 router.get('/search', protect, isAdmin, customerCareController.searchConversations);
 router.get('/user/:userId', protect, isAdmin, customerCareController.getUserConversation);

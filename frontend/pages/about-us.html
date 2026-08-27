@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contact - Modern Furniture Pacific</title>
+    <title>About Us - Modern Furniture Pacific</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="../css/style.css" />
@@ -39,33 +39,40 @@
         .page-header h1 span { color: #c9a94e; }
         .page-header p { color: #888; margin-top: 8px; font-size: 16px; }
         
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 24px;
-        }
-        .contact-card {
+        .about-content {
             background: white;
-            padding: 32px;
+            padding: 40px;
             border-radius: 16px;
-            text-align: center;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
         }
-        .contact-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
-        .contact-card i { font-size: 40px; color: #c9a94e; margin-bottom: 12px; }
-        .contact-card h3 { font-size: 18px; color: #1a2a3a; margin-bottom: 8px; }
-        .contact-card p { color: #666; font-size: 16px; line-height: 1.6; }
-        .contact-card .label { font-size: 13px; color: #888; margin-top: 8px; display: block; }
+        .about-content h2 { color: #1a2a3a; margin-top: 24px; margin-bottom: 12px; }
+        .about-content h2:first-child { margin-top: 0; }
+        .about-content h2 i { color: #c9a94e; margin-right: 8px; }
+        .about-content p { color: #666; line-height: 1.8; font-size: 16px; }
+        .about-content .values-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        .about-content .value-item {
+            background: #f8f7f4;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .about-content .value-item i { font-size: 24px; color: #c9a94e; margin-bottom: 4px; }
+        .about-content .value-item h4 { color: #1a2a3a; font-size: 14px; }
         
         .back-link { color: #c9a94e; text-decoration: none; font-size: 14px; }
         .back-link:hover { text-decoration: underline; }
         
         @media (max-width: 768px) {
-            .contact-grid { grid-template-columns: 1fr; }
             .header { padding: 12px 16px; }
             .header .logo span { font-size: 14px; }
             .container { padding: 16px; }
+            .about-content { padding: 20px; }
+            .about-content .values-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -85,40 +92,15 @@
 
     <div class="container">
         <div class="page-header">
-            <h1>Contact <span>Us</span></h1>
-            <p>We'd love to hear from you. Reach out to us through any of the channels below.</p>
+            <h1>About <span>Modern Furniture Pacific</span></h1>
+            <p>Learn more about our company, mission, and values.</p>
         </div>
 
-        <div class="contact-grid">
-            <!-- Phone -->
-            <div class="contact-card">
-                <i class="fas fa-phone"></i>
-                <h3>Phone</h3>
-                <p id="contactPhone">0716 335555</p>
-                <span class="label">Available during working hours</span>
+        <div class="about-content" id="aboutContent">
+            <div style="text-align:center; padding:40px; color:#888;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading about us...</p>
             </div>
-
-            <!-- Email -->
-            <div class="contact-card">
-                <i class="fas fa-envelope"></i>
-                <h3>Email</h3>
-                <p id="contactEmail">info@modernfurniturepacificltd.com</p>
-                <span class="label">We respond within 24 hours</span>
-            </div>
-
-            <!-- Working Hours -->
-            <div class="contact-card">
-                <i class="fas fa-clock"></i>
-                <h3>Working Hours</h3>
-                <p id="contactHoursWeek">Mon-Sat: 9:00 AM - 10:00 PM</p>
-                <p id="contactHoursSun">Sun: 10:00 AM - 6:00 PM</p>
-                <span class="label">Visit us during business hours</span>
-            </div>
-        </div>
-
-        <div style="margin-top: 32px; text-align: center; padding: 20px; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
-            <h3 style="color: #1a2a3a; margin-bottom: 8px;">📍 Visit Our Showrooms</h3>
-            <p style="color: #888;">Ruiru Town, Main Street • Nyeri Town, Kenyatta Road • Nakuru Town, Moi Road</p>
         </div>
 
         <a href="dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
@@ -142,22 +124,62 @@
         }
 
         // ============================================
-        // LOAD CONTACT INFO
+        // LOAD ABOUT US
         // ============================================
-        async function loadContactInfo() {
+        async function loadAboutUs() {
             try {
-                const response = await fetch(`${API_URL}/settings/contact`);
+                const response = await fetch(`${API_URL}/settings/about`);
                 const data = await response.json();
                 
-                if (data.success && data.contact) {
-                    const contact = data.contact;
-                    document.getElementById('contactPhone').textContent = contact.phone || '0716 335555';
-                    document.getElementById('contactEmail').textContent = contact.email || 'info@modernfurniturepacificltd.com';
-                    document.getElementById('contactHoursWeek').textContent = contact.hoursWeek || 'Mon-Sat: 9:00 AM - 10:00 PM';
-                    document.getElementById('contactHoursSun').textContent = contact.hoursSun || 'Sun: 10:00 AM - 6:00 PM';
+                const container = document.getElementById('aboutContent');
+                
+                if (data.success && data.about) {
+                    const about = data.about;
+                    const values = about.values || ['Quality', 'Innovation', 'Customer Satisfaction', 'Sustainability'];
+                    
+                    container.innerHTML = `
+                        <h2><i class="fas fa-info-circle"></i> Who We Are</h2>
+                        <p>${about.description || 'Modern Furniture Pacific is a premier furniture design and manufacturing company based in Kenya. With over 15 years of experience, we specialize in creating luxurious, handcrafted furniture that combines traditional craftsmanship with modern innovation.'}</p>
+                        
+                        <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
+                        <p>${about.mission || 'To provide exceptional furniture that combines quality, style, and affordability while ensuring customer satisfaction.'}</p>
+                        
+                        <h2><i class="fas fa-eye"></i> Our Vision</h2>
+                        <p>${about.vision || 'To be the leading furniture provider in East Africa, known for innovation, quality, and customer service.'}</p>
+                        
+                        <h2><i class="fas fa-heart"></i> Our Values</h2>
+                        <div class="values-grid">
+                            ${values.map(value => `
+                                <div class="value-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <h4>${value}</h4>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="margin-top: 24px; padding: 16px; background: #f8f7f4; border-radius: 8px; text-align: center;">
+                            <p style="color: #666; font-size: 14px;">
+                                <i class="fas fa-calendar-alt" style="color: #c9a94e;"></i> 
+                                Founded in 2010 • Proudly Kenyan • Serving East Africa
+                            </p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:40px; color:#888;">
+                            <i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i>
+                            <p>Could not load about us content.</p>
+                        </div>
+                    `;
                 }
             } catch (error) {
-                console.error('Error loading contact info:', error);
+                console.error('Error loading about us:', error);
+                document.getElementById('aboutContent').innerHTML = `
+                    <div style="text-align:center; padding:40px; color:#888;">
+                        <i class="fas fa-wifi" style="color:#ef4444;"></i>
+                        <p>Network error. Please try again.</p>
+                    </div>
+                `;
             }
         }
 
@@ -174,7 +196,7 @@
         // LOAD
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
-            loadContactInfo();
+            loadAboutUs();
         });
     </script>
 </body>

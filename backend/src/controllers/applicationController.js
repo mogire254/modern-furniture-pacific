@@ -24,7 +24,8 @@ exports.createJob = async (req, res) => {
         const { 
             title, location, type, deadline, description, 
             isOpen, quizQuestions, requiredFields, optionalFields,
-            requireResume, requireCertificates, requireId, requirePortfolio
+            requireResume, requireCertificates, requireId, requirePortfolio,
+            phoneRequired, locationRequired, experienceRequired, coverRequired
         } = req.body;
 
         if (!title || !description) {
@@ -40,8 +41,12 @@ exports.createJob = async (req, res) => {
             description,
             isOpen: isOpen !== undefined ? isOpen : true,
             quizQuestions: quizQuestions || [],
-            requiredFields: requiredFields || ['name', 'email', 'phone', 'experience'],
-            optionalFields: optionalFields || ['coverLetter', 'portfolio'],
+            requiredFields: requiredFields || ['name', 'email'],
+            optionalFields: optionalFields || ['phone', 'location', 'experience', 'coverLetter', 'portfolio'],
+            phoneRequired: phoneRequired || false,
+            locationRequired: locationRequired || false,
+            experienceRequired: experienceRequired || false,
+            coverRequired: coverRequired || false,
             requireResume: requireResume !== undefined ? requireResume : true,
             requireCertificates: requireCertificates || false,
             requireId: requireId || false,
@@ -111,14 +116,18 @@ exports.toggleJobStatus = async (req, res) => {
 };
 
 // ============================================
-// JOB APPLICATIONS (Users)
+// JOB APPLICATIONS (Users) - FIXED with all fields
 // ============================================
 
 // Apply for a job (User)
 exports.applyForJob = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, phone, experience, coverLetter, portfolio, quizAnswers, files } = req.body;
+        const { 
+            name, email, phone, location, experience, 
+            coverLetter, portfolio, quizAnswers, 
+            files = {}
+        } = req.body;
 
         const job = findById('applications', id);
         
@@ -135,14 +144,35 @@ exports.applyForJob = async (req, res) => {
             return res.status(400).json({ success: false, message: 'You have already applied for this position' });
         }
 
+        // Validate required fields
+        const errors = [];
+        if (!name || name.trim() === '') errors.push('Full name is required');
+        if (!email || !email.includes('@')) errors.push('Valid email is required');
+        if (job.phoneRequired && (!phone || phone.trim() === '')) errors.push('Phone number is required');
+        if (job.locationRequired && (!location || location.trim() === '')) errors.push('Location is required');
+        if (job.experienceRequired && (!experience || experience.trim() === '')) errors.push('Experience is required');
+        if (job.coverRequired && (!coverLetter || coverLetter.trim() === '')) errors.push('Cover letter is required');
+        if (job.requireResume && !files.resume) errors.push('Resume is required');
+        if (job.requireCertificates && !files.certificates) errors.push('Academic certificates are required');
+        if (job.requireId && !files.idDocument) errors.push('ID document is required');
+        
+        if (errors.length > 0) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Please fill all required fields',
+                errors: errors 
+            });
+        }
+
         const application = {
             id: uuidv4(),
             jobId: id,
             jobTitle: job.title,
             userId: req.user.id,
-            userName: name || req.user.name,
-            userEmail: email || req.user.email,
-            userPhone: phone || req.user.phone || '',
+            userName: name.trim(),
+            userEmail: email.trim(),
+            userPhone: phone || '',
+            location: location || '',
             experience: experience || '',
             coverLetter: coverLetter || '',
             portfolio: portfolio || '',
@@ -157,7 +187,6 @@ exports.applyForJob = async (req, res) => {
         job.applicants.push(application);
         updateItem('applications', id, job);
 
-        // Notify admins
         console.log(`📝 New application for ${job.title} from ${application.userName}`);
         console.log(`📧 Email: ${application.userEmail}`);
 
@@ -167,6 +196,7 @@ exports.applyForJob = async (req, res) => {
             message: '✅ Thank you for your application! Please check your email daily for feedback.'
         });
     } catch (error) {
+        console.error('❌ Apply error:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
@@ -188,7 +218,7 @@ exports.getApplicants = async (req, res) => {
 };
 
 // ============================================
-// REVIEW APPLICATION (Admin)
+// REVIEW APPLICATION (Admin) - with email/notification
 // ============================================
 
 // Approve application (Admin only)
@@ -197,7 +227,6 @@ exports.approveApplication = async (req, res) => {
         const { id } = req.params;
         const { feedback } = req.body;
 
-        // Find which job has this applicant
         const jobs = readData('applications');
         let foundJob = null;
         let foundApplicant = null;
@@ -223,14 +252,30 @@ exports.approveApplication = async (req, res) => {
         }
 
         foundApplicant.status = 'approved';
-        foundApplicant.feedback = feedback || 'Congratulations! Your application has been approved.';
+        foundApplicant.feedback = feedback || '🎉 Congratulations! Your application has been approved. We will contact you shortly with next steps.';
         foundApplicant.reviewedAt = new Date().toISOString();
         foundApplicant.reviewedBy = req.user.id;
 
         jobs[jobIndex].applicants[applicantIndex] = foundApplicant;
         writeData('applications', jobs);
 
-        // Send email notification (in production, use nodemailer)
+        // Create notification for user
+        const notification = {
+            id: uuidv4(),
+            userId: foundApplicant.userId,
+            type: 'application_approved',
+            title: '🎉 Application Approved!',
+            message: `Dear ${foundApplicant.userName},\n\nCongratulations! Your application for ${foundJob.title} has been approved.\n\n${foundApplicant.feedback}\n\nWe will contact you shortly with more details.\n\n📞 WhatsApp: +254 716 335555\n📧 Email: info@modernfurniturepacificltd.com`,
+            read: false,
+            createdAt: new Date().toISOString()
+        };
+        addItem('notifications', notification);
+
+        const io = req.app.get('io');
+        if (io) {
+            io.to(`user_${foundApplicant.userId}`).emit('new-notification', notification);
+        }
+
         console.log(`📧 Approved notification sent to ${foundApplicant.userEmail}`);
         console.log(`🎉 Message: ${foundApplicant.feedback}`);
 
@@ -250,7 +295,6 @@ exports.rejectApplication = async (req, res) => {
         const { id } = req.params;
         const { feedback } = req.body;
 
-        // Find which job has this applicant
         const jobs = readData('applications');
         let foundJob = null;
         let foundApplicant = null;
@@ -276,16 +320,31 @@ exports.rejectApplication = async (req, res) => {
         }
 
         foundApplicant.status = 'rejected';
-        foundApplicant.feedback = feedback || 'After careful review, we regret to inform you that your application has not been successful.';
+        foundApplicant.feedback = feedback || 'After careful review, we regret to inform you that your application has not been successful at this time. We encourage you to apply for future opportunities.';
         foundApplicant.reviewedAt = new Date().toISOString();
         foundApplicant.reviewedBy = req.user.id;
 
         jobs[jobIndex].applicants[applicantIndex] = foundApplicant;
         writeData('applications', jobs);
 
-        // Send email notification (in production, use nodemailer)
+        // Create notification for user
+        const notification = {
+            id: uuidv4(),
+            userId: foundApplicant.userId,
+            type: 'application_rejected',
+            title: '📋 Application Update',
+            message: `Dear ${foundApplicant.userName},\n\nThank you for applying for ${foundJob.title}.\n\n${foundApplicant.feedback}\n\nWe appreciate your interest in joining our team and encourage you to apply for future positions.\n\nWishing you all the best!`,
+            read: false,
+            createdAt: new Date().toISOString()
+        };
+        addItem('notifications', notification);
+
+        const io = req.app.get('io');
+        if (io) {
+            io.to(`user_${foundApplicant.userId}`).emit('new-notification', notification);
+        }
+
         console.log(`📧 Rejection notification sent to ${foundApplicant.userEmail}`);
-        console.log(`📝 Message: ${foundApplicant.feedback}`);
 
         res.json({ 
             success: true, 

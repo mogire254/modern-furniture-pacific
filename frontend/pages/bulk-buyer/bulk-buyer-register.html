@@ -1,0 +1,630 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bulk Buyer Registration - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a2a3a;
+            overflow-x: hidden;
+            padding: 40px 0;
+        }
+
+        /* ===== VIDEO BACKGROUND ===== */
+        #bgVideo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 42, 58, 0.75);
+            z-index: 1;
+        }
+
+        .register-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 560px;
+            padding: 20px;
+            margin: 40px auto;
+        }
+
+        .register-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .register-logo {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .register-logo img {
+            height: 50px;
+            width: auto;
+            margin-bottom: 6px;
+        }
+        .register-logo h1 {
+            font-size: 18px;
+            color: #1a2a3a;
+            font-weight: 700;
+        }
+        .register-logo h1 span {
+            color: #c9a94e;
+        }
+        .register-logo p {
+            color: #888;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+        .register-logo .badge-bulk {
+            display: inline-block;
+            background: #8b5cf6;
+            color: white;
+            padding: 2px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a2a3a;
+            margin-bottom: 4px;
+        }
+        .form-group label i {
+            color: #c9a94e;
+            margin-right: 6px;
+        }
+        .form-group label .required-star {
+            color: #ef4444;
+            margin-left: 3px;
+        }
+        .form-group label .optional-tag {
+            color: #888;
+            font-weight: 400;
+            font-size: 11px;
+            margin-left: 4px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e9e7e2;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            background: #f8f7f4;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #c9a94e;
+            box-shadow: 0 0 0 4px rgba(201, 169, 78, 0.15);
+        }
+        .form-group .helper {
+            font-size: 11px;
+            color: #888;
+            margin-top: 3px;
+        }
+
+        .form-group .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+        }
+        .form-group .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            flex-shrink: 0;
+            accent-color: #c9a94e;
+            cursor: pointer;
+        }
+        .form-group .checkbox-group label {
+            font-weight: 400;
+            font-size: 13px;
+            color: #555;
+            cursor: pointer;
+        }
+        .form-group .checkbox-group label a {
+            color: #c9a94e;
+            text-decoration: none;
+        }
+        .form-group .checkbox-group label a:hover {
+            text-decoration: underline;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: #c9a94e;
+            color: #1a2a3a;
+        }
+        .btn-primary:hover {
+            background: #e8d5a3;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201, 169, 78, 0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .register-footer {
+            text-align: center;
+            margin-top: 18px;
+        }
+        .register-footer p {
+            color: #888;
+            font-size: 13px;
+        }
+        .register-footer a {
+            color: #c9a94e;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .register-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+            padding: 10px 14px;
+            background: #fee2e2;
+            border-radius: 8px;
+        }
+        .error-message.show {
+            display: block;
+        }
+        .success-message {
+            color: #10b981;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+            padding: 10px 14px;
+            background: #d1fae5;
+            border-radius: 8px;
+        }
+        .success-message.show {
+            display: block;
+        }
+
+        /* ===== SHOWROOMS SECTION ===== */
+        .showrooms-section {
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .showrooms-section h2 {
+            color: #c9a94e;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .showrooms-section h2 i {
+            margin-right: 8px;
+        }
+        .showrooms-section .subtitle {
+            text-align: center;
+            color: rgba(0, 0, 0, 0.5);
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+        .showrooms-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .showroom-card {
+            background: #f8f7f4;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .showroom-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        .showroom-card i {
+            font-size: 24px;
+            color: #c9a94e;
+            margin-bottom: 6px;
+        }
+        .showroom-card h4 {
+            font-size: 14px;
+            color: #1a2a3a;
+            margin-bottom: 2px;
+        }
+        .showroom-card p {
+            color: #888;
+            font-size: 12px;
+            margin: 1px 0;
+        }
+        .showroom-card .phone {
+            color: #c9a94e;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .back-home {
+            display: inline-block;
+            margin-top: 12px;
+            color: #888;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .back-home:hover {
+            color: #c9a94e;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .showrooms-grid {
+                grid-template-columns: 1fr;
+            }
+            .register-container {
+                padding: 28px 20px;
+            }
+            .register-logo img {
+                height: 40px;
+            }
+        }
+        @media (max-width: 480px) {
+            .register-wrapper {
+                padding: 12px;
+                margin: 20px auto;
+            }
+            .register-container {
+                padding: 20px 16px;
+            }
+            .showrooms-section {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== VIDEO BACKGROUND ===== -->
+    <video autoplay muted loop playsinline id="bgVideo">
+        <source src="../../assets/videos/ceo-intro.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <div class="register-wrapper">
+        <div class="register-container">
+            <!-- Logo -->
+            <div class="register-logo">
+                <img src="../../assets/images/logo.png" alt="Modern Furniture Pacific" />
+                <h1>Modern <span>Furniture</span> Pacific</h1>
+                <p>Bulk Buyer Registration</p>
+                <span class="badge-bulk"><i class="fas fa-building"></i> Wholesale & Bulk Orders</span>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label><i class="fas fa-building"></i> Company Name <span class="required-star">*</span></label>
+                        <input type="text" id="companyName" placeholder="e.g., ABC Supermarket" required />
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-hashtag"></i> Registration Number <span class="optional-tag">(optional)</span></label>
+                        <input type="text" id="regNumber" placeholder="e.g., KRA-123456" />
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label><i class="fas fa-tag"></i> Business Type <span class="required-star">*</span></label>
+                        <select id="businessType" required>
+                            <option value="">Select business type</option>
+                            <option value="supermarket">🏪 Supermarket</option>
+                            <option value="wholesaler">📦 Wholesaler</option>
+                            <option value="distributor">🚚 Distributor</option>
+                            <option value="retailer">🛒 Retailer</option>
+                            <option value="hospital">🏥 Hospital</option>
+                            <option value="hotel">🏨 Hotel</option>
+                            <option value="school">🏫 School</option>
+                            <option value="office">💼 Office</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Contact Person <span class="required-star">*</span></label>
+                        <input type="text" id="contactPerson" placeholder="Full name of contact person" required />
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email <span class="required-star">*</span></label>
+                        <input type="email" id="email" placeholder="company@email.com" required />
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone <span class="required-star">*</span></label>
+                        <input type="tel" id="phone" placeholder="+254 700 123 456" required />
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password <span class="required-star">*</span></label>
+                        <input type="password" id="password" placeholder="Min 8 characters" required minlength="8" />
+                        <div class="helper">Must be at least 8 characters</div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-check-circle"></i> Confirm Password <span class="required-star">*</span></label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm your password" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-boxes"></i> Minimum Order Quantity <span class="required-star">*</span></label>
+                    <input type="number" id="minOrderQty" placeholder="e.g., 10" value="10" required min="1" />
+                    <div class="helper">Minimum quantity per bulk order</div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="termsAccepted" required />
+                        <label for="termsAccepted">
+                            I agree to the <a href="#terms">Terms and Conditions</a> and confirm that all information provided is accurate.
+                            <span class="required-star">*</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="errorMessage" class="error-message"></div>
+                <div id="successMessage" class="success-message"></div>
+
+                <button type="submit" class="btn btn-primary" id="registerBtn">
+                    <i class="fas fa-paper-plane"></i> Register as Bulk Buyer
+                </button>
+
+                <div class="register-footer">
+                    <p>Already have a bulk account? <a href="login.html">Login here</a></p>
+                    <p style="margin-top:6px;font-size:12px;color:#aaa;">
+                        <i class="fas fa-arrow-left"></i> <a href="../../index.html" style="color:#888;">Back to Home</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+
+        <!-- ===== SHOWROOMS ===== -->
+        <div class="showrooms-section">
+            <h2><i class="fas fa-store"></i> Visit Us in Our Showrooms</h2>
+            <p class="subtitle">Located in Ruiru, Nyeri, and Nakuru</p>
+            <div class="showrooms-grid">
+                <div class="showroom-card">
+                    <i class="fas fa-map-pin"></i>
+                    <h4>Ruiru Showroom</h4>
+                    <p>Ruiru Town, Main Street</p>
+                    <p style="color:#c9a94e;font-size:11px;font-weight:600;">Mon-Sat: 9AM - 6PM</p>
+                    <p class="phone">📞 0716 335555</p>
+                </div>
+                <div class="showroom-card">
+                    <i class="fas fa-map-pin"></i>
+                    <h4>Nyeri Showroom</h4>
+                    <p>Nyeri Town, Kenyatta Road</p>
+                    <p style="color:#c9a94e;font-size:11px;font-weight:600;">Mon-Sat: 9AM - 6PM</p>
+                    <p class="phone">📞 0716 335556</p>
+                </div>
+                <div class="showroom-card">
+                    <i class="fas fa-map-pin"></i>
+                    <h4>Nakuru Showroom</h4>
+                    <p>Nakuru Town, Moi Road</p>
+                    <p style="color:#c9a94e;font-size:11px;font-weight:600;">Mon-Sat: 9AM - 6PM</p>
+                    <p class="phone">📞 0716 335557</p>
+                </div>
+            </div>
+            <div style="text-align:center;margin-top:12px;">
+                <a href="../../index.html" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // API CONFIGURATION
+        // ============================================
+        const API_URL = 'https://modern-furniture-api.onrender.com/api';
+
+        // ============================================
+        // REGISTER
+        // ============================================
+        async function handleRegister(event) {
+            event.preventDefault();
+
+            const companyName = document.getElementById('companyName').value.trim();
+            const regNumber = document.getElementById('regNumber').value.trim();
+            const businessType = document.getElementById('businessType').value;
+            const contactPerson = document.getElementById('contactPerson').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const minOrderQty = parseInt(document.getElementById('minOrderQty').value) || 10;
+            const termsAccepted = document.getElementById('termsAccepted').checked;
+
+            const errorEl = document.getElementById('errorMessage');
+            const successEl = document.getElementById('successMessage');
+            const btn = document.getElementById('registerBtn');
+
+            // Hide previous messages
+            errorEl.classList.remove('show');
+            successEl.classList.remove('show');
+
+            // Validation
+            if (!companyName || !businessType || !contactPerson || !email || !phone || !password) {
+                errorEl.textContent = '⚠️ Please fill in all required fields';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                errorEl.textContent = '❌ Passwords do not match';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            if (password.length < 8) {
+                errorEl.textContent = '❌ Password must be at least 8 characters';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            if (!termsAccepted) {
+                errorEl.textContent = '⚠️ Please agree to the Terms and Conditions';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+
+            try {
+                const response = await fetch(`${API_URL}/bulk-buyer/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        companyName: companyName,
+                        registrationNumber: regNumber,
+                        businessType: businessType,
+                        contactPerson: contactPerson,
+                        email: email,
+                        phone: phone,
+                        password: password,
+                        minOrderQuantity: minOrderQty,
+                        termsAccepted: termsAccepted
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Auto-login after registration
+                    const loginResponse = await fetch(`${API_URL}/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            companyName: companyName,
+                            password: password
+                        })
+                    });
+
+                    const loginData = await loginResponse.json();
+
+                    if (loginData.success) {
+                        localStorage.setItem('token', loginData.token);
+                        localStorage.setItem('user', JSON.stringify(loginData.user));
+                        localStorage.setItem('tokenExpiry', Date.now() + 365 * 24 * 60 * 60 * 1000);
+                    }
+
+                    successEl.innerHTML = `
+                        ✅ ${data.message || 'Registration successful!'}
+                        <br><small>You can now login and start placing bulk orders.</small>
+                    `;
+                    successEl.classList.add('show');
+
+                    // Reset form
+                    document.getElementById('registerForm').reset();
+
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                } else {
+                    errorEl.textContent = '❌ ' + (data.message || 'Registration failed. Please try again.');
+                    errorEl.classList.add('show');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Register as Bulk Buyer';
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                errorEl.textContent = '❌ Network error. Please try again.';
+                errorEl.classList.add('show');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Register as Bulk Buyer';
+            }
+        }
+
+        // ============================================
+        // CHECK IF ALREADY LOGGED IN
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            const expiry = localStorage.getItem('tokenExpiry');
+
+            if (token && user && expiry && Date.now() < parseInt(expiry)) {
+                try {
+                    const userData = JSON.parse(user);
+                    if (userData.role === 'bulk_buyer') {
+                        window.location.href = 'dashboard.html';
+                    }
+                } catch (e) {}
+            }
+        });
+    </script>
+
+</body>
+</html>

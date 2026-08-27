@@ -133,38 +133,11 @@ const hasBranchAccess = (branch) => {
     };
 };
 
-// Rate limiting middleware
-const rateLimit = (maxRequests, windowMs) => {
-    const requests = {};
-    return (req, res, next) => {
-        const key = req.ip;
-        const now = Date.now();
-        
-        if (!requests[key]) {
-            requests[key] = [];
-        }
-        
-        // Clean old requests
-        requests[key] = requests[key].filter(time => now - time < windowMs);
-        
-        if (requests[key].length >= maxRequests) {
-            return res.status(429).json({
-                success: false,
-                message: 'Too many requests, please try again later'
-            });
-        }
-        
-        requests[key].push(now);
-        next();
-    };
-};
-
 module.exports = {
     protect,
     isSuperAdmin,
     isCEOAdmin,
     isBranchAdmin,
     isAdmin,
-    hasBranchAccess,
-    rateLimit
+    hasBranchAccess
 };

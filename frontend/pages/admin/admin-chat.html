@@ -6,174 +6,198 @@
     <title>Admin Chat - Modern Furniture Pacific</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="../../css/style.css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f8f7f4; }
-        
-        .chat-container {
-            display: flex;
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f7f4;
             height: 100vh;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .chat-sidebar {
-            width: 280px;
-            background: #1a2a3a;
-            color: white;
-            padding: 20px;
             display: flex;
             flex-direction: column;
-            border-radius: 16px 0 0 16px;
         }
-        .chat-sidebar .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
-        .chat-sidebar .logo img { height: 40px; width: auto; }
-        .chat-sidebar .logo span { font-weight: 700; font-size: 18px; }
-        .chat-sidebar .back-link { 
-            color: #c9a94e; 
-            text-decoration: none; 
-            font-size: 13px; 
-            margin-bottom: 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .chat-sidebar .back-link:hover { text-decoration: underline; }
-        .chat-sidebar .online-users { flex: 1; }
-        .chat-sidebar .online-users h3 { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .user-item {
+
+        .chat-header {
+            background: #1a2a3a;
+            color: white;
+            padding: 16px 24px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
             gap: 12px;
-            padding: 10px 12px;
+        }
+        .chat-header .logo { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 700; }
+        .chat-header .logo img { height: 35px; width: auto; }
+        .chat-header .user-info { display: flex; align-items: center; gap: 12px; }
+        .chat-header .user-info img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid #8b5cf6;
+            object-fit: cover;
+        }
+        .chat-header .user-info .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .chat-header .user-info .status-dot.online { background: #10b981; }
+        .chat-header .user-info .status-dot.offline { background: #ef4444; }
+        .btn-back {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        .btn-back:hover { background: rgba(255,255,255,0.2); }
+
+        .chat-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .chat-sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e9e7e2;
+            padding: 16px;
+            overflow-y: auto;
+        }
+        .chat-sidebar h3 { font-size: 14px; color: #1a2a3a; margin-bottom: 12px; }
+        .chat-sidebar .admin-item {
+            padding: 12px;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-bottom: 4px;
+            border-left: 3px solid transparent;
         }
-        .user-item:hover { background: rgba(255,255,255,0.05); }
-        .user-item .avatar {
-            width: 40px;
-            height: 40px;
+        .chat-sidebar .admin-item:hover { background: #f8f7f4; }
+        .chat-sidebar .admin-item.active {
+            background: #f8f7f4;
+            border-left-color: #8b5cf6;
+        }
+        .chat-sidebar .admin-item .admin-name { font-weight: 600; color: #1a2a3a; }
+        .chat-sidebar .admin-item .admin-role { font-size: 12px; color: #888; }
+        .chat-sidebar .admin-item .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 16px;
-            color: white;
+            margin-right: 6px;
         }
-        .user-item .avatar.super { background: #ef4444; }
-        .user-item .avatar.ceo { background: #c9a94e; color: #1a2a3a; }
-        .user-item .avatar.branch { background: #3b82f6; }
-        .user-item .user-info { flex: 1; }
-        .user-item .user-info .name { font-size: 14px; font-weight: 500; }
-        .user-item .user-info .role { font-size: 11px; color: rgba(255,255,255,0.5); }
-        .user-item .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; }
-        
+        .chat-sidebar .admin-item .status-dot.online { background: #10b981; }
+        .chat-sidebar .admin-item .status-dot.offline { background: #ef4444; }
+        .chat-sidebar .admin-item .unread {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 1px 8px;
+            font-size: 10px;
+            margin-left: 8px;
+        }
+
         .chat-main {
             flex: 1;
             display: flex;
             flex-direction: column;
             background: white;
-            border-radius: 0 16px 16px 0;
         }
-        .chat-header {
-            padding: 20px 24px;
+
+        .chat-main-header {
+            padding: 16px 24px;
             border-bottom: 1px solid #e9e7e2;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
-        .chat-header .chat-info h2 { font-size: 18px; color: #1a2a3a; }
-        .chat-header .chat-info p { font-size: 13px; color: #888; }
-        .chat-header .chat-actions { display: flex; gap: 12px; }
-        
+        .chat-main-header .chat-with { font-weight: 600; color: #1a2a3a; }
+        .chat-main-header .chat-with .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+        .chat-main-header .chat-with .status-dot.online { background: #10b981; }
+        .chat-main-header .chat-with .status-dot.offline { background: #ef4444; }
+
         .chat-messages {
             flex: 1;
-            padding: 20px 24px;
+            padding: 16px 24px;
             overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: #f8f7f4;
+            background: #fafafa;
         }
-        .message {
+        .chat-messages .message {
             max-width: 70%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-radius: 12px;
+            margin-bottom: 8px;
             animation: slideIn 0.3s ease-out;
         }
-        .message.received { align-self: flex-start; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .message.sent { align-self: flex-end; background: #c9a94e; color: #1a2a3a; }
-        .message .sender { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
-        .message .sender .role-tag { font-size: 10px; opacity: 0.7; font-weight: 400; }
-        .message .mention { color: #3b82f6; font-weight: 600; }
-        .message .time { font-size: 10px; opacity: 0.6; margin-top: 4px; display: block; }
-        .message .attachment { margin-top: 8px; padding: 8px 12px; background: rgba(0,0,0,0.05); border-radius: 8px; }
-        .message .attachment img { max-width: 200px; border-radius: 8px; }
-        
+        .chat-messages .message.sent {
+            align-self: flex-end;
+            background: #8b5cf6;
+            color: white;
+            margin-left: auto;
+        }
+        .chat-messages .message.received {
+            align-self: flex-start;
+            background: #f8f7f4;
+            color: #1a2a3a;
+        }
+        .chat-messages .message .msg-time {
+            font-size: 10px;
+            opacity: 0.7;
+            display: block;
+            margin-top: 2px;
+        }
+        .chat-messages .message.sent .msg-time { color: rgba(255,255,255,0.7); }
+        .chat-messages .message.received .msg-time { color: #888; }
+        .chat-messages .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+        .chat-messages .empty-state i { font-size: 48px; color: #ddd; margin-bottom: 16px; }
+
         .chat-input {
             padding: 16px 24px;
             border-top: 1px solid #e9e7e2;
             display: flex;
             gap: 12px;
-            background: white;
-            flex-wrap: wrap;
-        }
-        .chat-input .input-wrapper {
-            flex: 1;
-            display: flex;
-            gap: 12px;
-            min-width: 200px;
         }
         .chat-input input {
             flex: 1;
-            padding: 12px 18px;
+            padding: 10px 16px;
             border: 2px solid #e9e7e2;
             border-radius: 50px;
             font-size: 14px;
             font-family: inherit;
-            transition: all 0.3s ease;
         }
-        .chat-input input:focus { outline: none; border-color: #c9a94e; }
-        .chat-input .btn {
-            padding: 12px 24px;
+        .chat-input input:focus { outline: none; border-color: #8b5cf6; }
+        .chat-input button {
+            padding: 10px 24px;
             border: none;
             border-radius: 50px;
+            background: #8b5cf6;
+            color: white;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: inherit;
         }
-        .chat-input .btn-primary { background: #c9a94e; color: #1a2a3a; }
-        .chat-input .btn-primary:hover { background: #e8d5a3; transform: translateY(-2px); }
-        .chat-input .btn-outline { background: transparent; border: 2px solid #e9e7e2; }
-        .chat-input .btn-outline:hover { border-color: #c9a94e; }
-        
-        .mention-hint {
-            font-size: 12px;
-            color: #888;
-            padding: 4px 12px;
-            background: #f8f7f4;
-            border-radius: 20px;
-            display: inline-block;
-        }
-        
-        .empty-state { text-align: center; padding: 60px 20px; color: #888; }
-        .empty-state i { font-size: 48px; color: #ddd; margin-bottom: 16px; }
-        
-        .badge {
-            background: #ef4444;
-            color: white;
-            border-radius: 50%;
-            padding: 2px 8px;
-            font-size: 10px;
-            margin-left: 4px;
-        }
-        
+        .chat-input button:hover { background: #7c3aed; }
+        .chat-input button:disabled { opacity: 0.5; cursor: not-allowed; }
+
         .toast {
             position: fixed;
             bottom: 24px;
@@ -189,78 +213,92 @@
             display: none;
         }
         .toast.show { display: block; }
-        .toast .close-toast {
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.6);
-            float: right;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        
+        .toast .close-toast { background: none; border: none; color: rgba(255,255,255,0.6); float: right; cursor: pointer; font-size: 18px; }
+
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
+
         @media (max-width: 768px) {
-            .chat-sidebar { display: none; }
-            .chat-main { border-radius: 16px; }
-            .chat-input .input-wrapper { flex-wrap: wrap; }
+            .chat-sidebar { width: 200px; }
+            .chat-messages .message { max-width: 85%; }
+            .chat-main-header { padding: 12px 16px; }
+            .chat-messages { padding: 12px 16px; }
+            .chat-input { padding: 12px 16px; }
+        }
+
+        @media (max-width: 480px) {
+            .chat-body { flex-direction: column; }
+            .chat-sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e9e7e2;
+                max-height: 150px;
+            }
+            .chat-messages .message { max-width: 90%; }
         }
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-sidebar">
-            <div class="logo">
-                <img src="../../assets/images/logo.png" alt="Logo" />
-                <span>Admin Chat</span>
-            </div>
-            <a href="#" class="back-link" id="backLink"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-            <div class="online-users" style="margin-top:20px;">
-                <h3><i class="fas fa-circle" style="color:#10b981; font-size:10px;"></i> Online</h3>
-                <div id="userList"></div>
+
+    <!-- Header -->
+    <header class="chat-header">
+        <div class="logo">
+            <img src="../assets/images/logo.png" alt="Logo" />
+            <span>Admin Chat</span>
+        </div>
+        <div class="user-info">
+            <span class="status-dot online" id="myStatusDot"></span>
+            <img src="../assets/images/avatar-default.png" alt="Admin" id="myAvatar" />
+            <span id="myName">Admin</span>
+            <button class="btn-back" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</button>
+        </div>
+    </header>
+
+    <!-- Chat Body -->
+    <div class="chat-body">
+
+        <!-- Sidebar -->
+        <div class="chat-sidebar" id="chatSidebar">
+            <h3><i class="fas fa-users" style="color:#8b5cf6;"></i> Admins Online</h3>
+            <div id="adminList">
+                <div class="empty-state" style="padding:20px;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading admins...</p>
+                </div>
             </div>
         </div>
-        
+
+        <!-- Main Chat -->
         <div class="chat-main">
-            <div class="chat-header">
-                <div class="chat-info">
-                    <h2>💬 Admin Chat</h2>
-                    <p id="onlineCount">0 users online</p>
+            <div class="chat-main-header">
+                <div class="chat-with" id="chatWith">
+                    <span>Select an admin to chat</span>
+                    <span class="status-dot offline"></span>
                 </div>
-                <div class="chat-actions">
-                    <button class="btn btn-outline btn-sm" onclick="refreshMessages()"><i class="fas fa-sync-alt"></i></button>
-                </div>
+                <span style="color:#888; font-size:13px;" id="chatStatus">Click a contact to start chatting</span>
             </div>
-            
+
             <div class="chat-messages" id="chatMessages">
                 <div class="empty-state">
-                    <i class="fas fa-comments"></i>
-                    <h3>No messages yet</h3>
-                    <p>Start the conversation with your team</p>
+                    <i class="fas fa-comment-dots"></i>
+                    <h3>No messages</h3>
+                    <p>Select an admin from the sidebar to start chatting.</p>
                 </div>
             </div>
-            
+
             <div class="chat-input">
-                <div class="input-wrapper">
-                    <input type="text" id="messageInput" placeholder="Type your message... (use @ruiru, @nyeri, @nakuru to mention)" onkeypress="if(event.key==='Enter') sendMessage()" />
-                    <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()"><i class="fas fa-paperclip"></i></button>
-                    <input type="file" id="fileInput" style="display:none" accept="image/*,.pdf,.doc,.docx" onchange="uploadFile(this)" />
-                    <button class="btn btn-primary" onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
-                </div>
-                <span class="mention-hint">💡 @ruiru @nyeri @nakuru to mention branches</span>
+                <input type="text" id="messageInput" placeholder="Type a message..." disabled />
+                <button id="sendBtn" onclick="sendMessage()" disabled><i class="fas fa-paper-plane"></i> Send</button>
             </div>
         </div>
     </div>
 
-    <!-- Toast -->
     <div class="toast" id="toast">
         <button class="close-toast" onclick="closeToast()">&times;</button>
         <p id="toastMessage">Notification</p>
@@ -268,304 +306,18 @@
 
     <script>
         // ============================================
-        // UPDATED TO LIVE URL
+        // API CONFIGURATION
         // ============================================
         const API_URL = 'https://modern-furniture-api.onrender.com/api';
         let currentUser = null;
-        let allUsers = [];
-        let messageInterval = null;
+        let allAdmins = [];
+        let currentChatId = null;
+        let chatMessages = [];
+        let pollingInterval = null;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = localStorage.getItem('user');
-            if (!user) { 
-                window.location.href = 'admin-login.html'; 
-                return; 
-            }
-            
-            try {
-                currentUser = JSON.parse(user);
-                console.log('✅ Current user loaded:', currentUser);
-            } catch (e) {
-                console.error('❌ Error parsing user:', e);
-                window.location.href = 'admin-login.html';
-                return;
-            }
-            
-            const adminRoles = ['super_admin', 'ceo_admin', 'branch_admin'];
-            if (!adminRoles.includes(currentUser.role)) {
-                alert('Access denied. Admin privileges required.');
-                window.location.href = 'admin-login.html';
-                return;
-            }
-            
-            // Set correct back link based on role
-            const backLink = document.getElementById('backLink');
-            const roleMap = {
-                'super_admin': 'super-admin.html',
-                'ceo_admin': 'ceo-admin.html',
-                'branch_admin': 'branch-admin.html'
-            };
-            const dashboardPage = roleMap[currentUser.role] || 'super-admin.html';
-            backLink.href = dashboardPage;
-            
-            const roleNames = {
-                'super_admin': 'Super Admin',
-                'ceo_admin': 'CEO',
-                'branch_admin': 'Branch'
-            };
-            backLink.innerHTML = `<i class="fas fa-arrow-left"></i> Back to ${roleNames[currentUser.role] || 'Admin'} Dashboard`;
-            
-            // Load users and messages
-            loadUsers();
-            loadMessages();
-            
-            // Auto-refresh every 3 seconds
-            messageInterval = setInterval(loadMessages, 3000);
-        });
-
-        async function loadUsers() {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    console.error('❌ No token found');
-                    return;
-                }
-                
-                const response = await fetch(`${API_URL}/admins`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                console.log('📥 Users loaded:', data);
-                
-                if (data.success) {
-                    allUsers = data.admins || [];
-                    renderUsers();
-                }
-            } catch (error) {
-                console.error('Error loading users:', error);
-            }
-        }
-
-        function renderUsers() {
-            const container = document.getElementById('userList');
-            const onlineCount = document.getElementById('onlineCount');
-            
-            if (!allUsers || allUsers.length === 0) {
-                container.innerHTML = '<p style="color:rgba(255,255,255,0.4);font-size:13px;">No admins online</p>';
-                onlineCount.textContent = '0 users online';
-                return;
-            }
-            
-            const roleMap = { 'super_admin': 'Super Admin', 'ceo_admin': 'CEO Admin', 'branch_admin': 'Branch Admin' };
-            const roleColors = { 'super_admin': 'super', 'ceo_admin': 'ceo', 'branch_admin': 'branch' };
-            
-            container.innerHTML = allUsers.map(user => `
-                <div class="user-item active">
-                    <div class="avatar ${roleColors[user.role] || 'branch'}">${user.name ? user.name.charAt(0).toUpperCase() : '?'}</div>
-                    <div class="user-info">
-                        <div class="name">${user.name || 'Unknown'}</div>
-                        <div class="role">${roleMap[user.role] || user.role}</div>
-                    </div>
-                    <div class="online-dot"></div>
-                </div>
-            `).join('');
-            
-            onlineCount.textContent = `${allUsers.length} users online`;
-        }
-
-        async function loadMessages() {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    console.error('❌ No token found');
-                    return;
-                }
-                
-                const response = await fetch(`${API_URL}/chat`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                console.log('📥 Messages loaded:', data);
-                
-                if (data.success && data.messages) {
-                    renderMessages(data.messages);
-                    updateBadgeCount(data.messages);
-                }
-            } catch (error) {
-                console.error('❌ Error loading messages:', error);
-            }
-        }
-
-        function renderMessages(messages) {
-            const container = document.getElementById('chatMessages');
-            
-            if (!messages || messages.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-comments"></i>
-                        <h3>No messages yet</h3>
-                        <p>Start the conversation with your team</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            let html = '';
-            messages.forEach(msg => {
-                const isOwn = msg.senderId === currentUser.id;
-                const roleMap = { 
-                    'super_admin': '👑 Super Admin', 
-                    'ceo_admin': '👔 CEO Admin', 
-                    'branch_admin': '🏪 Branch Admin' 
-                };
-                const time = new Date(msg.timestamp).toLocaleTimeString('en-US', { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                });
-                
-                // Highlight @mentions
-                let messageText = msg.message || '';
-                if (msg.mentions && msg.mentions.length > 0) {
-                    msg.mentions.forEach(mention => {
-                        const regex = new RegExp('@' + mention, 'g');
-                        messageText = messageText.replace(regex, `<span class="mention">@${mention}</span>`);
-                    });
-                }
-                
-                let attachmentHtml = '';
-                if (msg.attachment) {
-                    if (msg.attachmentType === 'image') {
-                        attachmentHtml = `<div class="attachment"><img src="${msg.attachment}" alt="Attachment" /></div>`;
-                    } else {
-                        attachmentHtml = `<div class="attachment">📎 ${msg.attachment}</div>`;
-                    }
-                }
-                
-                const senderDisplay = roleMap[msg.senderRole] || msg.senderName || 'Unknown Admin';
-                
-                html += `
-                    <div class="message ${isOwn ? 'sent' : 'received'}">
-                        ${!isOwn ? `<div class="sender">${senderDisplay}</div>` : ''}
-                        <div>${messageText}</div>
-                        ${attachmentHtml}
-                        <span class="time">${time}</span>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function updateBadgeCount(messages) {
-            const badges = document.querySelectorAll('.badge');
-            badges.forEach(badge => {
-                badge.textContent = messages ? messages.length : 0;
-            });
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-            if (!message) return;
-            
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    showToast('❌ Not logged in');
-                    return;
-                }
-                
-                const mentionRegex = /@(\w+)/g;
-                const mentions = [];
-                let match;
-                while ((match = mentionRegex.exec(message)) !== null) {
-                    mentions.push(match[1]);
-                }
-                
-                console.log('📤 Sending message:', message);
-                console.log('📤 Mentions:', mentions);
-                
-                const response = await fetch(`${API_URL}/chat`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json', 
-                        'Authorization': `Bearer ${token}` 
-                    },
-                    body: JSON.stringify({ 
-                        message: message,
-                        mentions: mentions
-                    })
-                });
-                
-                const data = await response.json();
-                console.log('📤 Send response:', data);
-                
-                if (data.success) {
-                    input.value = '';
-                    loadMessages();
-                    showToast('✅ Message sent!');
-                } else {
-                    showToast('❌ Failed to send: ' + (data.message || 'Unknown error'));
-                }
-            } catch (error) {
-                console.error('❌ Error sending message:', error);
-                showToast('❌ Failed to send message. Please try again.');
-            }
-        }
-
-        function uploadFile(input) {
-            const file = input.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const type = file.type.startsWith('image/') ? 'image' : 'file';
-                sendMessageWithAttachment(e.target.result, file.name, type);
-            };
-            reader.readAsDataURL(file);
-            input.value = '';
-        }
-
-        async function sendMessageWithAttachment(attachment, name, type) {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    showToast('❌ Not logged in');
-                    return;
-                }
-                
-                const response = await fetch(`${API_URL}/chat`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json', 
-                        'Authorization': `Bearer ${token}` 
-                    },
-                    body: JSON.stringify({
-                        message: `📎 ${name}`,
-                        attachment: attachment,
-                        attachmentType: type || 'file'
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    loadMessages();
-                    showToast('✅ Attachment sent!');
-                } else {
-                    showToast('❌ Failed to send attachment');
-                }
-            } catch (error) {
-                console.error('❌ Error sending attachment:', error);
-                showToast('❌ Failed to send attachment. Please try again.');
-            }
-        }
-
-        function refreshMessages() {
-            loadMessages();
-            loadUsers();
-            showToast('🔄 Messages refreshed!');
-        }
-
+        // ============================================
+        // TOAST
+        // ============================================
         function showToast(message) {
             const toast = document.getElementById('toast');
             const msg = document.getElementById('toastMessage');
@@ -577,6 +329,305 @@
         function closeToast() {
             document.getElementById('toast').classList.remove('show');
         }
+
+        // ============================================
+        // AUTH
+        // ============================================
+        function getToken() { return localStorage.getItem('token'); }
+
+        function getHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            };
+        }
+
+        function isLoggedIn() {
+            const token = getToken();
+            const user = localStorage.getItem('user');
+            return !!(token && user);
+        }
+
+        function getCurrentUser() {
+            try {
+                const user = localStorage.getItem('user');
+                if (!user) return null;
+                return JSON.parse(user);
+            } catch (e) { return null; }
+        }
+
+        function goBack() {
+            const from = sessionStorage.getItem('chatFrom') || 'dashboard.html';
+            window.location.href = from;
+        }
+
+        // ============================================
+        // LOAD ADMINS
+        // ============================================
+        async function loadAdmins() {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/admins`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    allAdmins = data.admins || [];
+                    // Remove current user from list
+                    allAdmins = allAdmins.filter(a => a.id !== currentUser.id);
+                    renderAdmins();
+
+                    // Auto-select first admin if available
+                    if (allAdmins.length > 0 && !currentChatId) {
+                        selectAdmin(allAdmins[0].id);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading admins:', error);
+                showToast('❌ Failed to load admins');
+            }
+        }
+
+        function renderAdmins() {
+            const container = document.getElementById('adminList');
+
+            if (!allAdmins || allAdmins.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding:20px;">
+                        <i class="fas fa-users" style="font-size:32px; color:#ddd;"></i>
+                        <p style="margin-top:8px;">No other admins online.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = allAdmins.map(admin => {
+                const isOnline = admin.isActive !== false;
+                const isActive = admin.id === currentChatId;
+
+                return `
+                    <div class="admin-item ${isActive ? 'active' : ''}" onclick="selectAdmin('${admin.id}')">
+                        <div class="admin-name">
+                            <span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>
+                            ${admin.name || 'Admin'}
+                            ${!isOnline ? ' (Offline)' : ''}
+                        </div>
+                        <div class="admin-role">${admin.role || 'Admin'} ${admin.branch ? '• ' + admin.branch : ''}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================
+        // SELECT ADMIN
+        // ============================================
+        async function selectAdmin(adminId) {
+            currentChatId = adminId;
+            const admin = allAdmins.find(a => a.id === adminId);
+
+            // Update UI
+            document.querySelectorAll('.admin-item').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.admin-item[onclick="selectAdmin('${adminId}')"]`)?.classList.add('active');
+
+            document.getElementById('chatWith').innerHTML = `
+                <span>${admin ? admin.name : 'Unknown'}</span>
+                <span class="status-dot ${admin && admin.isActive !== false ? 'online' : 'offline'}"></span>
+            `;
+            document.getElementById('chatStatus').textContent = admin && admin.isActive !== false ? '🟢 Online' : '🔴 Offline';
+
+            // Enable input
+            document.getElementById('messageInput').disabled = false;
+            document.getElementById('sendBtn').disabled = false;
+
+            // Load messages
+            await loadChatMessages(adminId);
+
+            // Start polling
+            startPolling(adminId);
+        }
+
+        // ============================================
+        // LOAD CHAT MESSAGES
+        // ============================================
+        async function loadChatMessages(adminId) {
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/admin-chat/${adminId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    chatMessages = data.messages || [];
+                    renderMessages();
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+
+        function renderMessages() {
+            const container = document.getElementById('chatMessages');
+
+            if (!chatMessages || chatMessages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-comment-dots"></i>
+                        <h3>No messages</h3>
+                        <p>Start a conversation with this admin.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = chatMessages.map(msg => {
+                const isSent = msg.senderId === currentUser.id;
+                const senderName = isSent ? 'You' : (msg.senderName || 'Admin');
+                const time = msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString() : '';
+
+                return `
+                    <div class="message ${isSent ? 'sent' : 'received'}">
+                        <div>${msg.message}</div>
+                        <span class="msg-time">${senderName} • ${time}</span>
+                    </div>
+                `;
+            }).join('');
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // ============================================
+        // SEND MESSAGE
+        // ============================================
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message || !currentChatId) {
+                showToast('⚠️ Select an admin to chat with');
+                return;
+            }
+
+            try {
+                const token = getToken();
+                const response = await fetch(`${API_URL}/admin-chat/send`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({
+                        receiverId: currentChatId,
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    input.value = '';
+                    // Add message locally
+                    chatMessages.push({
+                        id: data.messageId || Date.now().toString(),
+                        senderId: currentUser.id,
+                        senderName: currentUser.name,
+                        message: message,
+                        createdAt: new Date().toISOString()
+                    });
+                    renderMessages();
+                } else {
+                    showToast('❌ ' + (data.message || 'Failed to send message'));
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showToast('❌ Failed to send message');
+            }
+        }
+
+        // ============================================
+        // POLLING FOR NEW MESSAGES
+        // ============================================
+        function startPolling(adminId) {
+            // Clear existing interval
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
+
+            // Poll every 5 seconds
+            pollingInterval = setInterval(async () => {
+                if (!adminId) return;
+                try {
+                    const token = getToken();
+                    const response = await fetch(`${API_URL}/admin-chat/${adminId}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const data = await response.json();
+
+                    if (data.success && data.messages) {
+                        // Check if new messages arrived
+                        if (data.messages.length !== chatMessages.length) {
+                            chatMessages = data.messages;
+                            renderMessages();
+                            // Play notification sound if new message received
+                            if (data.messages.length > 0) {
+                                const lastMsg = data.messages[data.messages.length - 1];
+                                if (lastMsg.senderId !== currentUser.id) {
+                                    // Optional: play sound or show notification
+                                }
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Polling error:', error);
+                }
+            }, 5000);
+        }
+
+        // ============================================
+        // DOM READY
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!isLoggedIn()) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+
+            currentUser = getCurrentUser();
+            if (!currentUser) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+
+            document.getElementById('myName').textContent = currentUser.name || 'Admin';
+            if (currentUser.profileImage) {
+                document.getElementById('myAvatar').src = currentUser.profileImage;
+            }
+
+            // Save current page for back button
+            const referrer = document.referrer;
+            if (referrer) {
+                sessionStorage.setItem('chatFrom', referrer);
+            }
+
+            loadAdmins();
+
+            // Enter key to send
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            console.log('✅ Admin Chat loaded');
+        });
+
+        // Clean up polling on page unload
+        window.addEventListener('beforeunload', () => {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
+        });
     </script>
 </body>
 </html>

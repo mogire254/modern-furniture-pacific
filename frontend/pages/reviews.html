@@ -96,6 +96,17 @@
             border-radius: 8px;
             margin-top: 8px;
         }
+        .review-card .status-badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .review-card .status-badge.pending { background: #fef3c7; color: #92400e; }
+        .review-card .status-badge.approved { background: #d1fae5; color: #065f46; }
+        .review-card .status-badge.rejected { background: #fee2e2; color: #991b1b; }
         
         .review-form {
             background: white;
@@ -135,11 +146,10 @@
             cursor: pointer;
             transition: all 0.4s ease;
             font-family: inherit;
-            width: 100%;
-            justify-content: center;
         }
         .btn-primary { background: #c9a94e; color: #1a2a3a; }
         .btn-primary:hover { background: #e8d5a3; transform: translateY(-2px); box-shadow: 0 12px 30px rgba(201,169,78,0.3); }
+        .btn-sm { padding: 6px 16px; font-size: 12px; }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
         
         .toast {
@@ -171,6 +181,9 @@
         
         .empty-state { text-align: center; padding: 60px 20px; color: #888; }
         .empty-state i { font-size: 48px; color: #ddd; margin-bottom: 16px; }
+        
+        .back-link { color: #c9a94e; text-decoration: none; font-size: 14px; }
+        .back-link:hover { text-decoration: underline; }
         
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -255,6 +268,8 @@
                 <div id="reviewMessage" class="message"></div>
             </form>
         </div>
+
+        <a href="dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
     </div>
 
     <div class="toast" id="toast">
@@ -268,13 +283,13 @@
         // ============================================
         const API_URL = 'https://modern-furniture-api.onrender.com/api';
         let allReviews = [];
+        let currentUser = null;
 
         // ============================================
         // CHECK LOGIN
         // ============================================
         const token = localStorage.getItem('token');
         const user = localStorage.getItem('user');
-        let currentUser = null;
 
         if (user) {
             currentUser = JSON.parse(user);
@@ -284,8 +299,7 @@
         }
 
         // ============================================
-        // ===== LOAD REVIEWS =====
-        // Uses /api/reviews (CORRECT)
+        // LOAD REVIEWS
         // ============================================
         async function loadReviews() {
             try {
@@ -302,7 +316,7 @@
                             <i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i>
                             <h3>Failed to load reviews</h3>
                             <p>Please try again later.</p>
-                            <button class="btn btn-primary" onclick="loadReviews()" style="margin-top:16px; width:auto;">
+                            <button class="btn btn-primary" onclick="loadReviews()" style="margin-top:16px;">
                                 <i class="fas fa-sync-alt"></i> Retry
                             </button>
                         </div>
@@ -315,7 +329,7 @@
                         <i class="fas fa-wifi" style="color:#ef4444;"></i>
                         <h3>Network Error</h3>
                         <p>Could not connect to the server.</p>
-                        <button class="btn btn-primary" onclick="loadReviews()" style="margin-top:16px; width:auto;">
+                        <button class="btn btn-primary" onclick="loadReviews()" style="margin-top:16px;">
                             <i class="fas fa-sync-alt"></i> Retry
                         </button>
                     </div>
@@ -407,8 +421,7 @@
         }
 
         // ============================================
-        // ===== SUBMIT REVIEW =====
-        // Uses /api/reviews (CORRECT)
+        // SUBMIT REVIEW
         // ============================================
         async function submitReview(event) {
             event.preventDefault();
@@ -436,6 +449,7 @@
             }
 
             const reviewData = {
+                productId: 'general',
                 rating,
                 comment,
                 image: imageData,

@@ -1,0 +1,469 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bulk Buyer Login - Modern Furniture Pacific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a2a3a;
+            overflow-x: hidden;
+        }
+
+        /* ===== VIDEO BACKGROUND ===== */
+        #bgVideo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 42, 58, 0.75);
+            z-index: 1;
+        }
+
+        .login-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 440px;
+            padding: 20px;
+            margin: 40px auto;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-logo img {
+            height: 60px;
+            width: auto;
+            margin-bottom: 8px;
+        }
+        .login-logo h1 {
+            font-size: 20px;
+            color: #1a2a3a;
+            font-weight: 700;
+        }
+        .login-logo h1 span {
+            color: #c9a94e;
+        }
+        .login-logo p {
+            color: #888;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .login-logo .badge-bulk {
+            display: inline-block;
+            background: #8b5cf6;
+            color: white;
+            padding: 2px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a2a3a;
+            margin-bottom: 6px;
+        }
+        .form-group label i {
+            color: #c9a94e;
+            margin-right: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9e7e2;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #f8f7f4;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #c9a94e;
+            box-shadow: 0 0 0 4px rgba(201, 169, 78, 0.15);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: #c9a94e;
+            color: #1a2a3a;
+        }
+        .btn-primary:hover {
+            background: #e8d5a3;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201, 169, 78, 0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .login-footer p {
+            color: #888;
+            font-size: 14px;
+        }
+        .login-footer a {
+            color: #c9a94e;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+            padding: 10px 14px;
+            background: #fee2e2;
+            border-radius: 8px;
+        }
+        .error-message.show {
+            display: block;
+        }
+        .success-message {
+            color: #10b981;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+            padding: 10px 14px;
+            background: #d1fae5;
+            border-radius: 8px;
+        }
+        .success-message.show {
+            display: block;
+        }
+
+        /* ===== SHOWROOMS SECTION ===== */
+        .showrooms-section {
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .showrooms-section h2 {
+            color: #c9a94e;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .showrooms-section h2 i {
+            margin-right: 8px;
+        }
+        .showrooms-section .subtitle {
+            text-align: center;
+            color: rgba(0, 0, 0, 0.5);
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+        .showrooms-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .showroom-card {
+            background: #f8f7f4;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .showroom-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        .showroom-card i {
+            font-size: 24px;
+            color: #c9a94e;
+            margin-bottom: 6px;
+        }
+        .showroom-card h4 {
+            font-size: 14px;
+            color: #1a2a3a;
+            margin-bottom: 2px;
+        }
+        .showroom-card p {
+            color: #888;
+            font-size: 12px;
+            margin: 1px 0;
+        }
+        .showroom-card .phone {
+            color: #c9a94e;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .back-home {
+            display: inline-block;
+            margin-top: 12px;
+            color: #888;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .back-home:hover {
+            color: #c9a94e;
+        }
+
+        @media (max-width: 768px) {
+            .showrooms-grid {
+                grid-template-columns: 1fr;
+            }
+            .login-container {
+                padding: 28px 20px;
+            }
+            .login-logo img {
+                height: 45px;
+            }
+        }
+        @media (max-width: 480px) {
+            .login-wrapper {
+                padding: 12px;
+                margin: 20px auto;
+            }
+            .login-container {
+                padding: 20px 16px;
+            }
+            .showrooms-section {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== VIDEO BACKGROUND ===== -->
+    <video autoplay muted loop playsinline id="bgVideo">
+        <source src="../../assets/videos/ceo-intro.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <div class="login-wrapper">
+        <div class="login-container">
+            <!-- Logo -->
+            <div class="login-logo">
+                <img src="../../assets/images/logo.png" alt="Modern Furniture Pacific" />
+                <h1>Modern <span>Furniture</span> Pacific</h1>
+                <p>Bulk Buyer Portal</p>
+                <span class="badge-bulk"><i class="fas fa-building"></i> Wholesale & Bulk Orders</span>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-building"></i> Company Name</label>
+                    <input type="text" id="companyName" placeholder="Enter your registered company name" required />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required />
+                </div>
+
+                <div id="errorMessage" class="error-message"></div>
+                <div id="successMessage" class="success-message"></div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+
+                <div class="login-footer">
+                    <p>Don't have a bulk account? <a href="register.html">Register as Bulk Buyer</a></p>
+                    <p style="margin-top:8px;font-size:12px;color:#aaa;">
+                        <i class="fas fa-arrow-left"></i> <a href="../../index.html" style="color:#888;">Back to Home</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+
+        <!-- ===== SHOWROOMS ===== -->
+        <div class="showrooms-section">
+            <h2><i class="fas fa-store"></i> Visit Us in Our Showrooms</h2>
+            <p class="subtitle">Located in Ruiru, Nyeri, and Nakuru</p>
+            <div class="showrooms-grid">
+                <div class="showroom-card">
+                    <i class="fas fa-map-pin"></i>
+                    <h4>Ruiru Showroom</h4>
+                    <p>Ruiru Town, Main Street</p>
+                    <p style="color:#c9a94e;font-size:11px;font-weight:600;">Mon-Sat: 9AM - 6PM</p>
+                    <p class="phone">📞 0716 335555</p>
+                </div>
+                <div class="showroom-card">
+                    <i class="fas fa-map-pin"></i>
+                    <h4>Nyeri Showroom</h4>
+                    <p>Nyeri Town, Kenyatta Road</p>
+                    <p style="color:#c9a94e;font-size:11px;font-weight:600;">Mon-Sat: 9AM - 6PM</p>
+                    <p class="phone">📞 0716 335556</p>
+                </div>
+                <div class="showroom-card">
+                    <i class="fas fa-map-pin"></i>
+                    <h4>Nakuru Showroom</h4>
+                    <p>Nakuru Town, Moi Road</p>
+                    <p style="color:#c9a94e;font-size:11px;font-weight:600;">Mon-Sat: 9AM - 6PM</p>
+                    <p class="phone">📞 0716 335557</p>
+                </div>
+            </div>
+            <div style="text-align:center;margin-top:12px;">
+                <a href="../../index.html" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // API CONFIGURATION
+        // ============================================
+        const API_URL = 'https://modern-furniture-api.onrender.com/api';
+
+        // ============================================
+        // LOGIN
+        // ============================================
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const companyName = document.getElementById('companyName').value.trim();
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('errorMessage');
+            const successEl = document.getElementById('successMessage');
+            const btn = document.getElementById('loginBtn');
+
+            // Hide previous messages
+            errorEl.classList.remove('show');
+            successEl.classList.remove('show');
+
+            if (!companyName || !password) {
+                errorEl.textContent = '⚠️ Please fill in all fields';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        companyName: companyName,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Check if user is bulk buyer
+                    if (data.user.role !== 'bulk_buyer') {
+                        errorEl.textContent = '❌ This account is not registered as a bulk buyer. Please use the regular login.';
+                        errorEl.classList.add('show');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                        return;
+                    }
+
+                    // Save token and user data
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('tokenExpiry', Date.now() + 365 * 24 * 60 * 60 * 1000);
+
+                    successEl.textContent = '✅ Login successful! Redirecting...';
+                    successEl.classList.add('show');
+
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                } else {
+                    errorEl.textContent = '❌ ' + (data.message || 'Login failed. Please check your company name and password.');
+                    errorEl.classList.add('show');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorEl.textContent = '❌ Network error. Please try again.';
+                errorEl.classList.add('show');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            }
+        }
+
+        // ============================================
+        // CHECK IF ALREADY LOGGED IN
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            const expiry = localStorage.getItem('tokenExpiry');
+
+            if (token && user && expiry && Date.now() < parseInt(expiry)) {
+                try {
+                    const userData = JSON.parse(user);
+                    if (userData.role === 'bulk_buyer') {
+                        window.location.href = 'dashboard.html';
+                    }
+                } catch (e) {}
+            }
+        });
+    </script>
+
+</body>
+</html>

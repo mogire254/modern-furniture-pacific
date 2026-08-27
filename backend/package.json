@@ -10,8 +10,10 @@
     "create-admin": "node create-super-admin.js"
   },
   "dependencies": {
-    "africastalking": "^0.5.8",
-    "axios": "^1.5.0",
+    "@mediapipe/camera_utils": "^0.3.1675466862",
+    "@mediapipe/tasks-vision": "^1.0.1",
+    "africastalking": "^0.5.9",
+    "axios": "^1.19.0",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
@@ -22,8 +24,9 @@
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.5",
+    "nodemailer": "^6.10.1",
     "socket.io": "^4.8.3",
+    "three": "^0.185.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

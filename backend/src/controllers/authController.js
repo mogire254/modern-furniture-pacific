@@ -1,10 +1,10 @@
-﻿const { readData, writeData, addItem, updateItem, findUserByEmail, findUserById, getAllUsers } = require('../utils/fileHandler');
+﻿const { readData, writeData, addItem, updateItem, deleteItem, findUserByEmail, findUserById, getAllUsers } = require('../utils/fileHandler');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'modern-furniture-secret-key';
-const JWT_EXPIRE = process.env.JWT_EXPIRE || '7d';
+const JWT_EXPIRE = process.env.JWT_EXPIRE || '100y';
 
 // Generate JWT Token
 const generateToken = (id, role) => {
@@ -13,12 +13,11 @@ const generateToken = (id, role) => {
     });
 };
 
-// Register user
+// ===== REGISTER USER =====
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, phone = '', address = {} } = req.body;
+        const { name, email, password, role, branch, phone = '' } = req.body;
 
-        // Validation
         if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
@@ -26,37 +25,43 @@ exports.register = async (req, res) => {
             });
         }
 
-        // Check if user exists
         const existingUser = findUserByEmail(email);
         if (existingUser) {
+            const isAdmin = ['super_admin', 'ceo_admin', 'branch_admin'].includes(existingUser.role);
             return res.status(400).json({
                 success: false,
-                message: 'User already exists with this email'
+                message: isAdmin ? 'Admin already exists with this email' : 'User already exists with this email'
             });
         }
 
-        // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create user
+        const isAdminRole = role && ['super_admin', 'ceo_admin', 'branch_admin'].includes(role);
+        const userRole = isAdminRole ? role : 'user';
+
         const newUser = {
             id: uuidv4(),
             name,
             email,
             password: hashedPassword,
-            role: 'user',
-            phone,
-            address,
+            role: userRole,
+            phone: phone || '',
             profileImage: 'avatar-default.png',
             isActive: true,
             createdAt: new Date().toISOString(),
             lastLogin: null
         };
 
-        addItem('users', newUser);
+        if (isAdminRole && branch) {
+            newUser.branch = branch;
+        }
 
-        // Generate token
+        const fileType = isAdminRole ? 'admins' : 'users';
+        addItem(fileType, newUser);
+
+        console.log(`✅ ${isAdminRole ? 'Admin' : 'User'} created: ${name} (${userRole})`);
+
         const token = generateToken(newUser.id, newUser.role);
 
         const { password: _, ...userWithoutPassword } = newUser;
@@ -65,7 +70,7 @@ exports.register = async (req, res) => {
             success: true,
             token,
             user: userWithoutPassword,
-            message: 'Registration successful'
+            message: isAdminRole ? 'Admin created successfully' : 'Registration successful'
         });
     } catch (error) {
         console.error('❌ Registration error:', error);
@@ -77,7 +82,7 @@ exports.register = async (req, res) => {
     }
 };
 
-// Login user
+// ===== LOGIN USER =====
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -89,7 +94,6 @@ exports.login = async (req, res) => {
             });
         }
 
-        // Find user (searches both users and admins)
         const user = findUserByEmail(email);
         
         if (!user) {
@@ -99,15 +103,13 @@ exports.login = async (req, res) => {
             });
         }
 
-        // Check if active
         if (user.isActive === false) {
             return res.status(401).json({
                 success: false,
-                message: 'Account deactivated. Please contact support at info@modernfurniturepacificltd.com'
+                message: 'Account deactivated. Please contact support.'
             });
         }
 
-        // Check password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({
@@ -116,12 +118,10 @@ exports.login = async (req, res) => {
             });
         }
 
-        // Update last login
         user.lastLogin = new Date().toISOString();
         const fileType = user.role === 'user' ? 'users' : 'admins';
         updateItem(fileType, user.id, user);
 
-        // Generate token
         const token = generateToken(user.id, user.role);
 
         const { password: _, ...userWithoutPassword } = user;
@@ -142,7 +142,7 @@ exports.login = async (req, res) => {
     }
 };
 
-// Get current user
+// ===== GET CURRENT USER =====
 exports.getMe = async (req, res) => {
     try {
         const user = findUserById(req.user.id);
@@ -168,7 +168,7 @@ exports.getMe = async (req, res) => {
     }
 };
 
-// Update profile
+// ===== UPDATE PROFILE =====
 exports.updateProfile = async (req, res) => {
     try {
         const { name, phone, address, profileImage } = req.body;
@@ -208,7 +208,66 @@ exports.updateProfile = async (req, res) => {
     }
 };
 
-// Forgot password
+// ===== FIXED: CHANGE PASSWORD =====
+exports.changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Current password and new password are required'
+            });
+        }
+
+        const user = findUserById(req.user.id);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(401).json({
+                success: false,
+                message: 'Current password is incorrect'
+            });
+        }
+
+        if (newPassword.length < 8) {
+            return res.status(400).json({
+                success: false,
+                message: 'New password must be at least 8 characters'
+            });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        user.password = hashedPassword;
+        user.updatedAt = new Date().toISOString();
+
+        const fileType = user.role === 'user' ? 'users' : 'admins';
+        updateItem(fileType, user.id, user);
+
+        console.log(`🔑 Password changed for user: ${user.name} (${user.email})`);
+
+        res.json({
+            success: true,
+            message: 'Password changed successfully'
+        });
+    } catch (error) {
+        console.error('❌ Change password error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to change password',
+            error: error.message
+        });
+    }
+};
+
+// ===== FORGOT PASSWORD =====
 exports.forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -221,23 +280,19 @@ exports.forgotPassword = async (req, res) => {
             });
         }
 
-        // Generate reset token
         const resetToken = jwt.sign(
             { id: user.id, email: user.email },
             JWT_SECRET + 'reset',
             { expiresIn: '1h' }
         );
 
-        // Save reset token
         user.resetToken = resetToken;
         user.resetTokenExpiry = new Date(Date.now() + 3600000).toISOString();
         const fileType = user.role === 'user' ? 'users' : 'admins';
         updateItem(fileType, user.id, user);
 
-        // Send email with reset link (implement email service)
         console.log(`📧 Password reset requested for ${email}`);
         console.log(`🔑 Reset token: ${resetToken}`);
-        console.log(`🔗 Reset link: ${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`);
 
         res.json({
             success: true,
@@ -252,7 +307,7 @@ exports.forgotPassword = async (req, res) => {
     }
 };
 
-// Reset password with token
+// ===== RESET PASSWORD WITH TOKEN =====
 exports.resetPasswordWithToken = async (req, res) => {
     try {
         const { token, newPassword } = req.body;
@@ -264,7 +319,6 @@ exports.resetPasswordWithToken = async (req, res) => {
             });
         }
 
-        // Verify token
         const decoded = jwt.verify(token, JWT_SECRET + 'reset');
         const user = findUserById(decoded.id);
 
@@ -275,7 +329,6 @@ exports.resetPasswordWithToken = async (req, res) => {
             });
         }
 
-        // Check if token matches
         if (user.resetToken !== token) {
             return res.status(400).json({
                 success: false,
@@ -283,7 +336,6 @@ exports.resetPasswordWithToken = async (req, res) => {
             });
         }
 
-        // Check if token expired
         if (new Date(user.resetTokenExpiry) < new Date()) {
             return res.status(400).json({
                 success: false,
@@ -291,7 +343,6 @@ exports.resetPasswordWithToken = async (req, res) => {
             });
         }
 
-        // Hash new password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(newPassword, salt);
         user.password = hashedPassword;
@@ -314,41 +365,7 @@ exports.resetPasswordWithToken = async (req, res) => {
     }
 };
 
-// Reset password (admin)
-exports.resetPassword = async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const { newPassword } = req.body;
-
-        const user = findUserById(userId);
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: 'User not found'
-            });
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(newPassword, salt);
-        user.password = hashedPassword;
-
-        const fileType = user.role === 'user' ? 'users' : 'admins';
-        updateItem(fileType, user.id, user);
-
-        res.json({
-            success: true,
-            message: 'Password reset successfully'
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Password reset failed',
-            error: error.message
-        });
-    }
-};
-
-// Logout (client side will remove token)
+// ===== LOGOUT =====
 exports.logout = async (req, res) => {
     res.json({
         success: true,

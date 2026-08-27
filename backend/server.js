@@ -31,6 +31,12 @@ const uploadRoutes = require('./src/routes/upload');
 const settingsRoutes = require('./src/routes/settings');
 const adminChatRoutes = require('./src/routes/admin-chat');
 
+// Mattress Routes
+const mattressRoutes = require('./src/routes/mattresses');
+
+// ===== NEW: Bulk Buyer Routes =====
+const bulkBuyerRoutes = require('./src/routes/bulkBuyerRoutes');
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -83,6 +89,10 @@ app.use('/api/customer-care', customerCareRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/admin-chat', adminChatRoutes);
+app.use('/api/mattresses', mattressRoutes);
+
+// ===== NEW: Bulk Buyer Routes =====
+app.use('/api/bulk-buyer', bulkBuyerRoutes);
 
 // ===== HEALTH CHECK =====
 app.get('/api/health', (req, res) => {
@@ -92,7 +102,7 @@ app.get('/api/health', (req, res) => {
         uptime: process.uptime(),
         environment: process.env.NODE_ENV || 'development',
         routes: {
-            total: 21,
+            total: 24,
             list: [
                 '/api/auth',
                 '/api/admin',
@@ -115,13 +125,15 @@ app.get('/api/health', (req, res) => {
                 '/api/customer-care',
                 '/api/upload',
                 '/api/settings',
-                '/api/admin-chat'
+                '/api/admin-chat',
+                '/api/mattresses',
+                '/api/bulk-buyer'  // ← NEW
             ]
         }
     });
 });
 
-// ===== ROOT ROUTE - SHOWS ALL ENDPOINTS =====
+// ===== ROOT ROUTE =====
 app.get('/', (req, res) => {
     res.json({
         name: 'Modern Furniture Pacific API',
@@ -151,7 +163,9 @@ app.get('/', (req, res) => {
             'customer-care': '/api/customer-care',
             upload: '/api/upload',
             settings: '/api/settings',
-            'admin-chat': '/api/admin-chat'
+            'admin-chat': '/api/admin-chat',
+            mattresses: '/api/mattresses',
+            'bulk-buyer': '/api/bulk-buyer'  // ← NEW
         },
         documentation: 'https://modern-furniture-api.onrender.com/api/health'
     });
@@ -187,7 +201,9 @@ app.use((req, res) => {
             '/api/customer-care',
             '/api/upload',
             '/api/settings',
-            '/api/admin-chat'
+            '/api/admin-chat',
+            '/api/mattresses',
+            '/api/bulk-buyer'  // ← NEW
         ]
     });
 });
@@ -208,35 +224,13 @@ server.listen(PORT, () => {
     console.log('');
     console.log('🚀 Modern Pacific Furniture API');
     console.log(`📡 Server running on port ${PORT}`);
-    console.log(`🔗 API URL: http://localhost:${PORT}/api`);
+    console.log(`🔗 API URL: https://modern-furniture-api.onrender.com/api`);
     console.log(`📱 Frontend URL: https://modern-furniture-pacific-ccnz.onrender.com`);
     console.log('');
     console.log('✅ System ready!');
-    console.log('📋 Registered Routes:');
-    console.log('   - /api/auth ✅');
-    console.log('   - /api/admin ✅');
-    console.log('   - /api/products ✅');
-    console.log('   - /api/categories ✅');
-    console.log('   - /api/applications ✅');
-    console.log('   - /api/scanner ✅');
-    console.log('   - /api/suppliers ✅');
-    console.log('   - /api/repairs ✅');
-    console.log('   - /api/reviews ✅');
-    console.log('   - /api/videos ✅');
-    console.log('   - /api/chat ✅');
-    console.log('   - /api/delivery ✅');
-    console.log('   - /api/payment ✅');
-    console.log('   - /api/announcements ✅');
-    console.log('   - /api/stats ✅');
-    console.log('   - /api/orders ✅');
-    console.log('   - /api/jobs ✅');
-    console.log('   - /api/cart ✅');
-    console.log('   - /api/customer-care ✅');
-    console.log('   - /api/upload ✅');
-    console.log('   - /api/settings ✅');
-    console.log('   - /api/admin-chat ✅');
-    console.log('');
-    console.log('💡 All 22 routes registered successfully!');
+    console.log('📋 All 24 routes registered successfully!');
+    console.log('📋 New: /api/mattresses route added!');
+    console.log('📋 New: /api/bulk-buyer route added!');  // ← NEW
 });
 
 module.exports = { app, io };

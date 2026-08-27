@@ -10,34 +10,47 @@ module.exports = (io) => {
         // Join admin room
         socket.on('join-admin', (adminId) => {
             socket.join(`admin_${adminId}`);
+            socket.join('admin_room');
             console.log(`👤 Admin ${adminId} joined admin chat`);
             
-            // Send online status
             adminNamespace.emit('admin-online', { adminId, status: 'online' });
+            
+            // Send chat history to the admin
+            sendChatHistory(socket, adminId);
         });
 
-        // Send message with @mentions
+        // ===== SIMPLIFIED: Send message to group =====
         socket.on('send-message', async (data) => {
             try {
-                const { fromAdminId, toAdminId, message, type = 'text', mentions = [] } = data;
+                const { fromAdminId, message, mentions = [] } = data;
 
-                // Process mentions - extract @username from message
+                if (!message || !message.trim()) {
+                    socket.emit('error', { message: 'Message cannot be empty' });
+                    return;
+                }
+
+                // Extract @mentions from message
                 const mentionRegex = /@(\w+)/g;
                 const foundMentions = [];
                 let match;
                 while ((match = mentionRegex.exec(message)) !== null) {
                     foundMentions.push(match[1]);
                 }
-
-                // Merge with provided mentions
                 const allMentions = [...new Set([...mentions, ...foundMentions])];
+
+                // Get sender info
+                const sender = findUserById(fromAdminId);
+                if (!sender) {
+                    socket.emit('error', { message: 'Sender not found' });
+                    return;
+                }
 
                 const chatMessage = {
                     id: uuidv4(),
                     fromAdminId,
-                    toAdminId: toAdminId || 'all',
-                    message,
-                    type,
+                    fromAdminName: sender.name || 'Admin',
+                    fromAdminRole: sender.role || 'admin',
+                    message: message.trim(),
                     mentions: allMentions,
                     status: 'sent',
                     read: false,
@@ -49,88 +62,40 @@ module.exports = (io) => {
                 chatHistory.push(chatMessage);
                 writeData('admin-chat', chatHistory);
 
-                // Send to specific admin if mentioned
-                if (toAdminId) {
-                    adminNamespace.to(`admin_${toAdminId}`).emit('receive-message', chatMessage);
-                } else {
-                    // Send to all admins
-                    adminNamespace.emit('receive-message', chatMessage);
-                }
+                // Broadcast to ALL admins in the group
+                adminNamespace.to('admin_room').emit('receive-message', chatMessage);
 
                 // Send back to sender
                 socket.emit('message-sent', chatMessage);
 
-                // Process @mentions
+                // Process @mentions - notify mentioned admins
                 allMentions.forEach(mention => {
-                    // Find admin by name
                     const admins = getAllUsers().filter(u => u.isAdmin);
                     const mentionedAdmin = admins.find(a => 
                         a.name.toLowerCase().includes(mention.toLowerCase()) ||
                         a.email.toLowerCase().includes(mention.toLowerCase())
                     );
                     
-                    if (mentionedAdmin) {
-                        // Send notification to mentioned admin
+                    if (mentionedAdmin && mentionedAdmin.id !== fromAdminId) {
                         adminNamespace.to(`admin_${mentionedAdmin.id}`).emit('mentioned', {
-                            from: fromAdminId,
-                            message: `You were mentioned by ${data.fromAdminName || 'Admin'}: ${message}`,
+                            from: sender.name,
+                            fromId: fromAdminId,
+                            message: `You were mentioned by ${sender.name}: ${message}`,
                             chatMessage: chatMessage
                         });
                         console.log(`📢 Admin ${fromAdminId} mentioned @${mention}`);
                     }
                 });
 
-                console.log(`💬 Admin message from ${fromAdminId} to ${toAdminId || 'all'}`);
+                console.log(`💬 Admin ${sender.name} sent message to group`);
+
             } catch (error) {
                 console.error('❌ Admin chat error:', error);
                 socket.emit('error', { message: error.message });
             }
         });
 
-        // Reply to specific message
-        socket.on('reply-to-message', async (data) => {
-            try {
-                const { messageId, fromAdminId, toAdminId, replyMessage } = data;
-
-                // Get original message
-                const chatHistory = readData('admin-chat');
-                const originalMessage = chatHistory.find(m => m.id === messageId);
-                
-                if (!originalMessage) {
-                    socket.emit('error', { message: 'Original message not found' });
-                    return;
-                }
-
-                const reply = {
-                    id: uuidv4(),
-                    fromAdminId,
-                    toAdminId: originalMessage.fromAdminId,
-                    message: `↳ Reply to: ${originalMessage.message}\n\n${replyMessage}`,
-                    type: 'reply',
-                    replyTo: messageId,
-                    originalMessage: originalMessage.message,
-                    status: 'sent',
-                    read: false,
-                    createdAt: new Date().toISOString()
-                };
-
-                chatHistory.push(reply);
-                writeData('admin-chat', chatHistory);
-
-                // Send to specific admin
-                adminNamespace.to(`admin_${originalMessage.fromAdminId}`).emit('receive-message', reply);
-                
-                // Send back to sender
-                socket.emit('message-sent', reply);
-
-                console.log(`💬 Reply from ${fromAdminId} to ${originalMessage.fromAdminId}`);
-            } catch (error) {
-                console.error('❌ Reply error:', error);
-                socket.emit('error', { message: error.message });
-            }
-        });
-
-        // Edit message
+        // ===== Edit message =====
         socket.on('edit-message', async (data) => {
             try {
                 const { messageId, newMessage, adminId } = data;
@@ -138,13 +103,20 @@ module.exports = (io) => {
                 const messageIndex = chatHistory.findIndex(m => m.id === messageId);
                 
                 if (messageIndex !== -1) {
+                    // Check if user owns this message
+                    if (chatHistory[messageIndex].fromAdminId !== adminId) {
+                        socket.emit('error', { message: 'You can only edit your own messages' });
+                        return;
+                    }
+                    
                     chatHistory[messageIndex].message = newMessage;
                     chatHistory[messageIndex].edited = true;
                     chatHistory[messageIndex].editedAt = new Date().toISOString();
                     chatHistory[messageIndex].editedBy = adminId;
                     writeData('admin-chat', chatHistory);
                     
-                    adminNamespace.emit('message-edited', chatHistory[messageIndex]);
+                    // Broadcast edited message to all admins
+                    adminNamespace.to('admin_room').emit('message-edited', chatHistory[messageIndex]);
                 }
             } catch (error) {
                 console.error('❌ Edit message error:', error);
@@ -152,7 +124,19 @@ module.exports = (io) => {
             }
         });
 
-        // Mark as read
+        // ===== Get chat history =====
+        function sendChatHistory(socket, adminId) {
+            try {
+                const chatHistory = readData('admin-chat');
+                // Send all messages (group chat)
+                socket.emit('chat-history', chatHistory);
+            } catch (error) {
+                console.error('❌ History error:', error);
+                socket.emit('error', { message: error.message });
+            }
+        }
+
+        // ===== Mark as read =====
         socket.on('mark-read', async (data) => {
             try {
                 const { messageId, adminId } = data;
@@ -163,7 +147,6 @@ module.exports = (io) => {
                     chatHistory[messageIndex].read = true;
                     chatHistory[messageIndex].readAt = new Date().toISOString();
                     writeData('admin-chat', chatHistory);
-                    
                     socket.emit('message-read', { messageId, adminId });
                 }
             } catch (error) {
@@ -171,67 +154,18 @@ module.exports = (io) => {
             }
         });
 
-        // Get admin chat history
-        socket.on('get-history', async (data) => {
+        // ===== Get all chats =====
+        socket.on('get-all-chats', async () => {
             try {
-                const { adminId, otherAdminId } = data;
                 const chatHistory = readData('admin-chat');
-                
-                let messages = chatHistory;
-                if (otherAdminId) {
-                    messages = chatHistory.filter(m => 
-                        (m.fromAdminId === adminId && m.toAdminId === otherAdminId) ||
-                        (m.fromAdminId === otherAdminId && m.toAdminId === adminId) ||
-                        (m.toAdminId === 'all')
-                    );
-                }
-
-                socket.emit('chat-history', messages);
-            } catch (error) {
-                console.error('❌ History error:', error);
-                socket.emit('error', { message: error.message });
-            }
-        });
-
-        // Get all admin chats
-        socket.on('get-all-chats', async (data) => {
-            try {
-                const { adminId } = data;
-                const chatHistory = readData('admin-chat');
-                const admins = getAllUsers().filter(u => u.isAdmin);
-                
-                const chats = admins.map(admin => {
-                    const messages = chatHistory.filter(m => 
-                        (m.fromAdminId === adminId && m.toAdminId === admin.id) ||
-                        (m.fromAdminId === admin.id && m.toAdminId === adminId) ||
-                        (m.toAdminId === 'all')
-                    );
-                    const lastMessage = messages[messages.length - 1];
-                    const unreadCount = messages.filter(m => 
-                        m.toAdminId === adminId && !m.read
-                    ).length;
-                    
-                    return {
-                        admin: {
-                            id: admin.id,
-                            name: admin.name,
-                            role: admin.role,
-                            isOnline: false
-                        },
-                        lastMessage: lastMessage || null,
-                        unreadCount,
-                        messages
-                    };
-                });
-
-                socket.emit('all-chats', chats);
+                socket.emit('all-chats', chatHistory);
             } catch (error) {
                 console.error('❌ Get all chats error:', error);
                 socket.emit('error', { message: error.message });
             }
         });
 
-        // Disconnect
+        // ===== Disconnect =====
         socket.on('disconnect', () => {
             console.log('🔌 Admin disconnected from admin chat:', socket.id);
         });
